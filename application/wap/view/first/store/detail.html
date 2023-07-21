@@ -1,0 +1,592 @@
+{extend name="public/container"}{block name="head_top"}
+<link rel="stylesheet" href="{__PLUG_PATH}swiper/swiper-3.4.1.min.css">
+<script type="text/javascript" src="{__PLUG_PATH}swiper/swiper-3.4.1.jquery.min.js"></script>
+<style type="text/css">
+    .group {
+        background-color: #fff;
+        margin-top: 10px;
+        display: flex;
+        /*justify-content: space-around;*/
+        flex-wrap: wrap;
+    }
+    .group .group_item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        padding: 10px 0;
+    }
+    .group .group_item .img {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 1px dashed #ccc;
+    }
+     .group .group_item img {
+        width: 100%;
+        border-radius: 50%;
+     }
+     .group .group_item:first-child .img {
+            border: 1px dashed #FA6D0E;
+           
+     }
+     .group .group_item .identity {
+         position: absolute;
+        
+         top: 54%;
+         left: 29.5%;
+         padding: 5px 10px;
+         border-radius: 24px;
+         color: #fff;
+           font-size: 12px;
+         background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%);
+         
+     }
+      .group .group_item p {
+          margin-top: 20px;
+          text-align: center;
+          width: 120px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          
+      }
+      .group .group_item:first-child p {
+             margin-top: 20px;
+            
+      }
+      #cart {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.16);
+            z-index: 88;
+            bottom: 15%;
+            right: 2%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+      }
+       #cart img {
+           width: 50%;
+       }
+       .product-con .product-info .title {
+           overflow: hidden;
+           display: -webkit-box;
+           -webkit-box-orient: vertical;
+           -webkit-line-clamp: 2;
+           text-overflow: ellipsis;
+       }
+              .mask {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 199;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.4);
+    }
+     .mask .whats {
+        position: relative;
+        background-color: #fff;
+        padding: 15px 10px;
+        border-radius: 10px;
+        margin: 80% 10px;
+    }
+     .mask .whats .down {
+        position: absolute;
+        top: 3%;
+        right: 3%;
+        width: 25px;
+        height: 25px;
+        border: 1px solid #999;
+        border-radius: 50%;
+        color: #999;
+        line-height: 25px;
+        text-align: center;
+    }
+     .mask .whats .whats_title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+     .mask .whats .whats_content {
+        display: flex;
+        flex-wrap: wrap;
+        
+    }
+     .mask .whats .whats_content .whats_item {
+        display: flex;
+        width: 32%;
+        margin-right: 2%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+     .mask .whats .whats_content .whats_item:nth-child( 3n ) {
+        margin-right:0;
+     }
+    .mask .whats .whats_content .whats_item img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+     .mask .whats .whats_content .whats_item span {
+        font-weight: 700;
+    }
+</style>
+<script type="text/javascript"
+        src="{__WAP_PATH}crmeb/js/car-model.js"></script>
+{/block}
+<!-- {$storeInfo.store_name} -->
+{block name="title"}
+  {:L(" 商品詳情","Product details")}
+{/block}
+{block name="content"}
+<div id="store_detail" class="wrapper product-con">
+    <div id="cart" @click="cardUp">
+        <img src="/public/uploads/attach/2021/01/25/redcart.png" >
+    </div>
+      <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                <span  id="back"   @click="window.location.href='/wap/store/index'" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                  
+                    <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                </span>
+                <p id="qqtitle" style="text-align: center;width: 100%;line-height: 0.4rem;">
+                     {:L(" 商品詳情","Product details")}
+                </p>
+        </div>
+        <div style="height: 40px;">
+            
+        </div>
+    <section>
+       
+
+
+         <!-- 客服选择弹窗 -->
+    <div class="mask">
+        <div class="whats">
+            <!-- <div class="whats_title">
+                Whats:
+            </div> -->
+            <div class="down">
+                X
+            </div>
+            <p style="margin-bottom:15px;font-weight:700;">
+                {:L(" 請選擇客服","Please select  customer service")}:
+            </p>
+            <div class="whats_content">
+              {volist name="appservice" id="vo"}
+                <a href="{$vo.url}" class="whats_item">
+                    <img src="{$vo.image}" alt="">
+                    <span>{$vo.name}</span>   
+                </a>
+              {/volist}
+            </div>
+
+        </div>
+        
+    </div>
+        
+  
+  
+
+
+
+
+
+
+        <div class="banner">
+            <ul class="swiper-wrapper"> {volist name="storeInfo.slider_image" id="vo"}
+                <li class="swiper-slide"><img src="{$vo}"/></li>
+                {/volist}
+            </ul>
+        </div>
+        <div class="product-info">
+          <!--  <div class="title">{$storeInfo.store_name}</div>  -->
+          <div class="jg" style="position: relative;">
+          	<div class="price">${$storeInfo.pin_price}</div>
+          	<div class="oldprice">${$storeInfo.price}</div>
+            <!-- <div class="share" style="position: absolute; right: -0.2rem;font-size: 12px; padding: 0 5px 0 10px; background-color: #E1000F; color: #fff;  height: 30px; display: flex;align-items: center; border-bottom-left-radius: 40px; border-top-left-radius: 40px;">
+                <img style="width: 18px;margin-right: 5px;" src="/public/uploads/attach/2021/01/25/qfx.png" >分享
+            </div> -->
+          </div>
+              <div class="title" style="width: 100%;">  {:L($storeInfo.store_info,$storeInfo.en_store_info)}</div>
+			
+            <div class="info-amount flex">
+             <!--   <span class="current">商品编号：{$storeInfo.id}</span> -->
+                <span class="" style="margin-top: 15px;">  {:L(" 庫存","In stock")}:{$storeInfo.stock}</span>
+               <span class="fr" style="margin-top: 15px;"> {:L(" 销量","Sales")}:{$storeInfo.ficti+$storeInfo.sales}</span>
+            </div>
+            {gt name="storeInfo['give_integral']" value="0"}
+           <!-- <div class="integral">积分:{$storeInfo.give_integral|floatval} <span>赠送</span></div> -->
+            {/gt}
+        </div>
+      <!--  <div class="pro-attributes" v-cloak="">
+            <span>運費</span>  <span> $2.00</span>
+        </div> -->
+        <div class="pro-attributes" @click="cardUp" v-show="productAttr && productAttr.length > 0" v-cloak="">   
+              <span style="color: #999; margin-right: 10px;"> {:L(" 規格","Specification")}:</span>   {:L(" 選擇屬性","Select attribute")}
+     <!--   选择{{productAttrCate}} -->
+        </div>
+        <div class="like-it" style="text-align: left; padding: 0 0.2rem;" v-cloak="">
+              <span style="color: #999; font-size: 0.24rem; margin-right: 10px;"> {:L(" 運費","Freight")}:</span>  
+              {if condition= "$storeInfo.postage>0"}
+              ${$storeInfo.postage}
+              {else/}
+                {:L("包郵","free shipping")}
+              {/if}
+            
+            <!-- <i class="zan-btn iconfont icon-thumbsup" :class="{'icon-thumbsup110':product.userLike == true}" @click="like"></i> 点赞
+            <span v-text="product.like_num"></span>次 -->
+        </div>
+      <!--   <div class="like-it flex" style="text-align: left; padding: 0 0.2rem 0.2rem 0.2rem;  flex-wrap: wrap;" v-cloak="">
+             <span style="color: #999; font-size: 0.24rem; margin-right: 15px; "> {:L(" 優惠","Discount")}:</span>  
+             <div class="flex" style="flex-wrap: wrap; flex: 1;">
+                 <span style=" margin-top:10px; padding: 0 10px; height: 27px; line-height: 27px; color: #E1000F; border: 1px solid #E1000F; font-size: 14px; border-radius: 27px; margin-right: 10px;"> {:L(" 滿10減10","10 minus 10")}</span>
+                 <span style=" margin-top:10px; padding: 0 10px; height: 27px; line-height: 27px; color: #E1000F; border: 1px solid #E1000F; font-size: 14px; border-radius: 27px; margin-right: 10px;"> {:L(" 滿100減10","100 minus 10")}</span>
+                 <span style=" margin-top:10px; padding: 0 10px; height: 27px; line-height: 27px; color: #E1000F; border: 1px solid #E1000F; font-size: 14px; border-radius: 27px; margin-right: 10px;"> {:L(" 滿100減10","100 minus 10")}</span>
+                 <span style=" margin-top:10px; padding: 0 10px; height: 27px; line-height: 27px; color: #E1000F; border: 1px solid #E1000F; font-size: 14px; border-radius: 27px; margin-right: 10px;"> {:L(" 滿100減10","100 minus 10")}</span>
+                 <span style=" margin-top:10px; padding: 0 10px; height: 27px; line-height: 27px; color: #E1000F; border: 1px solid #E1000F; font-size: 14px; border-radius: 27px; margin-right: 10px;"> {:L(" 滿100減10","100 minus 10")}</span>
+                               
+              
+             </div>
+          
+        </div> -->
+        <!-- {notempty name="reply"}
+        <div class="item-box">
+            <div class="item-tit"><i class="line"></i><i class="iconfont icon-pinglun1"></i><span>评价</span><i
+                    class="line"></i></div>
+            <div class="assess-hot"><p class="title">宝贝评价({$replyCount})</p>
+                <div class="assess-hot-con">
+                    <div class="user-info flex">
+                        <div class="avatar"><img src="{$reply.avatar}"/></div>
+                        <div class="name">{$reply.nickname}</div>
+                        <div class="star{$reply.star} all"><span class="num"></span></div>
+                    </div>
+                    <div class="txt-info">{$reply.comment}</div>
+                    <div class="pro-parameter"><span>{$reply.add_time}</span> <span>{$reply.suk}</span></div>
+                    {gt name="replyCount" value="1"}
+                    <a class="more"  href="{:url('reply_list',['productId'=>$storeInfo['id']])}">查看全部评价</a>
+                    {/gt}
+                </div>
+            </div>
+        </div>
+        {/notempty} -->
+        <!-- 拼团信息 -->
+        <div class="group">
+            <div class="group_item" v-for="(item, index) in userList" :key="index" @click="goPin(userList)">
+                 <div class="img">
+                     <img v-if="item.avatar" :src="item.avatar" >
+                     <span v-else style="color: #ccc; font-size: 24px; font-weight: 700;"> + </span>
+                 </div>
+                 <span class="identity" v-if="item.nickname"> {:L("團長","Head")}</span>
+                 <p>{{item.nickname ? item.nickname : '{:L(" 待加入","To be added")}'}}</p>
+            </div>
+        </div>
+           <!-- 拼团信息 -->
+        <div class="item-box">
+            <div class="item-tit"><i class="line"></i><i class="iconfont icon-icon-tupian"></i><span> {:L(" 详情","Details")}</span><i class="line"></i></div>
+            <div class="con-box" v-show="false"  ref="store_desc">
+                
+            </div>
+            <div class="con-box">
+                  {:L($storeInfo.description,$storeInfo.en_description)}
+            </div>
+            
+        </div>
+        <div class="footer-bar flex" style="padding: 10px 0;">
+            <!-- <a style="width: 1.2rem;" href="{:Url('Service/service_list',array('mer_id'=>$mer_id))}"> <span class="iconfont icon-kefu"></span><p> {:L(" 客服","Service")}</p></a> -->
+             <a style="width: 1.2rem;" @click="whats"> <span class="iconfont icon-kefu"></span><p> {:L(" 客服","Service")}</p></a>
+   <!--         <a class="collect-btn iconfont icon-xing1" :class="{'icon-xing2':product.userCollect == true}" @click="collect" href="javascript:void(0)"><p>收藏</p></a> -->
+            <a style="width: 1.2rem;" href="{:Url('store/cart')}"> <span class="iconfont icon-icon-shoppingcart-02"></span> <p> {:L(" 購物車","Cart")}</p> <span class="cart_num" v-show="cartNum > 0" v-cloak="" v-text="cartNum"></span> </a>
+         <!--  <div class="big-btn buy-car" @click="cardUp">加入購物車</div> -->
+            
+            <div class="big-btn buy-car" style="height: 0.6rem; line-height: 0.6rem; border-bottom-left-radius: 35px; border-top-left-radius: 35px;" @click="cardUp"> {:L(" 立即購買","Buy it now")}</div>
+            <div class="big-btn confirm" style="height: 0.6rem; line-height: 0.6rem; border-bottom-right-radius: 35px; border-top-right-radius: 35px;" @click="collageUp"> {:L(" 發起拼團","Initiate a group")}</div>
+         
+        </div>
+    </section>
+   <!-- {notempty name="similarity"}
+    <section class="template-piclist">
+        <div class="template-prolist">
+            <div class="title-like flex"><span class="title-line left"></span> <span class="icon"></span> <span>新品推荐</span> <span class="title-line right"></span></div>
+        </div>
+        <ul class="flex"> {volist name="similarity" id="store"}
+            <li><a href="{:url('store/detail',array('id'=>$store['id']))}">
+                    <div class="picture"><img src="{$store.image}"/></div>
+                    <div class="pro-info"><p class="title">{$store.store_name}</p> -->
+                        <!--<p class="conut">已售{$store.sales}</p>-->
+<!--                        <p class="conut">已售{$store.ficti+$store.sales}</p>
+                        <p class="price">￥{$store.price|floatval}</p></div>
+                    <div class="buy-car-btn"><i class="iconfont icon-gouwuche"></i></div>
+                </a></li>
+            {/volist}
+        </ul>
+    </section>
+    {/notempty} -->
+    <shop-card ref="shopCard" :show="cardShow" :product="productCardInfo" :attr-list="productAttr"
+               :on-change="changeAttr" :on-close="cardClose" :on-cart="goCart" :on-buy="goBuy"></shop-card>
+    <shop-card ref="shopCard" class='pin' :show="pincardShow" :gocar="gocar" :product="pinproductCardInfo" :attr-list="productAttr"
+               :on-change="changeAttr" :on-close="cardClose" :on-cart="goCart" :on-buy="goBuyPin"></shop-card>
+    <script ref="store_desc_temp" type="text/template">{$storeInfo.description}</script>
+    
+    <div style="height:1rem;"></div>
+</div>
+<script>
+    window.$urlShare = "{$urlShare}";
+    window.$userList = <?php echo json_encode($CollageInfo) ?: '[]'; ?>;
+    window.$product = <?php unset($storeInfo['description']); echo json_encode($storeInfo);?>;
+    window.$productAttr = <?php echo json_encode($productAttr) ?: '[]'; ?>;
+    window.$productValue = <?php echo json_encode($productValue) ?: '{}'; ?>;</script>
+<script type="text/javascript">
+    requirejs(['vue', 'axios', 'helper', 'store', '{__WAP_PATH}crmeb/module/store/shop-card.js'], function (Vue, axios, $h, storeApi, shopCard) {
+        new Vue({
+            el: "#store_detail",
+            components: {'shop-card': shopCard},
+            data: {
+                cardShow: false,
+                gocar: false,
+                pincardShow: false,
+                product: $product,
+                productAttr: $productAttr || [],
+                productValue: $productValue || {},
+                productCardInfo: {},
+                pinproductCardInfo:{},
+                status: {like: false, collect: false},
+                cartNum: 0,
+                userList:$userList
+                // userList: [
+                //     {
+                //         name: '張三',
+                //         nickname: '團長',
+                //         avatar: '/public/uploads/attach/2021/01/25/qqyj.png'
+                        
+                //     },
+                //     {
+                        
+                //     },
+                //     {
+                        
+                //     },
+                    
+                // ]
+            },
+            computed: {
+                productAttrCate: function () {
+                    return this.productAttr.map(function (attr) {
+                        return attr.attr_name;
+                    }).join(',');
+                }
+            },
+            methods: {
+              goPin(list) {
+                // console.log(list.length)
+                if (list.length == 2) {
+                    window.location.href='/wap/my/invite.html'
+                } else {
+                  this.pincardShow = true;
+                }
+              },
+              collageUp: function(){
+                this.pincardShow = true;
+              },
+                cardClose: function () {
+                    this.cardShow = false;
+                    this.pincardShow = false;
+                }, cardUp: function () {
+                    this.cardShow = true;
+                }, goCart: function (values, cartNum) {
+                    var checkedAttr = this.productValue[values.sort().join(',')], that = this;
+//                    console.log(values);
+//                    console.log(checkedAttr);
+                    storeApi.setCart({
+                        cartNum: cartNum,
+                        uniqueId: checkedAttr === undefined ? 0 : checkedAttr.unique,
+                        productId: this.product.id
+                    }, function () {
+                        that.getCartNum();
+                        $h.pushMsg(' {:L(" 加入购物车成功!","Add to Cart successful!")}');
+                    });
+                    that.cardClose();
+                }, goBuy: function (values, cartNum) {
+                    var checkedAttr = this.productValue[values.sort().join(',')];
+                    storeApi.goBuy({
+                        cartNum: cartNum,
+                        uniqueId: checkedAttr === undefined ? 0 : checkedAttr.unique,
+                        productId: this.product.id
+                    }, function (cartId) {
+                        location.href = $h.U({c: 'store', a: 'confirm_order', p: {cartId: cartId}});
+                    });
+                    this.cardClose();
+                }, goBuyPin: function (values, cartNum) {
+                    var checkedAttr = this.productValue[values.sort().join(',')];
+                    storeApi.goBuy({
+                        cartNum: cartNum,
+                        uniqueId: checkedAttr === undefined ? 0 : checkedAttr.unique,
+                        productId: this.product.id,
+                        pin_type:1
+                    }, function (cartId) {
+                        location.href = $h.U({c: 'store', a: 'confirm_order', p: {cartId: cartId,pin_type:1}});
+                    });
+                    this.cardClose();
+                }, changeAttr: function (values) {
+                    // console.log(values);
+                    //console.log(values.sort());
+                    //console.log(values.sort().join(','));
+                    var checkedAttr = this.productValue[values.sort().join(',')];
+                    // console.log(values);
+                    // console.log(checkedAttr);
+                    if (!checkedAttr) {
+                        this.setProductCardInfo({stock: 0});
+                        this.setPinProductCardInfo({stock: 0});
+                    } else {
+                        this.setProductCardInfo({
+                            stock: checkedAttr.stock,
+                            price: checkedAttr.price,
+                            image: checkedAttr.image
+                        });
+                        this.setPinProductCardInfo({
+                            stock: checkedAttr.stock,
+                            pin_price: checkedAttr.pin_price,
+                            image: checkedAttr.image
+                        });
+                    }
+                }, setProductCardInfo: function (info) {
+                    info || (info = {});
+                    this.$set(this, 'productCardInfo', {
+                        image: info.image !== undefined ? info.image : this.product.image,
+                        price: info.price !== undefined ? info.price : this.product.price,
+                        stock: info.stock !== undefined ? info.stock : this.product.stock
+                    });
+                },setPinProductCardInfo: function (info) {
+                  // console.log(info);
+                    info || (info = {});
+                    this.$set(this, 'pinproductCardInfo', {
+                        image: info.image !== undefined ? info.image : this.product.image,
+                        price: info.pin_price !== undefined ? info.pin_price : this.product.pin_price,
+                        stock: info.stock !== undefined ? info.stock : this.product.stock
+                    });
+                }, like: function () {
+                    var that = this;
+                    if (that.status.like) return false;
+                    that.status.like = true;
+                    if (this.product.userLike) {
+                        storeApi.unlikeProduct(this.product.id, 'product', function () {
+                            setTimeout(function () {
+                                that.product.like_num -= 1;
+                                that.product.userLike = false;
+                                that.status.like = false;
+                            }, 300);
+                        }, function (err) {
+                            that.status.like = false;
+                        });
+                    } else {
+                        storeApi.likeProduct(this.product.id, 'product', function () {
+                            setTimeout(function () {
+                                that.product.like_num += 1;
+                                that.product.userLike = true;
+                                that.status.like = false;
+                            }, 300);
+                        }, function (err) {
+                            that.status.like = false;
+                        });
+                    }
+                }, collect: function () {
+                    var that = this;
+                    if (that.status.collect) return false;
+                    that.status.collect = true;
+                    if (this.product.userCollect) {
+                        storeApi.unCollectProduct(this.product.id, 'product', function () {
+                            setTimeout(function () {
+                                that.product.userCollect = false;
+                                that.status.collect = false;
+                            }, 300);
+                        }, function (err) {
+                            that.status.collect = false;
+                        });
+                    } else {
+                        storeApi.collectProduct(this.product.id, 'product', function () {
+                            setTimeout(function () {
+                                that.product.userCollect = true;
+                                that.status.collect = false;
+                            }, 300);
+                        }, function (err) {
+                            that.status.collect = false;
+                        });
+                    }
+                }, pushMsg: function (msg, fn) {
+                    $h.pushMsg(msg, fn)
+                }, init: function () {
+                    new Swiper('.banner', {
+                        paginationClickable: false,
+                        autoplay: 3000,
+                        loop: false,
+                        speed: 1000,
+                        autoplayDisableOnInteraction: false,
+                        pagination: '.swiper-pagination',
+                    });
+                }, getCartNum: function () {
+                    var that = this;
+                    storeApi.getCartNum(function (cartNum) {
+                        that.cartNum = cartNum;
+                    });
+                }, whats() {
+                        $(".mask").css("display","block");
+                }
+            },
+            mounted: function () {
+                var wxApi = mapleWx($jssdk(), function () {
+                    this.onMenuShareAll({
+                        title: $product.store_name,
+                        desc: $product.store_info || $product.store_name,
+//                        imgUrl: location.origin + $product.image,
+                        imgUrl: $product.image,
+                        link: $urlShare || "{:url('store/detail',array('id'=>$storeInfo['id'],'spuid'=>$userInfo['uid']))}"
+                    });
+                });
+                this.$nextTick(function () {
+                    this.$refs.store_desc.innerHTML = this.$refs.store_desc_temp.innerHTML;
+                });
+                this.getCartNum();
+                this.init();
+                this.setProductCardInfo();
+                this.setPinProductCardInfo();
+                if (document.getElementById("qqtitle").innerText == "Product details") {
+                   document.querySelector(".card-model .cm-header .header-info .stock #qkc").innerText = "In stock"
+                   document.querySelector(".card-model .model-footer .footer-car").innerText = "Add to the cart"
+                   document.querySelector(".card-model .model-footer .footer-buy").innerText = "Buy it now"
+                   document.querySelector(".card-model .model-footer .no").innerText = "No goods"
+                   document.querySelector(".amount .text").innerText = "Purchase quantity"
+
+                   document.querySelector(".pin .card-model .cm-header .header-info .stock #qkc").innerText = "In stock"
+                   document.querySelector(".pin .card-model .model-footer .footer-car").innerText = "Add to the cart"
+                   document.querySelector(".pin .card-model .model-footer .footer-buy").innerText = "Buy it now"
+                   document.querySelector(".pin .card-model .model-footer .no").innerText = "No goods"
+                   document.querySelector(".pin .amount .text").innerText = "Purchase quantity"
+                }
+                var divcount=document.querySelector(".pin .amount .count");
+                divcount.firstChild.style.display="none"
+                divcount.lastChild.style.display="none"
+                divcount.style.width="1rem"
+                document.querySelector(".pin .card-model .model-footer").firstChild.style.display="none"
+                // document.getElementById("back").addEventListener("click", function() {
+                //     window.history.back(-1)
+                // })
+                $(".mask .down").on("click", function() {
+                        $(".mask").css("display","none");
+                    })
+                    $(".whats .whats_item").on("click", function() {
+                        $(".mask").css("display","none");
+                    })
+                
+            }
+        });
+    });</script>{/block}

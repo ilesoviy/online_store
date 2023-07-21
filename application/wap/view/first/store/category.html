@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<meta name="browsermode" content="application" />
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<!-- 禁止百度转码 -->
+		<meta http-equiv="Cache-Control" content="no-siteapp">
+		<!-- uc强制竖屏 -->
+		<meta name="screen-orientation" content="portrait">
+		<!-- QQ强制竖屏 -->
+		<meta name="x5-orientation" content="portrait">
+		<title> {:L('分類列表','Category List')}</title>
+		<link rel="stylesheet" type="text/css" href="{__WAP_PATH}sx/css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{__WAP_PATH}sx/css/style.css" />
+		<script type="text/javascript" src="{__WAP_PATH}sx/js/media.js"></script>
+		<script type="text/javascript" src="{__WAP_PATH}sx/js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="{__WAP_PATH}crmeb/js/common.js"></script>
+		<style>
+			.product-sort-list .list-wrapper :first-child>.parent-link {
+				/* 	color: #FF4B4B;
+				font-size: 0.3rem; */
+			}
+
+			.product-sort-list .list-wrapper .list-item .child-list {
+				position: absolute;
+				top: 0.48rem;
+				right: 0;
+				width: 65%;
+				border-bottom: 0;
+			}
+
+			.product-sort-list .list-wrapper .list-item .child-list li {
+				width: 0.93rem;
+				background-color: transparent;
+			}
+
+			.product-sort-list .list-wrapper .list-item img {
+				width: 100%;
+				margin-bottom: 0.2rem;
+			}
+
+			.product-sort-list .list-wrapper .active {
+				/* color: #FF4B4B; */
+				background-color: #FFF;
+			}
+
+			.product-sort-list .list-wrapper .list-item .parent-link {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.product-sort-list .list-wrapper .active div {
+				width: 100%;
+				border-left: 2px solid #FF4B4B;
+			}
+			.search-box{
+				background-color: #f5f5f5;
+				margin: 0.1rem 0.2rem;
+				border-radius: 0.5rem;
+				padding-left: 0.5rem;
+			}
+			.search-box input{
+				height: 0.5rem;
+				line-height: 0.5rem;
+			}
+            #right-nav {
+                display: none !important; 
+            }
+		</style>
+	</head>
+	<body style="background:#f4f4f4;">
+		<div class="product-sort-list" >
+			<div style="background-color: #FFFFFF;padding: 0.1rem 0.2rem; margin-bottom: 10px;">
+			    <div class="search-box" style="background-color: #f4f4f4; margin: 0; ">
+			    	<input type="text" placeholder="{:L('搜索商品、類目','search')}" />
+			    </div>
+			</div>
+			<section>
+				<div class="list-wrapper" style="width: 30%;">
+					<div class="list-item"><a class="parent-link" href="{:url('store/index')}">{:L('全部商品','All goods')}</a></div>
+					{volist name="category" id="vo" key="key"}
+					<div class="list-item">
+						<!-- <a class="parent-link" href="{:url('store/index',['cid'=>$vo['id']])}" >{$vo.cate_name}</a> -->
+						<a class="parent-link {$id == $vo.id?'active':''}"
+							href="{:url('store/category',['id'=>$vo['id']])}">
+							<!-- <div>{$vo.new_cate_name}</div> -->
+                            <div >
+                                {$vo.new_cate_name}
+                            </div>
+						</a>
+						{notempty name="vo.child"}
+						<ul class="child-list clearfix" style="background-color: #FFFFFF;margin: 25px 10px 0 10px;border-radius: 0.2rem; ">
+                            <p style="margin: 10px 0;"></p>
+                          <!--  <li>
+                            	<a href="/wap/store/index/sid/7.html">
+                                    <img src="/public/uploads/attach/2019/03/29/5c9def00c2882.png" />
+                                 
+                                    {:L('手機數碼','advice')}
+                                </a>
+                            </li> -->
+							{volist name="cate" id="st"}
+							<li>
+								<a href="{:url('store/index',['sid'=>$st['id']])}">
+                                    <img src="{$st.pic}" />
+                                   {:L($st.cate_name,$st.en_cate_name)}
+                                  <!-- {:L('手機數碼','advice')} -->
+                                </a>
+							</li>
+							{/volist}
+						</ul>
+						{/notempty}
+					</div>
+					{/volist}
+				</div>
+			</section>
+		</div>
+		{include file="public/right_nav" /}
+         {include file="public/store_menu"}
+	</body>
+</html>

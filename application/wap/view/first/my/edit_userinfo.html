@@ -1,0 +1,261 @@
+{extend name="public/container" /}
+{block name="title"}  {:L(" 個人信息","Personal information")}{/block}
+{block name="content"}
+<style type="text/css">
+    .avatar img {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    background-color: #FFFFFF;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #f84426;
+    border-radius: 50%;
+    box-shadow: 0rem 0rem .64rem rgba(0, 0, 0, 0.1);
+}
+.ckeck{
+    -webkit-appearance: radio;
+    height: auto !important;
+    -webkit-flex: .2 !important;
+}
+.user-item {
+    margin: 0 15px;
+    position: relative;
+}
+
+
+.user-item  .avatar img {
+    width: 90%;
+    margin: 0 auto;
+}
+.input-container{
+    margin: 0 auto;
+    margin-top: -35px;
+  /*  margin-top: 7.8rem; */
+    background: #FFFFFF;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding-bottom: 40px;
+    padding-top: 30px;
+}
+
+.input-container > div{
+    height: 60px;   
+    display: flex;
+    border-bottom: .032rem solid #EBEBEB;
+}
+.img-div{
+    position: relative;
+    top: 3.68rem;
+    left: 19%;
+    transform: translateX(-50%);
+    z-index: 99;
+}
+.user-text{
+    margin-left: 15px;
+    line-height: 60px;
+    font-size: 16px;
+    font-family: PingFang SC;
+    font-weight: 400;
+    color: #999999;
+   
+}
+
+.input-container > div > input{
+    border: none;
+    outline: none;
+    background: none;
+    line-height: 60px;
+    margin-right:  15px;
+    flex: 1;
+    margin-left:  15px;
+    text-align: right;
+}
+</style>
+<body style="font-size: .24rem !important;">
+<div id="edit-address" class="user-add-address">
+    <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                        <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                            <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                        </span>
+                        <p style="text-align: center;width: 100%;line-height: 0.4rem;">
+                            {:L(" 個人信息","Personal information")}
+                        </p>
+                        <script type="text/javascript">
+                            document.getElementById("qqq").addEventListener("click", function() {
+                                window.history.back(-1);
+                            })
+                        </script>
+                </div>
+                <div style="height: 40px;">
+                    
+                </div>
+  <!--  <div class=" flex" style=" padding: 0.12rem 0.1rem; z-index: 999; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                   <span   @click="window.location.href='/wap/my/index.html'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 3;">
+                        <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                    </span>
+                    <p style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">
+                       個人信息
+                    </p>
+            </div>
+            <div style="height: 40px;">
+                
+            </div> -->
+    <section>
+        <form action="" method="post"  ref="form">
+            <div class="address-info">
+                <div class="item" style="height: 1.5rem;">
+               <!--     <label for="">头像</label> -->
+                    <div class="avatar" style="position: relative;"><img id="avatarShow" src="{$userInfo.avatar}"></div>
+                    <input type="hidden" name="avatar" id="avatar" value="{$userInfo.avatar}"/>
+                     <input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" onchange="afterselect()" style="display:none;">
+                </div>
+           
+                       
+                        <div class="input-container">
+                            <div>
+                                <div class="user-text">  {:L(" 昵稱","Nick name")}</div> 
+                                <input class="user-input" name="nickname" value="{$userInfo.nickname}"  placeholder=' {:L(" 請輸入昵稱","Please enter a nickname")}' />
+                            </div>
+                            <div>
+                                <div class="user-text">  {:L(" 姓名","Name")}</div>
+                                <input class="user-input" value="{$userInfo.name}"  name="name" placeholder=' {:L(" 請輸入姓名","Please enter a name")}'/>
+                            </div>
+                
+                            <div>
+                                <div class="user-text">  {:L(" 郵箱","Mail")}</div>
+                                <input class="user-input account" name="account" readonly  unselectable="on" value="{$userInfo.account}" placeholder=' {:L(" 請輸入郵箱","Please enter a Mail")}' />
+                            </div>
+                
+                            <div>
+                                <div class="user-text">  {:L(" 民族","Nationality")}</div>
+                                <input class="user-input" value="{$userInfo.nationality}" name="nationality"  placeholder=' {:L(" 請輸入民族","Please enter a Nationality")}'/>
+                            </div>
+                            <div>
+                                <div class="user-text">  {:L(" 生日","Birthday")}</div>
+                                <input class="user-input" name="birthday" value="{$userInfo.birthday}"  placeholder=' {:L(" 請輸入生日","Please enter a Birthday")}'/>
+                            </div>
+                
+                           
+                        </div>
+                  
+                
+            </div>
+           <!-- <div class="set-default">
+               
+            </div> -->
+            <button class="sub-btn" id="btn" disabled="false" type="submit"> {:L(" 立即保存","Save now")}</button>
+        </form>
+        <!-- <div class="item" style="height: 1.5rem;">
+                    <label for="">头像</label>
+                    <div class="avatar"><img id="avatarShow" src="{$userInfo.avatar}"></div>
+                    <input type="hidden" name="avatar" id="avatar" value="{$userInfo.avatar}"/>
+                     <input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" onchange="afterselect()" style="display:none;">
+                </div>
+                <div class="item">
+                    <label for="">姓名</label>
+                    <input type="text" name="nickname" required value="{$userInfo.nickname}" readonly="readonly"  placeholder="请输入姓名"/>
+                </div>
+                <div class="item">
+                    <label for="">姓别</label>
+                    <input class="ckeck" type="radio" name="sex" value="0" {if condition="$wuserInfo['sex'] eq 0"} checked=""  {/if} />保密 
+                    <input class="ckeck" type="radio"  name="sex"  value="1" {if condition="$wuserInfo['sex'] eq 1"} checked=""  {/if} />男
+                    <input class="ckeck" type="radio" name="sex"  value="2" {if condition="$wuserInfo['sex'] eq 2"} checked=""  {/if} />女
+                </div>
+                 <div class="item">
+                    <label for="">账号</label>
+                    <input type="text" name="account" required readonly="readonly" value="{$userInfo.account}" placeholder=""/><i style="color: #eee;">不能更改</i>
+                </div>
+                 <div class="item">
+                    <label for="">密码</label>
+                    <input type="password" name="pwd"  placeholder="不填则为原密码"/>
+                </div>
+                <div class="item">
+                    <label for="">手机号</label>
+                    <input type="tel" name="phone" value="{$userInfo.phone}" required placeholder="请输入手机号"/>
+                </div> -->
+        <yd-cityselect :items="district" v-model="addressShow" :callback="changeAddress"></yd-cityselect>
+    </section>
+</div>
+<script src="{__PLUG_PATH}reg-verify.js"></script>
+<script>
+    $(".avatar").click(function(){
+        document.getElementById("fileToUpload").click();
+    })
+    
+    function afterselect() {
+        var formdata = new FormData();
+        console.log($("#fileToUpload").val());
+         formdata.append("fileToUpload",document.getElementById('fileToUpload').files[0]);
+         $.ajax({
+            type: "POST",
+            url: "{:url('My/upload')}",
+            data:formdata,
+            /**
+              * 必须false才会避开jQuery对 formdata 的默认处理
+              * XMLHttpRequest会对 formdata 进行正确的处理
+              */
+            processData: false,
+            // 告诉jQuery不要去设置Content-Type请求头
+            contentType: false,
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                $("#avatar").attr("value",data.data.result);
+                    $("#avatarShow").attr("src",data.data.result);
+            },
+            error: function(jqXHR){
+               alert("发生错误：" + jqXHR.status);
+            },
+        });    
+       
+    // if($("#fileToUpload").val() != "") {
+    //     $.ajax({
+    //         type: "POST",
+    //         url:"{:url('My/upload')}",//后台接口
+    //         dataType: "json",
+    //         fileElementId:"fileToUpload",  // 文件的id
+    //         processData: false,
+    //         contentType: false,
+    //         success: function(d){
+    //             if(d.code == 0) {
+    //                 js.showMessage("上传成功");
+    //                 //图片显示
+    //                 $("#avatar").attr("value",d.data.url);
+    //                 $("#avatarShow").attr("src",d.data.url);
+    //             }
+    //         },
+    //         error: function () {
+    //             js.showMessage("上传失败");
+    //         },
+    //     });
+    // } else {
+    //     js.showMessage("请先选择文件");
+    // }
+    }
+     var account = document.querySelector(".account");
+        if($(".account").val() !=''){
+            document.getElementById("btn").disabled = false
+                     document.getElementById("btn").style.backgroundColor = "#f84426"
+        }
+       var myreg_email = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+           account.addEventListener("blur", function() {
+             if (this.value != '') {
+                    document.getElementById("btn").disabled = false
+                     document.getElementById("btn").style.backgroundColor = "#f84426"
+               } else {
+                   document.getElementById("btn").disabled = true
+                   document.getElementById("btn").style.backgroundColor = "#ccc"
+               }
+                if(this.value != '' && !myreg_email.test(this.value)){
+                    layer.msg('{:L("帳號請填正確郵箱格式","Please fill in the correct email format for the account number")}');
+                    document.querySelector(".account").style.color = "red"
+                    document.getElementById("btn").disabled = true
+                   document.getElementById("btn").style.backgroundColor = "#ccc"
+                }else{
+                   document.querySelector(".account").style.color = "#333" 
+                }
+              
+           })
+</script>
+{/block}

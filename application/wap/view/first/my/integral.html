@@ -1,0 +1,303 @@
+{extend name="public/container"}
+{block name="title"} {:L(" 傭金記錄","Commission record")}{/block}
+{extend name="public/container"}
+{block name="head"}
+<style>
+    .loading-line {
+        background-color: #fff;
+    }
+
+    .bbq {
+        z-index: 2;
+        width: 40%;
+        color: #999;
+        background-color: #FFFFFF;
+        font-size: 16px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 5px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    .act {
+        color: #E1000F;
+        font-weight: 700;
+    }
+    .moneys {
+    	height: 60px;
+    	display: flex;
+    	width: 100%;
+    }
+    .con-cell .moneys span {
+    	flex: 1;
+    	display: flex;
+    	align-items: center;
+    	justify-content: center;
+    	color: #fff;
+    	opacity: 1;
+    	line-height: 1.5;
+    }
+     .con-cell .moneys .tt {
+     	padding: 5px 20px;
+     	background-color: #fff;
+     	color: #E1000F;
+     	font-size: 14px;
+     	font-weight: 700;
+     	border-radius: 30px;
+     }
+</style>
+{/block}
+{block name="content"}
+<div id="user-integral" class="integral-content">
+    <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; color: #fff;">
+                    <span   @click="window.location.href=document.referrer;"  style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 99;">
+                        <img  src="/public/uploads/attach/2019/01/15/qback.png" style="width: 15px;">
+                    </span>
+                    <p style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">
+                       {:L(" 傭金記錄","Commission record")}
+                    </p>
+            </div>
+           
+    <section>
+        <header ref="head">
+            <div class="con-cell" style="padding-top:20px;">
+                <span>  {:L(" 我的傭金","My commission")}</span>
+                <p>{$userInfo.integral+$no_integral|floatval}</p>
+                <div class="moneys">
+                <span style="font-weight:700;">
+	                {$userInfo.integral|floatval}
+	                <br /> 
+					{:L(" 可提現佣金","Withdrawable commission")}   
+                </span>
+                <span @click="AAA = true" >
+                <p class="tt">{:L(" 提現","withdrawal")}</p>
+                    
+                </span>
+                <span style="font-weight:700;"> 
+                	{$no_integral|floatval}
+                    <br />   
+					{:L("不可提現佣金","Non-withdrawable commission")}
+                </span>
+                </div>
+            </div>
+        </header>
+        <?php /*  <div class="entrance">
+              <a href=""><i class="icon integral-mall"></i><span>进入积分商城</span></a>
+              <a href=""><i class="icon address"></i><span>收货地址管理</span></a>
+          </div>  */ ?>
+        <div class="details" style="position: relative;">
+            <div id="btn" class="flex"
+                style="position: absolute;width: 100%; justify-content: space-around;top: -20px;">
+                <span :class="['bbq', flag ? 'act' : '']"  @click=Switch(true)>
+                      {:L(" 累計收益","Cumulative income")}
+                </span>
+                <span :class="['bbq', !flag ? 'act' : '']" @click=Switch(false)>
+                      {:L(" 今日收益","Today's earnings")}
+                </span>
+            </div>
+            <div class="titles" style="display: none;" ref="nav"><i class="icon details-icon"></i>  {:L(" 傭金明细","Commission details")}</div>
+            <div ref="bsDom">
+                <div style="-webkit-overflow-scrolling : touch; position: relative;margin-top: 30px;">
+                    <ul>
+                        <li class="clearfix" v-for="item in list" v-cloak="">
+                            <div class="infos fl">
+                                <div class="con-cell">
+                                     <p v-text="item.new_mark"></p>
+                                    <!-- <p>  {:L(" 签到获得4傭金  ","Sign in to get 4 commissions")}</p> -->
+                                    <span v-text="item.add_time"></span>
+                                </div>
+                            </div>
+                            <div class="count fr" :class="{increase:item.pm == 1}">
+                                <div class="con-cell"><span
+                                 style="color: #E1000F; font-weight: 700;font-size: 18px;margin-right: 5px;">{{item.pm == 1 ? '+' : '-'}}{{item.number}}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="loading-line" v-show="loading == true"><i></i><span>  {:L(" 正在加载中","Loading")}</span><i></i></p>
+                    <p class="loading-line" v-show="loading == false && group.loaded == false" v-cloak="">
+                        <i></i><span>  {:L(" 加载更多","load more")}</span><i></i></p>
+                    <p class="loading-line" v-show="loading == false && group.loaded == true" v-cloak="">
+                        <i></i><span>  {:L(" 没有更多了","No more")}</span><i></i></p>
+                        <div style="height: 50px;">
+                            
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
+        
+                <div class="model-bg" @touchmove.prevent @click="hiedss"
+                    :class="{on:AAA == true}"></div>
+         <div class="card-model" :class="{up:AAA == true}">
+                <div  class="selects-info" style="max-height: 4.96rem;">
+                    <div class="payplay-wrapper">
+                        <div class="info-wrapper">
+                            <div class="tit"> {:L(" 輸入提現金額","Enter the top-up amount")}</div>
+                            <div class="money">
+                                <span>$</span>
+                                <input v-model="rechargePrice" type="number" placeholder="0.00" />
+                            </div>
+                            <div class="tips">
+                            {:L(" 充值提示：單次提現金額不能低於","Recharge reminder: The single recharge amount cannot be less than")}<span>100</span>
+                            </div>
+                            <button class="pay-btn" @click="tixian">   {:L(" 點擊提現","Click to withdraw")}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="model-close" @click="AAA = false"></div>
+            </div>
+    </section>
+</div>
+
+<script>
+    (function() {
+        requirejs(['vue', 'helper', 'better-scroll', 'store'], function(Vue, $h, BScroll, storeApi) {
+            var wxApi = mapleWx($jssdk());
+            new Vue({
+                el: '#user-integral',
+                data: {
+                    flag: true,
+                     rechargePrice: '',
+                    AAA : false,
+                    group: {
+                        first: 0,
+                        limit: 20,
+                        list: [],
+                        loaded: false,
+                    },
+                    loading: false,
+
+                    scroll: null,
+                    list: [],
+                    addlist: [],
+                    backlist: [],
+                    to:0
+                },
+                 watch: {
+                        showRechargeCard: function() {
+                            this.rechargePrice = '';
+                        }
+                    },
+                methods: {
+                      hiedss() {
+                            this.showRechargeCard = false
+                            this.AAA = false
+                        },
+                    tixian: function() {
+                            if (rechargePrice == '') return;
+                            var rechargePrice = parseFloat(this.rechargePrice);
+                            if (rechargePrice != this.rechargePrice || rechargePrice <= 0)
+                                return $h.pushMsgOnce('{:L(" 請輸入正確的提現金額","Please enter the correct withdrawal amount")}');
+                            if (rechargePrice < minRecharge)
+                                return $h.pushMsgOnce('{:L(" 提現金額不能低於","The withdrawal amount cannot be less than")}' + parseFloat(minRecharge));
+                            this.showRechargeCard = false;
+                            this.rechargePrice = '';
+                            storeApi.userWechatRecharge(rechargePrice, function(res) {
+                                self.location.href = res.data.msg;
+                                // wxApi.chooseWXPay(res.data.data,function(){
+                                //     that.showRechargeCard = false;
+                                //     $h.pushMsgOnce('成功充值'+rechargePrice);
+                                // });
+                            });
+                        },
+                    getList: function(to=0) {
+
+                        if (this.loading) return;
+                        var that = this,
+                            type = 'group',
+                            group = that.group;
+                        console.log(this.addlist);
+                        if (group.loaded) return;
+                        this.loading = true;
+                        storeApi.getUserIntegralList({
+                            first: group.first,
+                            limit: group.limit,
+                            to:to
+                        }, function(res) {
+                            var list = res.data.data,
+                                groupLength = group.list.length;
+                            that.scroll.stop();
+                            group.loaded = list.length < group.limit;
+                            group.first += list.length;
+                            group.list = group.list.concat(list);
+                            console.log(group.list);
+                            group.list.map((item) => {
+                                if (item.pm == 0) {
+                                    that.backlist.push(item)
+                                } else {
+                                    that.addlist.push(item)
+                                }
+                            })
+                            that.list = that.addlist
+                            console.log(that.addlist);
+                            that.$set(that, type, group);
+                            that.loading = false;
+                            that.$nextTick(function() {
+                                if (list.length || !groupLength) that.scroll
+                                    .refresh();
+                                if (!groupLength) setTimeout(function() {
+                                    that.scroll.scrollTo(0, 0, 300);
+                                }, 0);
+                                that.scroll.finishPullUp();
+                            });
+                        }, function() {
+                            that.loading = false
+                        });
+                    },
+
+                    Switch(flag1) {
+                        this.flag = flag1;
+                        var that = this;
+                        if (flag1) {
+                            this.to=0
+                            this.group.loaded=false
+                            this.group.list=[]
+                            this.addlist=[]
+                            this.group.first=0
+                            this.group.limit=20
+                            that.getList();
+                            console.log("累计收益")
+                        } else {
+                            this.to=1
+                            this.group.loaded=false
+                            this.group.list=[]
+                            this.addlist=[]
+                            this.group.first=0
+                            this.group.limit=20
+                            that.getList(1);
+                            console.log("今日收益")
+                        }
+                    },
+                    bScrollInit: function() {
+                        var that = this;
+                        this.$refs.bsDom.style.height = (
+                            document.documentElement.clientHeight -
+                            this.$refs.head.offsetHeight -
+                            this.$refs.nav.offsetHeight - 6.5
+                        ) + 'px';
+                        this.$refs.bsDom.style.overflow = 'hidden';
+                        this.scroll = new BScroll(this.$refs.bsDom, {
+                            observeDOM: false,
+                            useTransition: false,
+                            click: true,
+                            probeType: 1,
+                            cancelable: false,
+                            deceleration: 0.005,
+                            snapThreshold: 0.01
+                        });
+                        this.scroll.on('pullingUp', function() {
+                            that.loading == false && that.getList(this.to);
+                        })
+                    }
+                },
+                mounted: function() {
+                    this.bScrollInit();
+                    this.getList(this.to);
+                }
+            })
+        });
+    })();
+</script>
+{/block}

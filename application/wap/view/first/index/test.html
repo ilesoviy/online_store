@@ -1,0 +1,41 @@
+{extend name="public/container"}
+{block name="head_top"}
+<link rel="stylesheet" href="{__PLUG_PATH}swiper/swiper-3.4.1.min.css">
+<script type="text/javascript" src="{__PLUG_PATH}swiper/swiper-3.4.1.jquery.min.js"></script>
+<script type="text/javascript" src="{__PLUG_PATH}jquery-slide-up.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/jquery.downCount.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/car-model.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/base.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/lottie.min.js"></script>
+{/block}
+{block name="title"}
+<?= \app\core\util\SystemConfigService::get('site_name') ?>
+{/block}
+{block name="content"}
+<div class="page-index" id="app-index">
+    <style type="text/css">
+        .active{color: red;}
+    </style>
+    <section ref="bsDom">
+         <div class="switch">
+                    <a class="change-lang {if $lang == 'zh'} active {/if}"  data-lang="zh">繁</a>
+                    <a class="change-lang {if $lang == 'en'} active {/if}" data-lang="en">EN</a>
+                </div>
+        <div>那还规划</div><div>{:L('我们不只是激光供应商','WE ARE MORE THAN JUST A LASER SUPPLIER')}</div>
+   </section>
+    {include file="public/store_menu"}
+</div>
+
+<script type="text/javascript">
+    // 语言切换
+        $('.change-lang').click(function(){
+            console.log(1231);
+            var lang = $(this).data('lang');
+            $.post('/wap/index/changeLang', { lang : lang }, function (res) {
+                if (res.code == 200) {
+                    window.location.reload();
+                }
+            });
+        })
+</script>
+{/block}

@@ -1,0 +1,191 @@
+@charset "utf-8";
+/*.keyframes(Breath,{
+      0% {
+          .transition(scale(0.8,0.8));
+      }
+      100% {
+          .transition(scale(1.1,1.1));
+      }
+  });*/
+/*.animation(Breath 0.8s ease-in-out alternate infinite);*/
+/* CSS Document */
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+p,
+blockquote,
+pre,
+hr,
+figure,
+table,
+caption,
+th,
+td,
+form,
+fieldset,
+legend,
+input,
+button,
+textarea,
+menu {
+  margin: 0;
+  padding: 0;
+}
+html,
+body,
+fieldset,
+img,
+iframe,
+abbr {
+  border: 0;
+}
+li {
+  list-style: none;
+}
+textarea {
+  overflow: auto;
+  resize: none;
+}
+a,
+button {
+  cursor: pointer;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+em,
+strong,
+b {
+  font-weight: bold;
+}
+a,
+a:hover {
+  text-decoration: none;
+}
+body,
+html {
+  width: 100%;
+  font-weight: normal;
+  display: -webkit-box;
+  -webkit-box-align: center;
+  -webkit-box-orient: horizontal;
+}
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  font-family: "Microsoft YaHei", "Helvetica Neue", Arial, HelveticaNeue, Helvetica, "BBAlpha Sans", sans-serif;
+}
+body {
+  background: #fff;
+  opacity: 1;
+  -webkit-transition: opacity 500ms ease-in;
+  transition: opacity 500ms ease-in;
+}
+a {
+  text-decoration: none;
+}
+input {
+  -webkit-appearance: none;
+}
+* {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+}
+body {
+  padding: 0;
+  margin: 0;
+  background: #000000;
+}
+html,
+body,
+fieldset,
+img,
+iframe,
+abbr {
+  border: 0;
+}
+li {
+  list-style: none;
+}
+textarea {
+  overflow: auto;
+  resize: none;
+}
+a,
+button {
+  cursor: pointer;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+em,
+strong,
+b {
+  font-weight: 700;
+}
+a,
+a:hover {
+  text-decoration: none;
+}
+html,
+body {
+  width: 100%;
+  font-family: 'Microsoft Yahei';
+}
+body {
+  font-family: "Microsoft YaHei", simSun, "Lucida Grande", "Lucida Sans Unicode", Arial;
+  font-size: 12px;
+}
+textarea {
+  font-size: 24px;
+}
+a {
+  color: #434343;
+}
+.commSet {
+  min-width: 1200px;
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto 0;
+  position: relative;
+}
+.overflow {
+  overflow: hidden;
+}
+.hide {
+  display: none;
+}
+.hidetxt {
+  text-indent: -9999em;
+}
+html,
+body {
+  min-width: 1200px;
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto 0;
+  position: relative;
+}
+body {
+  background-color: #673128;
+}

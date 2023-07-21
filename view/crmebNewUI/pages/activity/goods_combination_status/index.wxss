@@ -1,0 +1,43 @@
+.group-con .header{width:100%;height:186rpx;background-color:#fff;border-top:1rpx solid #f5f5f5;padding:0 30rpx;box-sizing:border-box;position:relative;}
+.group-con .header .iconfont{font-size:100rpx;position:absolute;color:#ccc;right:33rpx;bottom:20rpx;}
+.group-con .header .pictrue{width:140rpx;height:140rpx;}
+.group-con .header .pictrue image{width:100%;height:100%;border-radius:6rpx;}
+.group-con .header .text{width:525rpx;font-size:30rpx;color:#222;}
+.group-con .header .text .money{font-size:24rpx;font-weight:bold;margin-top:19rpx;}
+.group-con .header .text .money .num{font-size:32rpx;}
+.group-con .header .text .money .team{padding:2rpx 10rpx;font-weight:normal;border-radius:50rpx;box-sizing:border-box;font-size:20rpx;vertical-align:4rpx;margin-left:15rpx;}
+.group-con .wrapper{background-color:#fff;margin-top:20rpx;padding:2rpx 0 35rpx 0;}
+.group-con .wrapper .title{margin-top:30rpx;} 
+.group-con .wrapper .title .line{width:136rpx;height:1rpx;background-color:#ddd;}
+.group-con .wrapper .title .name{margin:0 45rpx;font-size:28rpx;color:#282828;}
+.group-con .wrapper .title .name .time{margin:0 14rpx;}
+.group-con .wrapper .title .name .time text{width:42rpx;height:42rpx;background-color:#ffcfcb;text-align:center;line-height:42rpx;border-radius:3rpx;display:block;font-size:28rpx;font-weight:bold;}
+.group-con .wrapper .tips{font-size:30rpx;font-weight:bold;text-align:center;margin-top:30rpx;color:#999;}
+.group-con .wrapper .list{padding:0 30rpx;margin-top:45rpx;}
+.group-con .wrapper .list.result{max-height:240rpx;overflow:hidden;}
+.group-con .wrapper .list.result.on{max-height:2000rpx;}
+.group-con .wrapper .list .pictrue{width:94rpx;height:94rpx;margin:0 0 29rpx 35rpx;}
+.group-con .wrapper .list .pictrue image{width:100%;height:100%;border-radius:50%;border:2rpx solid #e93323;}
+.group-con .wrapper .list .pictrue:nth-last-child(1) image{border:none;}
+.group-con .wrapper .lookAll{font-size:24rpx;color:#282828;padding-top:10rpx;}
+.group-con .wrapper .lookAll .iconfont{font-size:25rpx;margin:2rpx 0 0 10rpx;}
+.group-con .wrapper .teamBnt{font-size:30rpx;width:620rpx;height:86rpx;border-radius:50rpx;text-align:center;line-height:86rpx;color:#fff;margin:21rpx auto 0 auto;}
+.group-con .wrapper .cancel,.group-con .wrapper .lookOrder{text-align:center;font-size:24rpx;color:#282828;padding-top:30rpx;}
+.group-con .wrapper .cancel .iconfont{font-size:35rpx;color:#2c2c2c;vertical-align:-4rpx;margin-right:9rpx;}
+.group-con .wrapper .lookOrder .iconfont{font-size:25rpx;color:#2c2c2c;margin-left:10rpx;}
+.group-con .group-recommend{background-color:#fff;margin-top:25rpx;}
+.group-con .group-recommend .title{padding-right:30rpx;margin-left:30rpx;height:85rpx;border-bottom:1rpx solid #eee;font-size:28rpx;color:#282828;}
+.group-con .group-recommend .title .more{color:#808080;}
+.group-con .group-recommend .title .more .iconfont{margin-left:13rpx;font-size:28rpx;}
+.group-con .group-recommend .list{margin-top:30rpx;}
+.group-con .group-recommend .list .item{width:210rpx;margin:0 0 25rpx 30rpx;}
+.group-con .group-recommend .list .item .pictrue{width:100%;height:210rpx;position:relative;}
+.group-con .group-recommend .list .item .pictrue image{width:100%;height:100%;border-radius:10rpx;}
+.group-con .group-recommend .list .item .pictrue .team{position:absolute;top:28rpx;left:-5rpx;min-width:100rpx;height:36rpx;line-height:36rpx;text-align:center; background-image:linear-gradient(to right,#fb5445 0%,#e93323 100%);border-radius:0 18rpx 18rpx 0;font-size:20rpx;color:#fff;}
+.group-con .group-recommend .list .item .name{font-size:28rpx;color:#333;margin-top:18rpx;}
+.group-con .group-recommend .list .item .money{font-weight:bold;font-size:26rpx;margin-top:5rpx;}
+
+
+
+
+

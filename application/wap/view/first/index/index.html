@@ -1,0 +1,698 @@
+{extend name="public/container"}
+{block name="head_top"}
+<link rel="stylesheet" href="{__PLUG_PATH}swiper/swiper-3.4.1.min.css">
+<script type="text/javascript" src="{__PLUG_PATH}swiper/swiper-3.4.1.jquery.min.js"></script>
+<script type="text/javascript" src="{__PLUG_PATH}jquery-slide-up.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/jquery.downCount.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/car-model.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/base.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/lottie.min.js"></script>
+<style type="text/css">
+    .active {
+        color: #333 !important;
+    }
+   
+   /* #layui-layer100001 {
+    
+    
+        opacity: 0 !important;
+        background-color: #f4f4f4;
+        z-index: -5555 !important;
+    } */
+    
+</style>
+{/block}
+<!-- <?= \app\core\util\SystemConfigService::get('site_name') ?> -->
+{block name="title"}
+
+{:L(" 拼樂惠","Pin Le Hui")}
+{/block}
+{block name="content"}
+<div class="page-index" id="app-index">
+    <section ref="bsDom">
+        <div style="background-color: #F4F4F4;">
+            <!-- position: fixed; top: 0; z-index: 99; -->
+          <div class="qsearch" style="padding: 10px 15px;position: absolute; z-index: 999; display: flex; width: 100%; justify-content: space-between;">
+                <a href="/wap/my/search.html" class="qinput" style="padding: 0 20px ; box-sizing: border-box;color: #999;width: 75%;border-radius: 30px; height: 30px; display: flex;align-items: center; background-color: rgb(255,255,255, 0.85);">
+                    <img style="width: 15px; margin-right: 10px;" src="/public/uploads/attach/2021/01/25/AAAAA.png"> {:L(" 搜索商品、類目","Search products")}
+                </a> 
+                <div class="qlang" style=" box-sizing: border-box;color: #999;justify-content: center; width: 23%;border-radius: 30px; height: 30px; display: flex;align-items: center; background-color: rgb(255,255,255, 0.85);">
+                   <span class="change-lang {if $lang == 'zh'} active {/if}" data-lang="zh"> 繁 </span>
+                    / 
+                    <span class="change-lang {if $lang == 'en'} active {/if}" data-lang="en"> EN </span>
+                  <!-- <a class="change-lang {if $lang == 'zh'} active {/if}"  data-lang="zh">繁 </a>
+                   <span style="display: inline-block; width: 5px;"></span>
+                   <a class="change-lang {if $lang == 'en'} active {/if}" data-lang="en">EN</a> -->
+                </div>
+            </div>
+          <!-- <div >
+                {:L(" 搜索發現","search")}
+           </div> -->
+          <!-- <div class="search-wrapper">
+                <form method="post" @submit.prevent="goSearch">
+                    <div class="search-box flex" style="width: 100%; justify-content: space-between; ">
+                        <input type="text" v-model="keyword" placeholder="搜索商品、類目" 
+                        style="padding: 0 30px ;background-color: #fff; box-sizing: border-box;color: #999;width: 75%;border-radius: 30px; height: 30px; display: flex;align-items: center; background-color: rgb(255,255,255, 0.85);"> -->
+                      <!--  <a class="index-icon home-btn" href="{:url('my/notice')}">
+                            {gt name="notice" value="0"} <b class="count-num">{$notice}</b> {/gt} 
+                        </a> -->
+                      <!--  <div class="qlang" style=" box-sizing: border-box;color: #999;justify-content: center; width: 23%;border-radius: 30px; height: 30px; display: flex;align-items: center; background-color: rgb(255,255,255, 0.85);">
+                            <span style="color: #333;"> 繁 </span> / <span> EN </span>
+                        </div>
+                    </div>
+                </form>
+            </div> -->
+           
+            <!-- 滑动导航 -->
+          <!-- <div class="common-slider-nav" ref="xScroll">
+                <ul class="swiper-wrapper">
+                    <li class="swiper-slide on"><a href="javascript:void(0);">商城优选</a></li>
+                    <li class="swiper-slide"><a href="{:url('store/combination')}"><img src="{__WAP_PATH}sx/images/pt-bg.png" alt=""></a></li>
+                    {volist name="category" id="vo"}
+                    <li class="swiper-slide"><a href="{:Url('store/index',['cid'=>$vo['id']])}">{$vo.cate_name}</a></li>
+                    {/volist}
+                </ul>
+            </div> -->
+            <!-- 轮播图start -->
+           {notempty name="banner"}
+            <div class="banner" ref="banners">
+                <ul class="swiper-wrapper">
+                    {volist name="banner" id="vo"}
+                    <li class="swiper-slide">
+                        <a href="<?= empty($vo['url']) ? 'javascript:void(0);' : $vo['url']; ?>">
+                           <img src="{:L($vo.pic,$vo.en_pic)}"/>
+                        </a>
+                    </li>
+                    {/volist}
+                </ul>
+                <div class="swiper-pagination"></div>
+            </div>
+            {/notempty}
+             <!-- 轮播图end -->
+          <!--  {notempty name="menus"}
+            <div class="nav" style="margin-top: 260px;background-color: inherit;">
+                <ul class="flex"> {volist name="menus" id="vo"}
+                    <li><a href="<?= empty($vo['url']) ? 'javascript:void(0);' : $vo['url']; ?>"> <img src="{$vo.icon|unThumb}">
+                            <p>{$vo.name}</p></a></li>
+                    {/volist}
+                </ul>
+            </div>
+            {/notempty} -->
+            <div class="nav" style="margin-top: 0px;">  <!-- style="background-color: inherit;" -->
+                <ul class="flex"> 
+                  {volist name="menus" id="vo"}
+                    <li>
+                      <a href="<?= empty($vo['url']) ? 'javascript:void(0);' : $vo['url']; ?>"> 
+                        <img src="{$vo.icon|unThumb}">
+                            <p>{:L($vo.name,$vo.en_name)}</p>
+                      </a>
+                    </li>
+                    {/volist}
+                </ul>
+            </div>
+        
+           <!-- {notempty name="roll_news"}
+            <div class="hot-txt-roll border-1px flex">
+                <div class="hot-icon"><img src="{__WAP_PATH}crmeb/images/hot-icon.png"></div>
+                <div class="txt-list">
+                    <ul class="line"> {volist name="roll_news" id="vo"}
+                        <li style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"><a
+                                style="display: block;"
+                                href="<?= empty($vo['url']) ? 'javascript:void(0);' : $vo['url']; ?>">{$vo.info}</a>
+                        </li>
+                        {/volist}
+                    </ul>
+                </div>
+            </div>
+            {/notempty} -->
+           <!-- <div class="coupon-wrapper" v-cloak="" v-show="couponList.length > 0" style="overflow:hidden;"> -->
+                <!--<div ref="xCoupon">-->
+                <!-- 已使用 typethree -->
+                  <!--  <div class="coupon-list">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide coupon-item  flex" v-for="item in couponList"
+                                 :class="[(isValidCoupon(item) && !item.is_use) ? 'typeone' : 'typethree']">
+                                <div class="count-num flex"><em><i class="small-symbol">$</i>{{item.coupon_price}}</em>
+                                    <p>满{{item.use_min_price}}元可用</p></div>
+                                <div class="count-btn flex" v-text="isValidCoupon(item) ? (item.is_use !== true ? '点击领取' : '您已领取') : '已经领完' "
+                                     @click="isValidCoupon(item) && item.is_use !== true && userGetCoupon(item)"></div>
+                            </div>
+                        </div>
+                    </div> -->
+                <!--</div>-->
+          <!--      <a class="more-wrapper" href="{:Url('store/issue_coupon')}" v-show="couponList.length >= 2">查看更多 ></a>
+            </div> -->
+            <!-- 商品精品推荐模板 -->
+          <!--  <div class="template-prolist" v-show="is_bestList.length > 0" >
+                <div class="title-like flex" v-cloak=""><span class="title-line left"></span> <span class="icon"></span>
+                    <span>精品推荐</span> <span class="title-line right"></span></div>
+                <ul class="flex">
+                    <li v-for="item in is_bestList" v-cloak=""><a :href="'/wap/store/detail/id/'+item.id">
+                        <div class="picture"><img :src="item.image"></div>
+                        <div class="product-info"><p class="title" v-text="item.store_name"></p>
+                            <p class="count-wrapper flex"><span class="price" v-html="getPriceStr(item.price)"></span> <span
+                                    class="count">已售{{item.sales}}{{item.unit_name || '件'}}</span></p></div>
+                    </a></li>
+                </ul>
+            </div> -->
+            <!-- 商品新品推荐模板 -->
+         <!--   <div class="template-prolist" v-show="is_newList.length > 0">
+                <div class="title-like flex"  v-cloak=""><span class="title-line left"></span> <span class="icon"></span>
+                    <span>首发新品</span> <span class="title-line right"></span></div>
+                <ul class="flex">
+                    <li v-for="item in is_newList" v-cloak=""><a :href="'/wap/store/detail/id/'+item.id">
+                        <div class="picture"><img :src="item.image"></div>
+                        <div class="product-info"><p class="title" v-text="item.store_name"></p>
+                            <p class="count-wrapper flex"><span class="price" v-html="getPriceStr(item.price)"></span> <span
+                                    class="count">已售{{item.sales}}{{item.unit_name || '件'}}</span></p></div>
+                    </a></li>
+                </ul>
+            </div> -->
+            <!-- 商品热卖推荐模板 -->
+          <!--  <div class="template-prolist"  v-show="is_hotList.length > 0">
+                <div class="title-like flex" v-cloak=""><span class="title-line left"></span> <span class="icon"></span>
+                    <span>热卖单品</span> <span class="title-line right"></span></div>
+                <ul class="flex">
+                    <li v-for="item in is_hotList" v-cloak=""><a :href="'/wap/store/detail/id/'+item.id">
+                        <div class="picture"><img :src="item.image"></div>
+                        <div class="product-info"><p class="title" v-text="item.store_name"></p>
+                            <p class="count-wrapper flex"><span class="price" v-html="getPriceStr(item.price)"></span> <span
+                                    class="count">已售{{item.sales}}{{item.unit_name || '件'}}</span></p></div>
+                    </a></li>
+                </ul>
+            </div> -->
+            <!-- 商品促销推荐模板 -->
+          <!--  <div class="template-prolist"  v-show="is_benefitList.length > 0">
+                <div class="title-like flex" v-cloak=""><span class="title-line left"></span> <span class="icon"></span>
+                    <span>特价专区</span> <span class="title-line right"></span></div>
+                <ul class="flex">
+                    <li v-for="item in is_benefitList" v-cloak=""><a :href="'/wap/store/detail/id/'+item.id">
+                        <div class="picture"><img :src="item.image"></div>
+                        <div class="product-info"><p class="title" v-text="item.store_name"></p>
+                            <p class="count-wrapper flex"><span class="price" v-html="getPriceStr(item.price)"></span> <span
+                                    class="count">已售{{item.sales}}{{item.unit_name || '件'}}</span></p></div>
+                    </a></li>
+                </ul>
+            </div> -->
+          <!-- 秒杀列表 -->
+         <!--   {notempty name="storeSeckill"}
+            <div class="hotspike-list">
+                <div class="index-common-title border-1px">限时秒杀 <a href="{:Url('store/seckill_index')}"><i class="icon"></i></a></div>
+                <ul>
+                    {volist name="storeSeckill" id="vo"}
+                    <li class="flex">
+                        <div class="picture"><img src="{$vo.image}" alt="">
+                            <div class="count-down flex countdown" data-time="{$vo.stop_time|date='Y/m/d H:i:s',###}">
+                                <span class="days">00</span>
+                                <em>:</em>
+                                <span class="hours">00</span>
+                                <em>:</em>
+                                <span class="minutes">00</span>
+                                <em>:</em>
+                                <span class="seconds">00</span>
+                            </div>
+                        </div>
+                        <div class="text-info flex">
+                            <div class="title">{$vo.title}</div>
+                            <div class="price-wrapper"><span class="price"><i>￥</i>{$vo.price}</span> <span class="old-price">￥{$vo.ot_price}</span>
+                            </div>
+                            <div class="schedule flex">
+
+                                <span>已抢{$vo.round}%</span>
+                                <span class="schedule-bar"  ><i class="schedule-weight" data-width="{$vo.round}%"></i></span></div>
+                            <a class="link" href="{:url('store/seckill_detail',['id'=>$vo.id])}">马上抢</a></div>
+                    </li>
+                    {/volist}
+                </ul>
+            </div>
+            {/notempty} -->
+         <!--   <div class="buyspell-list" v-cloak="" v-show="combinationList.length > 0">
+              <div class="index-common-title border-1px">
+                    <span class="color-red">拼团 . </span>花少钱买好货 <i class="icon" @click="window.location.href='{:url('store/combination')}'"></i>
+                </div>
+               <div class="product-banner"><img src="{$pinkImage}"></div>
+             
+                <div class="bslist-box" style="background-color: #fff; width: 95vw; border-radius: 0.1rem; margin: 0 auto; overflow: hidden; margin-top: 10px;">
+                    <div class="pintuan" style="display: flex;justify-content: space-between;align-items: center;  width: 95%; margin: 10px auto;  padding-bottom: 10px; border-bottom: 1px solid #ccc;">
+                        <span style="color: #333; font-size: 18px; font-weight: 700;">拼團推薦</span> 
+                        <span style="color: #999;" @click="window.location.href='{:url('store/combination')}'">查看更多</span>
+                    </div>
+                    <div class="bs-item flex" v-for="item in combinationList" style="border-bottom: 1px solid #ccc; padding-right: 0;">
+                        <div class="picture">
+                            <img :src="item.image">
+                        </div>
+                        <div class="bs-item-info flex" style="position: relative;width: 61.3%;">     
+                            <div class="info-title" style="width: 100%;">{{item.title}}</div>
+                            <div class="info-title" style="width: 100%;">樸西冬季棉絨保暖拖鞋</div>
+                            <p style="height: 4px; background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%); border-radius: 4px; margin-top: 5px;" ></p>
+                            <div class="count-wrapper">
+                                <p class="count" style="float: inherit;color: #E1000F; font-size: 14px;">已有{{item.sales}}人參團</p>
+                                <p class="price" style="margin: 10px 0;">拼團價格<span style="font-size: 22px; margin: 0 5px;">${{item.price}}</span></p>
+                                <p class="old-price" style="color: #ccc;">單買價格  ${{item.product_price}}</p>
+                               
+                            </div>
+                            <span style="position: absolute; right: -1%; bottom: 0; padding: 5px 20px; border-radius: 24px; background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%); color: #fff;"
+                             @click="window.location.href='{:url('store/combination_detail',[],false)}/id/'+item.id" >
+                       
+                                去拼單
+                            </span>
+                            <a class="people-num flex">
+                                <span class="numbers">{{item.people}}人团</span>
+                                <span class="peo-txt" @click="window.location.href='{:url('store/combination_detail',[],false)}/id/'+item.id">去开团</span>
+                                <i class="index-icon people-icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                </div> -->
+                 <div class="bslist-box flex" style="background-color: #fff; width: 95vw; border-radius: 0.1rem; margin: 0 auto; overflow: hidden; margin-top: 10px; padding: 10px;"> 
+           <!--      http://zsapp.xinyuad.net/public/uploads/attach/2021/01/25/600e64c538c9f.png -->
+                    <div class="qitem" style="width: 50%; box-sizing: border-box; border-right: 1px solid #ccc;padding-right:5px;">
+                        <h1 style="margin-bottom: 10px; font-size: 16px;">{:L(" 三人團","Three group")}</h1>
+                        <div style="display: flex;">
+                            {volist name="threePink" id="vo"}
+                            <a href="/wap/store/detail/id/{$vo.id}" style="display:inline-block; width:  48%;margin-right:4%;">
+                                <img style="width:100%; height:85px;" src="{$vo.image}" >
+                                <p style="display: flex;justify-content: space-between;align-items: center;  margin-top: 5px;">
+                                   <span style="color: #E1000F;font-size: 16px;">${$vo.pin_price}</span>   <span style="color: #ccc;text-decoration: line-through;">${$vo.price}</span>
+                                </p>
+                            </a>
+                            {/volist}
+                           <!-- <img style="width:45%;margin-right:6%;" src="/public/uploads/attach/2019/01/15/5c3dc0ef27068.jpg" >
+                            <img style="width:45%;margin-right:6%;" src="/public/uploads/attach/2019/01/15/5c3dc0ef27068.jpg" > -->
+                        </div>
+                    </div>
+                    <div class="qitem" style="width: 50%; box-sizing: border-box; margin-left: 8px;padding-right:5px;">
+                        <h1 style="margin-bottom: 10px; font-size: 16px;">{:L(" 精選拼團","Select spell group")}</h1>
+                        <div style="display: flex;">
+                            {volist name="bestproduct" id="vo"}
+                            <a href="/wap/store/detail/id/{$vo.id}" style="display:inline-block; width:  48%;margin-right:4%;">
+                                <img style="width:100%;height:85px;" src="{$vo.image}" >
+                                <p style="display: flex;justify-content: space-between;align-items: center;  margin-top: 5px;">
+                                   <span style="color: #E1000F;font-size: 16px;">${$vo.pin_price}</span>   <span style="color: #ccc;text-decoration: line-through;">${$vo.price}</span>
+                                </p>
+                            </a>
+                            {/volist}
+                     
+                        </div>
+                    </div>
+                
+                 </div>
+            </div>
+            <!-- 商品分类模板 -->
+           <!-- <div class="template-prolist" v-cloak="" v-for="item in cateGroupList" v-show="cateGroupList.length > 0">
+                <div class="index-common-title border-1px">11
+                    <a :href="'/wap/store/index/cid/'+item.id">
+                        {{item.cate_name}}  <i class="icon"></i> </a></div>
+                <div class="product-banner"><img :src="unThumb(item.pic)" v-show="item.pic != ''"></div>
+                <ul class="flex">
+                    <li v-for="pro in item.product"><a :href="'/wap/store/detail/id/'+pro.id">
+                            <div class="picture"><img :src="pro.image"></div>
+                            <div class="product-info"><p class="title" v-text="pro.store_name"></p>
+                                <p class="count-wrapper flex"><span class="price"
+                                                                    v-html="getPriceStr(pro.price)"></span> <span
+                                        class="count">已售{{pro.sales}}{{pro.unit_name || '件'}}</span></p></div>
+                        </a></li>
+                </ul>
+            </div> -->
+            <!-- 商品分类模板 -->
+            <div class="template-prolist">
+                <div class="title-like flex" v-show="page.list.length > 0" v-cloak=""><span class="title-line left"></span> 
+                    <span>{:L(" 拼團專區","Spell group zone")}</span> <span class="title-line right"></span></div>
+                <ul class="flex">
+                    <li v-for="item in page.list" v-cloak="">
+                        <a :href="'/wap/store/detail/id/'+item.id">  
+                            <div class="picture"><img :src="item.image"></div>
+                            <div class="product-info">
+                               <p class="title" v-text="item.new_store_name"></p>
+                                 <!-- <p class="title">{:L("樸西冬季棉絨保暖拖鞋","Puksy winter lint warm slippers")}</p>    -->
+                                <p class="count-wrapper flex">
+                                   
+                                   <span class="price" v-html="getPriceStr(item.pin_price)"></span>
+                                   <span class="price" style="color: #ccc;text-decoration: line-through;" v-html="getPriceStr(item.price)"></span>
+                                    <!-- <span class="price" >$299</span>  -->
+                                    <span class="count">{:L(" 已售","")} {{item.sales}} {:L(" 件","SV")}</span>
+                                </p>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <p class="loading-line" v-if="flag">
+                <i></i><span>正在加载中...</span><i></i>
+            </p>
+            <p class="loading-line" v-show="loading == false && page.loaded == false" v-cloak="" @click="getList">
+               <i></i><span>点击加载</span><i></i></p>
+            <p class="loading-line" v-if="!flag">
+               <i></i><span>没有更多了</span><i></i>
+            </p>
+           </div>
+    </section>
+    {include file="public/store_menu"}
+</div>
+<div class="flex" id="bubble-txt" style="display: none;">
+    <div class="avatar">
+        <img src="" alt="" class="avater-pink">
+    </div>
+    <span class="nickname"></span>
+</div>
+<!-- <div class="lottie-bg">
+    <div id="lottie"></div>
+</div> -->
+<script type="text/javascript">
+    $(function() {
+        //定时加入机器人
+        function getnotice() {
+            $.getJSON("{:Url('AuthApi/add_robot')}",function(res){
+            });
+        }
+        // getnotice();
+        setInterval(getnotice, 300000);
+            //定时拼团成功与否
+        function is_robot() {
+            $.getJSON("{:Url('AuthApi/is_robot')}",function(res){
+            });
+        }
+        // is_robot();
+        setInterval(is_robot, 600000);
+
+        //定时拼团成功与否
+        function return_money() {
+            $.getJSON("{:Url('return_money')}",function(res){
+               console.log(res);
+            });
+        }
+        return_money();
+        setInterval(return_money, 60000000);
+    });
+
+</script>
+<script type="text/javascript">
+    function loadCRMEB() {
+        var anim;
+        var elem = document.getElementById('lottie');
+        var animData = {
+            container: elem,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            rendererSettings: {
+                progressiveLoad: false,
+                imagePreserveAspectRatio: 'xMidYMid meet'
+            },
+            path: '{__WAP_PATH}crmeb/js/animation.json'
+        };
+        anim = lottie.loadAnimation(animData);
+        anim.setSubframe(false);
+        setTimeout(
+            function () {
+                $('.lottie-bg').hide();
+           
+            }, 2000)
+
+    }
+    if(!window.name) {
+        loadCRMEB();
+        window.name = "CRMEB";
+    }else{
+        
+        $('.lottie-bg').hide();
+    }
+    var base = new Base64();
+
+    (function () {
+       var $pinkListUser = <?php echo json_encode($storePink);?>;
+       if($pinkListUser.length > 0){
+           var $i = 0,dom = $('#bubble-txt'),src = $('.avater-pink'),name = $('.nickname'),pinkShow = function (item) {
+                src.attr('src',item['src']);
+                name.html(item['nickname']);
+                dom.show().addClass('bubble-txt');
+                setTimeout(function () {
+                    dom.hide().removeClass('bubble-txt');
+                },5100);
+           },si = setInterval(function () {
+               if(document.readyState=="complete"){
+                   window.clearInterval(si);
+                   pinkShow($pinkListUser[$i++]);
+                   setInterval(function () {
+                       if($pinkListUser.length <= $i) $i = 0;
+                       pinkShow($pinkListUser[$i++]);
+                   },6500);
+               }
+           },500);
+       }
+        requirejs(['vue', 'store', 'helper', 'better-scroll'], function (Vue, storeApi, $h, BScroll) {
+            new Vue({
+                el: '#app-index',
+                data: {
+                    show: true,
+                    flag: false, 
+                    // noMore: false,
+                    couponList: [],
+                    cateGroupList: [],
+                    is_bestList: [],//精品推荐
+                    is_newList:[],//首发新品
+                    is_hotList: [],//热卖单品
+                    is_benefitList:[],//促销
+                    page: {first: 0, limit: 20, list: [], loaded: false},
+                    loading: false,
+                    scroll: null,
+                    keyword: '',
+                    gettingCoupon: false,
+                    combinationList:[],
+                    pinkData:{
+                        src:'',
+                        nickname:''
+                    },
+                    isPinkOne:false
+                },
+                created () {
+                    window.addEventListener('scroll', this.scrollHandle, true)
+                },
+                methods: {
+                    unThumb:function(src){
+                        return src.replace('/s_','/');
+                    },
+                    scrollHandle () {
+                        // 获取页面页面的滚动高度
+                        let scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight  
+                        // 获取页面滚动距离顶部的高度,  window.pageYOffse 兼容苹果
+                        let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop  
+                        // 获取页面的可视高度
+                        let clientHeight = document.documentElement.clientHeight || document.body.clientHeight
+                         
+                        // 我们可以在这里判断页面的滚动是否到了底部
+                        if (scrollTop + clientHeight === scrollHeight) {
+                            if (this.flag) return 
+                            this.flag = true
+                            // $h.pushMsgOnce('到底了!');
+                            console.log(this.flag)
+                            setTimeout(() => {
+                                this.flag = false // 数据加载完成之后放开节流阀
+                                 console.log(this.flag)
+                            },1000)
+                                               
+                         }
+                         // 当然我们也可以滚动距离底部还有一定距离的时候执行加载
+                         // if (scrollTop + clientHeight >= scrollHeight - 20) {
+                         //        // 距离底部还有20的时候执行数据加载
+                         //        this.flag = false
+                         //  }
+                    },
+                    formatPrice: function (price) {
+                        var format = price.toString().split('.');
+                        if (format[1] == undefined) format[1] = '00';
+                        if (format[1].length == 1) format[1] += '0';
+                        return format;
+                    },
+                    getPriceStr: function (price) {
+                        var format = this.formatPrice(price);
+                        return "<i>$</i>" + format[0] + "<i>." + format[1] + "</i>";
+                    },
+                    userGetCoupon: function (coupon) {
+                        if (this.gettingCoupon) return;
+                        this.gettingCoupon = true;
+                        var that = this;
+                        storeApi.goLogin() && storeApi.userGetCoupon(coupon.id, function () {
+                            coupon.is_use = true;
+                            $h.pushMsgOnce('领取成功!');
+                            setTimeout(function () {
+                                that.gettingCoupon = false;
+                            }, 300);
+                        }, function () {
+                            setTimeout(function () {
+                                that.gettingCoupon = false;
+                            }, 300);
+                            return true;
+                        });
+                    },
+                    isValidCoupon: function (coupon) {
+                        return !(coupon.total_count > 0 && coupon.remain_count == 0);
+                    },
+                    goSearch: function () {
+                        if (!this.keyword) return;
+                        location.href = $h.U({c: 'store', a: 'index', p: {keyword:  base.encode(this.keyword)}});
+                    },
+                    getIssueCouponList: function () {
+                        var that = this;
+                        storeApi.getIssueCouponList(4, function (res) {
+                            that.couponList = res.data.data;
+                            that.$nextTick(function () {
+                                var sliderProduct = new Swiper('.coupon-list', { freeMode: true, freeModeMomentumRatio: 0, slidesPerView: 'auto', });
+                            })
+                        });
+                    },
+                    getCateData: function () {
+                        var that = this;
+                        storeApi.getCategoryProductList(4, function (res) {
+                            that.cateGroupList = res.data.data;
+//                            that.$nextTick(function () {
+//                                that.scroll.refresh();
+//                            })
+                        })
+                    },
+//                     getCombinationList:function () {
+//                         var that = this;
+//                         storeApi.baseGet($h.U({
+//                             c:"public_api",
+//                             a:"get_pink_host",
+//                             p:{limit:2}
+//                         }),function (res) {
+//                             that.combinationList = res.data.data;
+// //                            that.$nextTick(function () {
+// //                                that.scroll.refresh();
+// //                            })
+//                         })
+//                     },
+                    getIsLogin:function () {
+                        storeApi.baseGet($h.U({
+                            c:"public_api",
+                            a:"is_logins",
+                             p:{limit:2}
+                        }),function (res) {
+                            console.log(res);
+//                            that.$nextTick(function () {
+//                                that.scroll.refresh();
+//                            })
+                        })
+                    },
+                    
+                    elInit: function () {
+                        that = this;
+                        if(this.$refs.banners){
+                            var liDom = $(this.$refs.banners).find('li');
+                            if(liDom.length > 0 ){
+                                liDom.width(document.body.offsetWidth);
+                                $(this.$refs.banners).find('ul').width((document.body.offsetWidth * liDom.length)+'px');
+                                var myBanner = new Swiper('.banner', {
+                                    pagination: '.swiper-pagination',
+                                    paginationClickable: false,
+                                    autoplay: 1500,
+                                    loop: true,
+                                    speed: 1500,
+                                    autoplayDisableOnInteraction: false
+                                });
+                            }
+                        }
+                        $('.schedule-weight').each(function() {
+                            var _this = $(this);
+                            var width =  _this.attr('data-width');
+                            _this.css("width",width);
+                        });
+                        $('.countdown').each(function () {
+                            var _this = $(this);
+                            var count = _this.attr('data-time');
+                            _this.downCount({date: count, offset: +8});
+                        });
+                        $(".line").slideUp({"li_h": $('.txt-list').height()});
+                    },
+                    getList: function () {
+                        if (this.loading) return;
+                        var that = this, group = that.page;
+                        if (group.loaded) return;
+                        this.loading = true;
+                        storeApi.getBestProductList({first: group.first, limit: group.limit}, function (res) {
+                            var list = res.data.data;
+                            group.loaded = list.length < group.limit;
+                            group.first += list.length;
+                            group.list = group.list.concat(list);
+                            that.$set(that, 'page', group);
+                            that.loading = false;
+//                            that.$nextTick(function () {
+//                                if (list.length) that.scroll.refresh();
+//                                that.scroll.finishPullUp();
+//                            });
+                        }, function () {
+                            that.loading = false
+                        });
+                    },
+                    getproductList: function (type) {
+                        var that = this;
+                        storeApi.getPublicProductList({first:0, limit: 4,type:type}, function (res) {
+                            if(type=='is_best')
+                                that.is_bestList = res.data.data;
+                            if(type=='is_hot')
+                                that.is_hotList = res.data.data;
+                            if(type=='is_new')
+                                that.is_newList = res.data.data;
+                            if(type=='is_benefit')
+                                that.is_benefitList = res.data.data;
+                        }, function () {
+
+                        });
+                    },
+                },
+                mounted: function () {
+                 
+                    var that = this;
+                    this.elInit();
+                    // this.getIssueCouponList();
+//                    this.getproductList('is_best');//精品
+//                    this.getproductList('is_hot');//热卖
+//                    this.getproductList('is_benefit');//促销
+//                    this.getproductList('is_new');//首发新品
+                    // this.getIssueCouponList();
+                    // this.getCateData();
+                    // this.getCombinationList();//猜猜喜欢
+                    this.getIsLogin();//判断是否登录
+                    setTimeout(function() {
+                        that.getList();
+                    },0);
+                     
+                   if ($(".active").html() == ' EN ') {
+                        localStorage.setItem('lang',' EN ')
+                   } else {
+                       localStorage.setItem('lang',' 繁 ')
+                   }
+                    $(".qlang span").bind("click", function() {
+                        // alert(1)
+                        console.log($(this).html());
+                        localStorage.setItem('lang', $(this).html())
+                        console.log(localStorage.getItem('lang'));
+                         var lang = $(this).data('lang');
+                         $.post('/wap/index/changeLang', { lang : lang }, function (res) {
+                             if (res.code == 200) {
+                                 window.location.reload();
+                             }
+                         });
+                    })
+                     // if ($(".qlang .active").html() == " EN ") {
+                     //        localStorage.setItem("lang", 'en');
+                     //    } else {
+                     //        localStorage.setItem("lang", 'zh');
+                     //    }
+                     // console.log(localStorage.getItem("lang"));
+                 
+                    console.log(localStorage.getItem('lang'));
+                 
+               
+                },
+                destroyed () {
+                    // 页面卸载时移除监听事件
+                    window.removeEventListener('scroll', this.scrollhandle, true)
+                }
+            })
+        });
+    }());</script>
+
+{/block}

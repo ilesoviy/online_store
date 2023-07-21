@@ -1,0 +1,5 @@
+{"file":"textures.png","frames":{
+"instruction_png":{"x":1,"y":121,"w":374,"h":136,"offX":0,"offY":7,"sourceW":374,"sourceH":151},
+"spike_png":{"x":331,"y":259,"w":38,"h":50,"offX":0,"offY":0,"sourceW":38,"sourceH":50},
+"start_png":{"x":1,"y":259,"w":328,"h":108,"offX":0,"offY":0,"sourceW":328,"sourceH":108},
+"title_png":{"x":1,"y":1,"w":508,"h":118,"offX":0,"offY":0,"sourceW":508,"sourceH":118}}}

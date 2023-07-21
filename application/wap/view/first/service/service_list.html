@@ -1,0 +1,52 @@
+{extend name="public/container"}
+{block name="title"}   {:L(" 選擇客服","Choose customer service")}{/block}
+{block name="head_top"}
+<link rel="stylesheet" type="text/css" href="{__WAP_PATH}crmeb/css/store_service.css" />
+{/block}
+{block name="content"}
+<body style="background-color: #FFF;">
+    <div class=" flex"
+        style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+        <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+            <img src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+        </span>
+        <p style="text-align: center;width: 100%;line-height: 0.4rem;">
+              {:L(" 選擇客服","Choose customer service")}
+        </p>
+    </div>
+    <script type="text/javascript">
+        window.addEventListener("load", function() {
+            document.getElementById("qqq").addEventListener("click",function() {
+                window.history.back(-1)
+            })
+        })
+    </script>
+    <div style="height: 40px;">
+
+    </div>
+    {if condition="$merchant.id > 0"}
+    <div class="title">
+        <a href="javascript:history.back(-1);" class="title-back"></a>
+        <div class="title-text">{$merchant.mer_name}</div>
+        <a class="title-go" href="{:Url('merchant/index',array('mid'=>$merchant['id']))}">进店</a>
+    </div>
+    {/if}
+    <div class="cus_server" {if condition="$merchant.id > 0" }style="padding-top: 50px;" {/if}>
+        {empty name="list"}
+        <div class="empty">
+            <img src="{__WAP_PATH}crmeb/images/empty_kefu.png">
+            <p>当前没有在线客服</p>
+        </div>
+        {else/}
+        <ul>
+            {volist name="list" id="vo"}
+            <li
+                onclick="window.location.href='{:Url('Service/service_ing',array('to_uid'=>$vo['uid'],'mer_id'=>$merchant['id']))}'">
+                <img src="{$vo.avatar}">
+                <span>{$vo.nickname}</span>
+            </li>
+            {/volist}
+        </ul>
+        {/empty}
+    </div>
+    {/block}

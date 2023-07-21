@@ -1,0 +1,19 @@
+<authorize bind:onLoadFun="onLoadFun"></authorize>
+<view class='bargain-list'>
+   <view class='iconfont icon-xiangzuo' bindtap='goBack' style='top:{{navH/2}}rpx'></view>
+   <view class='header'></view>
+   <view class='list'>
+      <block wx:for="{{bargainList}}" wx:key>
+        <navigator url='/pages/activity/goods_bargain_details/index?id={{item.id}}&bargain={{userInfo.uid}}' class='item acea-row row-between-wrapper' hover-class='none'>
+          <view class='pictrue'><image src='{{item.image}}'></image></view>
+          <view class='text acea-row row-column-around'>
+              <view class='line1'>{{item.title}}</view>
+              <view class='num'><text class='iconfont icon-pintuan'></text>{{item.people}}人正在参与</view>
+              <view class='money font-color'>最低: ￥<text class='price'>{{item.min_price}}</text></view>
+          </view>
+          <view class='cutBnt bg-color'><text class='iconfont icon-kanjia'></text>参与砍价</view>
+        </navigator>  
+      </block>      
+   </view>
+</view>
+<home></home>

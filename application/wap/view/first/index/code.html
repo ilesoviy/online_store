@@ -1,0 +1,111 @@
+{extend name="public/container"}
+{block name="title"} {:L(" 獎勵規則","Reward rules")}{/block}
+{block name="content"}
+<style type="text/css">
+    .content {
+        position: relative;
+   /*     text-align: center; */
+    }
+    .content img {
+     
+        width: 100%;
+    }
+    .content #godl {
+        position: absolute;
+        z-index: 2;
+        top: 15%;
+    }
+    .content #jb {
+        /* position: absolute; */
+     /*   margin: 0 auto; */
+     position: relative;
+       z-index: 3333;
+        width: 70%;
+       /* top: 15%; */
+       margin-top: -300px;
+      /* bottom: 10%; */
+        left: 18%;
+    }
+    .text {
+        text-align: center;
+        position: relative;
+        width: 95%;
+        z-index: 5;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 0.1rem;
+        margin-top: 150px;
+        padding: 60px 20px 30px 20px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0px 9px 13px 0px rgba(225, 0, 15, 0.2);
+        
+    }
+    .text #avatar {
+        box-sizing: border-box;
+        position: absolute;
+        box-shadow: 0px 9px 13px 0px rgba(80, 156, 255, 0.2);
+        border: 3px solid rgba(255, 255, 255, 0.53);
+        top: -10%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 85px;
+        height: 85px;
+        border-radius: 50%;
+    }
+     .text p {
+         margin: 10px 0;
+         text-align: center;
+     }
+     .text h1,h2 {
+        font-size: 18px;
+        text-align: center;
+     }
+     .text h2 {
+        font-size: 16px;
+        font-weight: 500;
+     }
+     #right-nav {
+         display: none !important; 
+     }
+     body {
+        background: linear-gradient(45deg, #F33E4A, #E91E21) !important;
+        width:100vw;
+        height: 100vh;
+  
+     }
+     #ewm {
+        display: inline-block;
+        margin: 15px auto;
+        width: 250px;
+        height: 250px;
+     }
+</style>
+    <div class="share-ewm" style="padding: 0;">
+        <div class=" flex"
+            style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: absolute; top: 0; left: 0; ">
+            <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                <img src="/public/uploads/attach/2019/01/15/qback.png" style="width: 20px;">
+            </span>
+            <p style="text-align: center;width: 100%;line-height: 0.4rem; color: #fff; font-size: 16px;">
+                    {:L(" 邀請有獎","Invitation with prize")}
+            </p>
+            <script type="text/javascript">
+                document.getElementById("qqq").addEventListener("click", function() {
+                    window.history.back(-1);
+                })
+            </script>
+        </div>
+        <section>
+                    
+            <div class="text">
+                <img id="avatar" src="{$userInfo.avatar}" alt="">
+                <h2>{$userInfo.nickname}</h2>
+                <p> {:L(" 邀请码","Code")}</p>
+                <h1>{$userInfo.in_code}</h1>
+                <!-- <img id="ewm" src="/public/uploads/attach/2019/01/15/ewm.png" alt=""> -->
+              {:L($info.content,$info.en_content)}
+            </div>
+        </section>
+        
+    </div>
+{/block}

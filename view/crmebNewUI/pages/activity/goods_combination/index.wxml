@@ -1,0 +1,25 @@
+<navbar parameter='{{parameter}}'></navbar>
+<authorize bind:onLoadFun="onLoadFun"></authorize>
+<view class='group-list'>
+   <view class='header'></view>
+   <view class='list'>
+      <block wx:for="{{combinationList}}" wx:key>
+        <navigator class='item acea-row row-between-wrapper' url='/pages/activity/goods_combination_details/index?id={{item.id}}'>
+          <view class='pictrue'><image src='{{item.image}}'></image></view>
+          <view class='text'>
+              <view class='line1'>{{item.title}}</view>
+              <view class='acea-row'>
+                  <view class='team acea-row row-middle cart-color'>
+                  <view class='iconfont icon-pintuan'></view>
+                  <view class='num'>{{item.people}}人团</view>
+              </view>
+              </view>
+              <view class='bottom acea-row row-between-wrapper'>
+                <view class='money'>￥<text class='num'>{{item.price}}</text><text class='y-money'>￥{{item.product_price}}</text></view>
+                <view class='groupBnt bg-color'>去拼团<text class="iconfont icon-jiantou"></text></view>
+              </view>
+          </view>
+        </navigator>
+      </block> 
+   </view>
+</view>

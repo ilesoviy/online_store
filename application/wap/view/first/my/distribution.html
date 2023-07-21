@@ -1,0 +1,138 @@
+{extend name="public/container"}
+{block name="title"}  {:L(" 我的分銷","My distribution")}{/block}
+{extend name="public/container"}
+{block name="head"}
+<style>
+    .loading-line {
+        background-color: #fff;
+    }
+    body {
+        height: 100%;
+        background-color: #fff !important;
+    }
+    .bbq {
+        z-index: 99;
+        width: 45%;
+        color: #999;
+        background-color: #FFFFFF;
+        font-size: 16px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 5px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    .act {
+        color: #E1000F;
+        font-weight: 700;
+    }
+    .qqinfo {
+        margin-top: 15px;
+        height: 50px;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+     .qqinfo .qqitem {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-direction: column;
+         width: 50%;
+     }
+      .qqinfo .qqitem h1 {
+          font-size: 16px;
+          font-weight: 100;
+          color: #FFFFFF;
+          margin-bottom: 10px;
+      }
+      .qqinfo .qqitem h2 {
+          height: 28px;
+          text-align: center;
+          font-size: 14px;
+          font-weight: 100;
+          color: #FFFFFF;
+          margin-bottom: 10px;
+      }
+</style>
+{/block}
+{block name="content"}
+<div id="user-integral" class="integral-content">
+    <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; color: #fff;">
+                    <span   @click="window.location.href='/wap/my/index.html'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 99;">
+                        <img  src="/public/uploads/attach/2019/01/15/qback.png" style="width: 15px;">
+                    </span>
+                    <p style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">
+                         {:L(" 我的分銷","My distribution")}
+                    </p>
+            </div>
+           
+    <section>
+        <header ref="head" style="background-color: #e1000f;">
+            <div  style="text-align: left; padding-top: 55px;">
+                <span style="padding-left: 15px;"> {:L(" 可提現金額","Available cash amount")}</span>
+                <p style="padding-left: 15px; font-size: 0.55rem;margin-top:18px;">$ {$userInfo.now_money|floatval}</p>
+               <!-- <p style="padding-left: 15px;">{$userInfo.integral|floatval}</p> -->
+                <?php /*  <a href="">获取积分</a>  */ ?>
+                <div class="qqinfo">
+                    <div class="qqitem" style="border-right: 1px solid rgba(255,255,255,0.25);;">
+                       <h1>
+                           {$extract}
+                       </h1>
+                       <h2>
+                            {:L(" 已提現傭金"," Withdrawn")}
+                       </h2>
+                    </div>
+                    <div class="qqitem">
+                        <h1>
+                            {$brokerage}
+                        </h1>
+                        <h2>
+                             {:L(" 團隊提成","Team ")}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <?php /*  <div class="entrance">
+              <a href=""><i class="icon integral-mall"></i><span>进入积分商城</span></a>
+              <a href=""><i class="icon address"></i><span>收货地址管理</span></a>
+          </div>  */ ?>
+        <div class="details" style="position: relative;margin-top: 15px;">
+            <div id="btn" class="flex" style="width: 100%; justify-content: space-around; font-size: 14px;">
+                <a href="/wap/my/distributionintegral.html" style="text-align: center;">
+                    <img style="width:30px;margin-bottom: 5px;" src="/public/uploads/attach/2019/01/15/redti.png" >
+                   <p>  {:L(" 提現明細","Withdrawal details")}</p>
+                </a>
+                <a href="/wap/my/team.html" style="text-align: center;">
+                      <img style="width:30px; margin-bottom: 5px;" src="/public/uploads/attach/2019/01/15/redteam.png" >
+                   <p>  {:L(" 我的團隊","My team")}</p>
+                </a>
+            </div>
+          
+           
+
+        </div>
+    </section>
+</div>
+
+<script>
+    (function() {
+        requirejs(['vue', 'helper', 'better-scroll', 'store'], function(Vue, $h, BScroll, storeApi) {
+            var wxApi = mapleWx($jssdk());
+            new Vue({
+                el: '#user-integral',
+                data: {
+                   
+                },
+                methods: {
+                    
+                },
+                mounted: function() {
+                   
+                }
+            })
+        });
+    })();
+</script>
+{/block}

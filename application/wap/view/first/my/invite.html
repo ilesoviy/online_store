@@ -1,0 +1,295 @@
+{extend name="public/container"}
+{block name="head_top"}
+<link rel="stylesheet" href="{__PLUG_PATH}swiper/swiper-3.4.1.min.css">
+<script type="text/javascript" src="{__PLUG_PATH}swiper/swiper-3.4.1.jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{__WAP_PATH}sx/css/reset.css" />
+<link rel="stylesheet" type="text/css" href="{__WAP_PATH}sx/css/swiper-3.4.1.min.css" />
+<link rel="stylesheet" type="text/css" href="{__WAP_PATH}sx/font/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="{__WAP_PATH}sx/css/style.css" />
+<script type="text/javascript" src="{__WAP_PATH}sx/js/media.js"></script>
+<script type="text/javascript" src="{__PLUG_PATH}layer/layer.js"></script>
+<script type="text/javascript" src="{__PLUG_PATH}jquery.downCount.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}sx/js/swiper-3.4.1.jquery.min.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}sx/js/iscroll.js"></script>
+<style type="text/css">
+    .bg {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%);
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+
+    }
+
+    .bg img {
+        margin-top: 30px;
+        width: 100%;
+    }
+
+    .invite {
+
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 0 20px;
+        margin-top: 130px;
+        background-color: #fff;
+        text-align: center;
+    }
+
+    .product-con .pro-coundown {
+        margin-bottom: 15px;
+        display: flex;
+        box-sizing: border-box;
+        background-color: #f38137;
+
+
+
+
+    }
+
+    .product-con .pro-coundown .countdown {
+        flex: 1;
+        text-align: left;
+    }
+
+    .product-con .pro-coundown .countdown span {
+        background-color: #f38137;
+        font-size: 0.3rem;
+    }
+
+    .group {
+        background-color: #fff;
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .group .group_item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        padding: 10px 0;
+    }
+
+    .group .group_item .img {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 1px dashed #ccc;
+    }
+
+    .group .group_item img {
+        width: 100%;
+        border-radius: 50%;
+    }
+
+    .group .group_item:first-child .img {
+        border: 1px dashed #FA6D0E;
+
+    }
+
+    .group .group_item .identity {
+        position: absolute;
+
+        top: 54%;
+        left: 29.5%;
+        padding: 5px 10px;
+        border-radius: 24px;
+        color: #fff;
+        font-size: 12px;
+        background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%);
+
+    }
+
+    .group .group_item p {
+        margin-top: 15px;
+        text-align: center;
+		   width: 110px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+    }
+
+    .group .group_item:first-child p {
+        margin-top: 20px;
+
+    }
+
+    .qbtn {
+        width: 80%;
+        margin: 20px auto;
+        border-radius: 40px;
+        color: #FFFFFF;
+        height: 40px;
+        line-height: 40px;
+        background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%);
+        box-shadow: 0px 0px 20px rgba(250, 78, 2, 0.54);
+    }
+</style>
+{/block}
+{block name="title"}
+{:L(" 拼團活動","Group activities")}
+{/block}
+{block name="content"}
+<body style="background:#f5f5f5">
+    <div class="bg">
+        <img src="/public/uploads/attach/2019/01/15/qpin.png">
+    </div>
+    <div class="search-wrapper flex" style=" padding: 0.12rem 0.2rem; width: 100%;align-items: center;">
+        <span id="qqq" 
+            style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+            <img src="/public/uploads/attach/2019/01/15/qback.png" style="width: 20px;">
+        </span>
+        <p id="title" style="color: #fff; text-align: center;flex: 1;">{:L(" 拼團活動","Group activities")}</p>
+
+
+    </div>
+    <script type="text/javascript">
+        document.getElementById("qqq").addEventListener("click", function() {
+            window.history.back(-1);
+        })
+    </script>
+    <div class="wrapper product-con" id="store_detail">
+        <section>
+
+            <div class="invite">
+                <div class="pro-coundown">
+                    <p class="txt" style="text-align: left;"> 
+                        {if condition = "$Collage_num eq 0"}
+                        {:L(" 拼團已結束","The puzzle is over")}
+                        {else/}
+                        {:L(" 距離結束","End of distance")}
+                        {/if}
+                    </p>
+                     {gt name="Collage_num" value="0"}
+                    <div class="countdown" :data-time="time">
+                        <span class="minutes" style="color: #fff !important;">00</span>
+                        <i> {:L(" 分","m")}</i>
+                        <span class="seconds" style="color: #fff !important;">00</span>
+                        <i> {:L(" 秒","s")}</i>
+                    </div>
+                     {/gt}
+
+                </div>
+                {gt name="Collage_num" value="0"}
+                <p> {:L(" 開團成功，還差","The group was successful, but not good")}
+                    <span style="color: red;"> {$Collage_num}</span> {:L(" 人即可拼團成功","People can join the group successfully")}
+                </p>
+                {/gt}
+                <div class="group">
+                    <div class="group_item" v-for="(item, index) in listinfo" :key="index">
+                        <div class="img">
+                            <img v-if="item.avatar" :src="item.avatar">
+                            <span v-else style="color: #ccc; font-size: 24px; font-weight: 700;"> + </span>
+                        </div>
+                        <span class="identity" v-if="item.uid">{:L(" 團長","Head")}</span>
+                       
+                         <p>{{item.nickname ? item.nickname : '{:L("  待邀請","To be invited")}'}}</p>
+                    </div>
+                </div>
+                <div class="qbtn">
+                    {:L(" 分享邀請好友，參加拼團活動 ","Share invite friends to participate in group activities")}
+                </div>
+                <!-- <p style="margin:  10px 15px; text-align: left; line-height: 1.5; margin-top: 35px;">{:L("  拼中商品獲得商品，客戶再推薦客戶消費成功的","Pinzhong products to obtain products, customers then recommend customers to consume successfully")}<span style="color: red;"> 3%  </span> {:L(" 傭金。","Commission.")}
+                </p>
+                <p style="margin:  10px 15px 25px 15px; text-align: left;line-height: 1.5;">   
+                {:L(" 拼團失敗的","Unsuccessful")}<span style="color: red;"> 2%  </span> {:L(" 傭金+","Commission+")}<span style="color: red;">  {:L(" 全額","Full amount")} </span>{:L("  返還已支付的貨款，新用戶註冊即送","Return the payment that has been paid, and the new user registration will be sent immediately")}<span style="color: red;"> 28.8 </span> {:L(" 邀請新人注册送","Invite newcomers to register and send")}<span style="color: red;">8.8</span>。
+                </p> -->
+                <div>{:L($info.content,$info.en_content)}</div>
+            </div>
+
+
+
+        </section>
+
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            window.$pindAll = [];
+            $.each($pindAll, function(index, item) {
+                $('.count-time-' + item).downCount({
+                    date: $('.count-time-' + item).attr('data-time'),
+                    offset: +8
+                });
+            })
+            $("#qbtn").bind("click", function() {
+                
+            })
+        });
+    </script>
+    <script type="text/javascript">
+        
+        (function($) {
+            window.$userList = <?php echo json_encode($CollageInfo) ?: '[]'; ?>;
+            window.$spell_time = <?php echo json_encode($spell_time); ?>;
+            requirejs(['vue', 'axios', 'helper', 'store', '{__WAP_PATH}crmeb/module/store/shop-card.js'], function(
+                Vue, axios, $h, storeApi, shopCard) {
+                new Vue({
+                    el: "#store_detail",
+                    components: {
+                        'shop-card': shopCard
+                    },
+                    data: {
+                        time: $spell_time,
+                        flag: true,
+                        listinfo: $userList
+                    },
+                    methods: {
+                        add() {
+                            if (this.flag) {
+                                layer.confirm('是否加入拼團?',{icon:3,title:"dajiade"},function() {
+                                     $h.pushMsgOnce("加入成功",function(){
+                                           // storeApi.removeUserAddress(addressId, function() {
+                                           // 	$(e.target).parents('.address-item').remove();
+                                           // })
+                                     });
+                                      
+                                });
+                            } else {
+                                layer.confirm('Whether to join the group?', {icon:3,title:'info',btn:['Yes','No']},function() {
+                                     $h.pushMsgOnce("Join successfully",function(){
+                                           // storeApi.removeUserAddress(addressId, function() {
+                                           // 	$(e.target).parents('.address-item').remove();
+                                           // })
+                                     });
+                                      
+                                });
+                            }
+                             
+                        }
+                    },
+                    mounted: function() {
+
+                        $.each($pindAll, function(index, item) {
+                            $('.count-time-' + item).downCount({
+                                date: $('.count-time-' + item).attr(
+                                    'data-time'),
+                                offset: +8
+                            });
+                        })
+                        var countTime = $('.countdown').attr('data-time');
+                        $('.countdown').downCount({
+                            date: countTime,
+                            offset: +8
+                        });
+                        //     
+                        if (document.getElementById("title").innerText == "Group activities") {
+                            this.flag = false
+                        }
+
+                    }
+                });
+            });
+        })($);
+    </script>
+</body>
+{/block}

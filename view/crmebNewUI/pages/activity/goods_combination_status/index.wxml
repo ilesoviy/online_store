@@ -1,0 +1,84 @@
+<navbar parameter='{{parameter}}'></navbar>
+<view class='group-con'>
+   <view class='header acea-row row-between-wrapper'>
+      <view class='pictrue'><image src='{{storeCombination.image}}'></image></view>
+      <view class='text'>
+         <view class='line1'>{{storeCombination.title}}</view>
+         <view class='money'>￥<text class='num'>{{storeCombination.price}}</text><text class='team cart-color'>{{storeCombination.people}} 人拼</text></view>
+      </view>
+      <!--拼团失败  -->
+      <view class='iconfont icon-pintuanshibai' wx:if="{{isOk && count}}"></view>
+      <!-- 拼团成功时把icon-pintuanshibai换成 icon-pintuanchenggong font-color -->
+      <view class='iconfont icon-pintuanchenggong font-color' wx:if="{{isOk && !count}}"></view>
+   </view>
+   <view class='wrapper'>
+      <!-- 拼团失败或者成功不显示倒计时 -->
+      <view class='title acea-row row-center-wrapper' wx:if="{{!isOk}}">
+         <view class='line'></view>
+         <view class='name acea-row row-center-wrapper'>
+           剩余
+           <view class='time font-color acea-row row-center-wrapper'>
+              <text>{{countDownHour || 00}}</text>：
+              <text>{{countDownMinute || 00}}</text>：
+              <text>{{countDownSecond || 00}}</text>
+           </view>
+           结束
+         </view>
+         <view class='line'></view>
+      </view>
+      <!-- 恭喜您拼团成功 -->
+      <!-- 还差2人，拼团失败  去掉：font-color -->
+      <view class='tips font-color ' wx:if="{{isOk && !count}}">恭喜您拼团成功</view>
+      <view class='tips ' wx:elif="{{isOk && !count}}">还差{{count}}人,拼团失败</view>
+      <view class='tips font-color' wx:elif="{{!isOk && count}}">拼团中，还差{{count}}人拼团成功</view>
+      <!-- 成功或失败时加：result -->
+      <view class='list acea-row row-middle {{iShidden?"on":""}} {{isOk ? "result": ""}}' >
+         <view class='pictrue'><image src='{{pinkT.avatar}}'></image></view>
+         <view class='pictrue' wx:for="{{pinkAll}}" wx:key><image src='{{item.avatar}}'></image></view>
+         <view class='pictrue' wx:for="{{count}}" wx:key><image src='/images/vacancy.png'></image></view>
+      </view>
+    
+      <!-- 分享团后进入页面-我要参团 -->
+      <form bindsubmit="goPinkOrder" report-submit='true' wx:if="{{!isOk && !userBool}}" > 
+        <button class='teamBnt bg-color' form-type="submit" hover-class='none'>我要参团</button>
+      </form>
+
+      <!-- 本人开团或者拼团后按钮邀请好友参团 -->
+      <!-- <button class='teamBnt bg-color' open-type='share' wx:elif="{{!isOk && userBool}}">邀请好友参团</button> -->
+      <view class='teamBnt bg-color' bindtap='getPinkPoster' wx:elif="{{!isOk && userBool}}">邀请好友参团</view>
+      <form bindsubmit="removePink" report-submit='true' wx:if="{{!isOk && userBool && pinkT.uid==userInfo.uid}}" > 
+        <button class='cancel' form-type="submit" hover-class='none'>
+          <text class='iconfont icon-guanbi3'></text>取消开团
+        </button>
+      </form>
+
+
+      <!-- 拼团成功和失败: -->
+      <view class='lookAll acea-row row-center-wrapper' wx:if="{{isOk && (pinkAll.length+count+1) > 5}}" bindtap='lookAll'>{{iShidden?'收起':'查看全部'}}<text class="iconfont {{iShidden?'icon-xiangshang':'icon-xiangxia'}}"></text></view>
+      <!-- 再次开团 -->
+       <view class='teamBnt bg-color' wx:if="{{isOk && !count}}" bindtap='againPink'>再次开团</view>
+       <!-- 重新开团 -->
+       <view class='teamBnt bg-color' wx:if="{{isOk && count}}" bindtap='againPink'>重新开团</view>
+      <!-- 拼团成功: -->
+      <navigator class='lookOrder' hover-class='none' url='/pages/order_details/index?order_id={{current_pink_order}}'  wx:if="{{isOk && !count}}">查看订单信息<text class='iconfont icon-xiangyou'></text></navigator>
+
+   </view>
+   <view class='group-recommend'>
+      <view class='title acea-row row-between-wrapper'>
+         <view>大家都在拼</view>
+         <navigator hover-class='none' url='/pages/activity/goods_combination/index' class='more'>更多拼团<text class='iconfont icon-jiantou'></text></navigator>
+      </view>
+      <view class='list acea-row row-middle'>
+         <navigator hover-class='none' class='item' wx:for="{{storeCombinationHost}}" wx:key url='/pages/activity/goods_combination_details/index?id={{item.id}}'>
+            <view class='pictrue'>
+              <image src='{{item.image}}'></image>
+              <view class='team'>{{item.people}}人团</view>
+            </view>
+            <view class='name line1'>{{item.title}}</view>
+            <view class='money font-color'>￥{{item.price}}</view>
+         </navigator>
+      </view>
+   </view>
+</view>
+<authorize bind:onLoadFun="onLoadFun"></authorize>
+<home></home>

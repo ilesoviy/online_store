@@ -1,0 +1,121 @@
+{extend name="public/container"}
+{block name="title"}  {:L(" 編輯地址","Edit address")}{/block}
+{block name="content"}
+<div id="address-list" class="user-addresslist">
+     <div class=" flex"
+                style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                <span @click="window.location.href=document.referrer;"
+                    style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                    <img src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                </span>
+                <p style="text-align: center;width: 100%;line-height: 0.4rem;">
+                      {:L(" 編輯地址","Edit address")}
+                </p>
+            </div>
+            <div style="height: 40px;">
+    
+            </div>
+	<section>
+		<form action="" method="post">
+			<?php $isDefault = ''; ?>
+			{volist name="address" id="vo"}
+			<div class="address-item">
+				<!-- <div class="user-info">
+					<p>收货人：{$vo.real_name} <span> {$vo.phone}</span></p>
+					<p>收货地址：{$vo.province} {$vo.city} {$vo.district} {$vo.detail}</p>
+				</div>
+				<div class="address-btn flex">
+					<div class="switch-btn">
+						<label class="well-check">
+							<input class="ckecks" v-model="isDefault" type="radio" {eq name="vo.is_default" value="1"
+								}checked="checked" <?php $isDefault = $vo['id']; ?>{/eq} value="{$vo.id}"><i
+								class="icon"></i>
+							设为默认地址
+						</label>
+					</div>
+					<div class="action-btn">
+						<span class="edit" @click="redirect('{$vo.id}')">编辑</span>
+						<span class="delete" @click="remove('{$vo.id}',$event)">删除</span>
+					</div>
+				</div> -->
+
+				<div class="address-btn flex">
+					<div class="switch-btn">
+						<label class="well-check">
+							<input class="ckecks" v-model="isDefault" type="radio" {eq name="vo.is_default" value="1"
+								}checked="checked" <?php $isDefault = $vo['id']; ?>{/eq} value="{$vo.id}"><i
+								class="icon"></i>
+						</label>
+					</div>
+					<div class="user-info">
+						<p>{$vo.province} {$vo.city} {$vo.district} {$vo.detail}</p>
+						<p class="pt-gray">{$vo.real_name}</p>
+						<p class="pt-gray">{$vo.phone}</p>
+					</div>
+					<div class="action-btn">
+						<div class="edit" @click="redirect('{$vo.id}')">
+							<img style="width: 20px; height: 20px;" src="{__WAP_PATH}crmeb/images/deit.png" />
+						</div>
+						<div class="delete" @click="remove('{$vo.id}',$event)">
+							<img src="{__WAP_PATH}crmeb/images/del.png" />
+						</div>
+					</div>
+				</div>
+			</div>
+			{/volist}
+		</form>
+		<!-- <a class="address-add" href="{:Url('edit_address')}">
+			新增地址
+		</a> -->
+		
+		<div class="add">
+		<a href="{:Url('edit_address')}">+</a></div>
+	</section>
+</div>
+<script>
+	(function() {
+		requirejs(['vue', 'lodash', 'store', 'helper'], function(Vue, _, storeApi, $h) {
+			new Vue({
+				el: "#address-list",
+				data: {
+					isDefault: "<?=$isDefault?>"
+				},
+				watch: {
+					isDefault: _.debounce(function(v) {
+						$h.loadFFF();
+						storeApi.setUserDefaultAddress(v, function() {
+							$h.loadClear();
+						}, function() {
+							$h.loadClear();
+							return true;
+						})
+					}, 300)
+				},
+				methods: {
+					remove: function(addressId, e) {
+                        layer.confirm('  {:L(" 是否刪除該地址? ","Do you want to delete this address?")}',{icon:3,title:'{:L("信息","Info")}',btn:['{:L("确定","Yes")}','{:L("取消","No")}']},function() {
+                             $h.pushMsgOnce(' {:L(" 刪除成功","Successfully deleted")}',function(){
+                                   storeApi.removeUserAddress(addressId, function() {
+                                   	$(e.target).parents('.address-item').remove();
+                                   })
+                             });
+                              
+                        });
+						
+					},
+					redirect: function(addressId) {
+						location.href = $h.U({
+							c: "my",
+							a: "edit_address",
+							p: {
+								addressId: addressId
+							}
+						});
+					}
+				}
+			});
+		});
+
+	})();
+</script>
+{/block}

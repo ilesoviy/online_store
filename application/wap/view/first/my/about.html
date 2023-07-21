@@ -1,0 +1,275 @@
+{extend name="public/container"}
+{block name="head_top"}
+{block name="title"}
+   {:L(" 關於我們","About us")}
+{/block}
+{block name="content"}
+<style type="text/css">
+	.authenticate .user-info {
+    width: 100%;
+    height: .76rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    background-color: #fff;
+    margin-top: .1rem;
+}
+ .authenticate .user-info div{
+ 	height: 100%;
+     float: left;
+ }
+ .authenticate {margin-top: 1rem; margin-bottom: 120px;}
+    .authenticate .title{margin-bottom: .3rem;}
+    .authenticate .title span{ display: block; }
+    .authenticate .title #logo{width: 80px; margin: 0 auto;}
+    .authenticate .title #logo img{width: 100%;}
+    .authenticate .title #bt{text-align: center; margin: 0 auto; width: 90%;height: 36px; line-height: 36px;font-size: 20px;}
+    .authenticate {
+    	margin-top: 1rem;
+    	margin-bottom: 120px;
+    }
+    
+    .authenticate .title {
+    	margin-bottom: .3rem;
+    }
+    
+    .authenticate .title span {
+    	display: block;
+    }
+    
+    .authenticate .title #logo {
+    	width: 80px;
+    	margin: 0 auto;
+    }
+    
+    .authenticate .title #logo img {
+    	width: 100%;
+    }
+    
+    .authenticate .title #bt {
+    	text-align: center;
+    	margin: 0 auto;
+    	width: 90%;
+    	height: 36px;
+    	line-height: 36px;
+    	font-size: 20px;
+    }
+    
+    .login-box {
+    	/* position: fixed; */
+    	height: 100%;
+    /* 	width: 100%; */
+        margin: 10px;
+    	background-color: #fff;
+    	padding: 0.4rem 0.2rem;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+    }
+     .login-box h1 {
+         display: flex;
+         align-items: center;
+         margin-bottom: 20px;
+         font-size: 16px;
+     }
+     .login-box p {
+         line-height: 1.5;
+         margin-bottom: 10px;
+         color: #999;
+     }
+    .remark1 {
+    	color: orange;
+    	font-size: 0.5rem;
+        font-weight: 700;
+    	margin: 1rem 0 0.3rem 0;
+        color: #E1000F;
+    }
+    
+    .remark2 {
+    	color: orange;
+    	font-size: 0.3rem;
+    	margin-bottom: 2rem;
+         color: #E1000F;
+    }
+    
+    .login-txt {
+    	height: 1rem;
+    	border-bottom: 1px solid #eee;
+    	padding: 0 0.2rem;
+    	display: flex;
+    	align-items: center;
+    	position: relative;
+    }
+    
+    .login-txt img {
+    	width: .42rem;
+    	height: .4rem;
+    	margin-right: 0.2rem;
+    }
+    
+    
+    .login-btn {
+    	background-color: orange;
+    	color: #fff;
+    	width: 100%;
+    	border-radius: 0.5rem;
+    	padding: 0.2rem 0;
+    	font-size: 0.3rem;
+    	margin-top: 0.5rem;
+        background-color: #E1000F;
+    }
+    .other {
+    	display: flex;
+    	justify-content: space-between;
+    	margin-top: 0.2rem;
+    }
+    .showPwd{
+    	width: .32rem!important;
+    	height: .32rem!important;
+    	position: absolute;
+    	bottom: 0.4rem;
+    	right: 0;
+    }
+</style>
+<!-- <div class="hz">
+<div class="authenticate">
+    <section>
+        <div class="title"><span id="logo"><img src=""></span><span id="bt">欢迎注册</span></div>
+        <form action="{:Url('register')}" method="post">
+            <div class="user-infos"><input type="text" required name="account" placeholder="请输入您的账号(限字母数字下划线)"/></div>
+            <div class="user-infos"><input type="text" required name="phone" placeholder="请输入您的手机号"/></div>
+            <div class="user-infos"><input type="password" required name="pwd" placeholder="请输入您的密码(限字母数字下划线)"/></div>
+            <div class="user-infos"><input type="password" required name="pwd_qr" placeholder="请再次输入密码"/></div>
+            <div class="user-infos"><input type="text" required name="is_code" placeholder="请输入您的邀请码"/></div>
+            <div class="user-info">
+            	<div style="width: 67%">
+            	<input type="text" class="form-control" id="verify" name="verify" placeholder="验证码" style="width: 100%; height: 100%; padding-left: .25rem"></div>
+            	<div>
+                    <span class="input-group-btn" style="padding: 0;margin: 0; display: block;width: 100%">
+                        <img id="verify_img" src="{:Url('captcha')}" alt="验证码" style="padding: 0;height: 34px;margin: 0; padding-top: 4px;">
+                    </span>
+                </div>
+            </div>
+            <input type="hidden" name="ref" value="" />
+            <div class="publish-btn" style="z-index: 9999"><button type="submit">立即注册</button></div>
+            <div class="register" style="z-index: 9999; background: #fff;"><a href="{:Url('index')}">已有账号，点击立即登录</a></div>
+        </form>
+    </section>
+</div> -->
+ <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                        <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                            <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                        </span>
+                        <p style="text-align: center;width: 100%;line-height: 0.4rem;">
+                              {:L(" 關於我們","About us")}
+                        </p>
+                        <script type="text/javascript">
+                            document.getElementById("qqq").addEventListener("click", function() {
+                                window.history.back(-1);
+                            })
+                        </script>
+                </div>
+                <div style="height: 40px;">
+                    
+                </div>
+<div class="login-box">
+   
+	<!-- <div class="remark1">找回密碼</div> -->
+	<!-- <div class="remark2">快加入我們吧~~</div> -->
+    <h1> <img style="width: 20px; margin-right: 5px;" src="/public/uploads/attach/2019/01/15/redour.png" > {:L(" 關於我們","About us")}</h1>
+    <p>
+            {:L($info.content,$info.en_content)}
+        </p>
+  <!--   <form action="{:Url('register')}" method="post"> -->
+	
+</div>
+<script>
+    (function(){
+        require(['vue','axios','better-scroll','helper','store','layer'],function(Vue,axios,BScroll,$h,storeApi,layer){
+            new Vue({
+                el:"#order-list",
+                data:{
+                },
+                methods:{
+                
+                },
+                mounted:function(){
+                }
+            })
+        })
+    })();
+</script>
+<script>
+// 	$("#verify_img").click(function () {
+//     $(this)[0].src ='/wap/login/captcha.html?'+Math.random()
+// })
+//         var nums = 1
+//        document.getElementById("show").addEventListener("click",function() {
+//             console.log(nums);
+//            if (nums === 1) {
+//               document.getElementById("pws").type = "text"
+//               this.src = "/public/wap/first/crmeb/images/show.png"
+//                nums++;
+//            } else {
+//                document.getElementById("pws").type = "password"
+//                this.src = "/public/wap/first/crmeb/images/hied.png"
+//                nums--;
+//            }
+           
+//        })
+//         var numss = 1
+//        document.getElementById("shows").addEventListener("click",function() {
+//             console.log(numss);
+//            if (numss === 1) {
+//               document.getElementById("pwss").type = "text"
+//               this.src = "/public/wap/first/crmeb/images/show.png"
+//                numss++;
+//            } else {
+//                document.getElementById("pwss").type = "password"
+//                this.src = "/public/wap/first/crmeb/images/hied.png"
+//                numss--;
+//            }
+          
+//        })
+//        var qq = document.querySelector(".qq");
+//        var qqq = document.querySelector(".qqq");
+//        var qqqq = document.querySelector(".qqqq");
+      
+//            qq.addEventListener("blur", function() {
+//                if (this.value != '' && qqq.value != '' &&  qqqq.value != '') {
+//                     document.getElementById("btn").disabled = false
+//                      document.getElementById("btn").style.backgroundColor = "#E1000F"
+//                } else {
+//                    document.getElementById("btn").disabled = true
+//                    document.getElementById("btn").style.backgroundColor = "#ccc"
+//                }
+//            })
+//            qqq.addEventListener("blur", function() {
+//                if (this.value != '' && qq.value != '' &&  qqqq.value != '') {
+//                     document.getElementById("btn").disabled = false
+//                     document.getElementById("btn").style.backgroundColor = "#E1000F"
+//                } else {
+//                    document.getElementById("btn").disabled = true
+//                    document.getElementById("btn").style.backgroundColor = "#ccc"
+//                }
+//            })
+//            qqqq.addEventListener("blur", function() {
+//                if (this.value != '' && qq.value != '' &&  qqq.value != '') {
+//                     document.getElementById("btn").disabled = false
+//                     document.getElementById("btn").style.backgroundColor = "#E1000F"
+//                } else {
+//                    document.getElementById("btn").disabled = true
+//                    document.getElementById("btn").style.backgroundColor = "#ccc"
+//                }
+//            })
+//            document.getElementById("btn").addEventListener("click", function() {
+//                if (qqqq.value === qqq.value) {
+//                    document.getElementById("btns").click();
+//                       $h.pushMsg('修改成功!');
+//                } else {
+//                    console.log(111);
+//                    $h.pushMsg('兩次密碼不一致!');
+//                }
+                
+//            })
+
+</script>
+{/block}

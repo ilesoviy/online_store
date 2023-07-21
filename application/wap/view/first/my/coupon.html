@@ -1,0 +1,107 @@
+{extend name="public/container"}
+{block name="title"} {:L(" 優惠券","Coupon")}{/block}
+{block name="content"}
+<style type="text/css">
+    .discount-list .list-box li .price p a {
+        width: 1.5rem;
+    }
+</style>
+<div class="discount-list" >
+     <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                            <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                                <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                            </span>
+                            <p style="text-align: center;width: 100%;line-height: 0.4rem;">
+                                 {:L(" 優惠券","Coupon")}
+                            </p>
+                            <script type="text/javascript">
+                                document.getElementById("qqq").addEventListener("click", function() {
+                                    window.history.back(-1);
+                                })
+                            </script>
+                    </div>
+                    <div style="height: 40px;">
+                        
+                    </div>
+    <section>
+        <header class="flex coupon-menu" style="z-index: 999; top: 40px;">
+            <a class="item on" data-type="" href="javascript:void(0);">  {:L(" 全部","All")}</a>
+            <a class="item" data-type="new" href="javascript:void(0);">  {:L(" 未使用","Unused")}</a>
+            <a class="item" data-type="overdug" href="javascript:void(0);">  {:L(" 已使用","Used")}</a>
+            <a class="item" data-type="use" href="javascript:void(0);">  {:L(" 已过期","Expired")}</a>
+        </header>
+        <div class="list-box" style="margin-bottom: .3rem;">
+           {empty name="couponList"}
+            <div class="empty">
+                <img src="{__WAP_PATH}crmeb/images/empty_coupon.png">
+                <p>{:L("暫無有效優惠券","No valid coupon")}</p>
+            </div>
+            {else/}
+            <ul>
+                {volist name="couponList" id="vo"}
+                <li class="coupon-item
+                {eq name='vo._type' value='0'}overdug{/eq}
+                {neq name='vo._type' value='0'}new{/neq}">
+                    <div class="txt-info">
+                        <div class="con-cell">
+                            <p>{:L("满","Cash vouchers for ")}${$vo.use_min_price}{:L("可用现金券","or more")}</p>
+                            <span>{:L("","Used from")}{$vo._add_time}{:L("至","to")}{$vo._end_time}{:L("使用","")}</span>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <span>$</span>{$vo.coupon_price}
+                        <p><a href="javascript:void(0);">{$vo._msg}</a></p>
+                    </div>
+                    {eq name='vo._type' value='2'}<span class="text-icon" style="display: none;"></span>{/eq}
+                </li>
+                {/volist}
+            </ul>
+            {/empty}
+           <!--  <ul>
+               
+                <li class="coupon-item">
+                    <div class="txt-info">
+                        <div class="con-cell">
+                            <p>  {:L(" 满80元可用现金券","Cash vouchers for 80 yuan or more")}</p>
+                            <span> {:L(" 2021至2022使用 ","Used from 2021 to 2022")}</span>
+                        </div>
+                    </div>
+                    <div class="price">
+                       $70
+                        <p><a href="javascript:void(0);">  {:L(" 不可用","unavailable")}</a></p>
+                    </div>
+                  <span class="text-icon"></span>
+                </li>
+                <li class="coupon-item new">
+                    <div class="txt-info">
+                        <div class="con-cell">
+                          <p>  {:L(" 满80元可用现金券","Cash vouchers for 80 yuan or more")}</p>
+                          <span> {:L(" 2021至2022使用 ","Used from 2021 to 2022")}</span>
+                        </div>
+                    </div>
+                    <div class="price">
+                       $70
+                        <p><a  href="javascript:void(0);">  {:L(" 去使用","To use")}</a></p>
+                    </div>
+                  <span class="text-icon" style="display: none;"></span>
+                </li>
+           
+            </ul> -->
+        </div>
+    </section>
+</div>
+<script>
+    (function(){
+        $('.coupon-menu .item').on('click',function(){
+            var that = $(this),type = that.data('type');
+            $('.list-box .coupon-item').hide();
+            if(type){
+                $('.list-box .coupon-item.'+type).show();
+            }else{
+                $('.list-box .coupon-item').show();
+            }
+            that.addClass('on').siblings().removeClass('on');
+        });
+    })();
+</script>
+{/block}

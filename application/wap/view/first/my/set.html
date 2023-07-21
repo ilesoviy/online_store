@@ -1,0 +1,113 @@
+{extend name="public/container"}
+{block name="title"}   {:L(" 設置","Set")}{/block}
+{block name="content"}
+<style type="text/css">
+    .content {
+        
+     
+    }
+    .content .content_item  {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+           background-color: #fff;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+     .content .content_item span {
+         display: flex;
+         align-items: center;
+     }
+     .content .content_item .moress {
+         display: inline-block;
+         width: 10px;
+         height: 10px;
+         border-right: 1px solid #777;
+         border-bottom: 1px solid #777;
+         transform: rotate(-45deg);
+     }
+    .content .content_item img {
+        margin-right: 10px;
+        width: 20px;
+        
+    }
+</style>
+<div id="user-order" class="user-order-con">
+     <div class=" flex" style=" padding: 0.12rem 0.1rem; z-index: 999; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+               <span   @click="window.location.href='/wap/my/index.html'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 3;">
+                    <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                </span>
+                <p style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">
+                     {:L(" 設置","Set")}
+                </p>
+        </div>
+        <div style="height: 50px;">
+            
+        </div>
+    <section>
+        <div class="content">
+            <a href="/wap/my/mailbox.html" class="content_item" style="display:none;">
+                <span>
+                    <img src="/public/uploads/attach/2019/01/15/redyx.png" >  {:L(" 修改郵箱","Modify email")}
+                </span>
+                <span class="moress">
+                    
+                </span>
+            </a>
+            <a href="/wap/my/edit_userinfo.html" class="content_item">
+                    <span>
+                        <img src="/public/uploads/attach/2019/01/15/redinfo.png" >  {:L(" 個人信息","Personal information")}
+                    </span>
+                    <span class="moress">
+                        
+                    </span>
+            </a>
+            <a href="/wap/my/modify.html" class="content_item">
+                        <span>
+                            <img src="/public/uploads/attach/2019/01/15/redmm.png" >  {:L("修改密碼","Change Password")}
+                        </span>
+                        <span class="moress">
+                            
+                        </span>
+             </a>
+             <a href="/wap/my/about.html" class="content_item">
+                         <span>
+                             <img src="/public/uploads/attach/2019/01/15/redour.png" >  {:L(" 關於我們  ","About us")}
+                         </span>
+                         <span class="moress">
+                             
+                         </span>
+              </a>
+              <a href="/wap/my/privacy.html" class="content_item">
+                          <span>
+                              <img src="/public/uploads/attach/2019/01/15/redyy.png" >  {:L(" 隱私協議","Privacy agreement")}
+                          </span>
+                          <span class="moress">
+                              
+                          </span>
+               </a>
+        </div>
+    </section>
+    <div style="height: 20px;">
+        
+    </div>
+</div>
+<script type="text/javascript">
+    requirejs(['vue','store','helper','layer'],function(Vue,storeApi,$h,layer){
+
+        new Vue({
+            el:"#user-order",
+            data:{
+              
+            },
+            methods:{
+               
+            },
+            mounted:function () {
+                vm = this;
+            }
+        })
+    });
+</script>
+{/block}

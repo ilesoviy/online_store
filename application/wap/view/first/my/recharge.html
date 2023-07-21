@@ -1,0 +1,170 @@
+{extend name="public/container"}
+{block name="title"}   {:L(" 充值","Recharge")}{/block}
+{block name="content"}
+<style type="text/css">
+.content {
+
+    background: #fff;
+    width: 90%;
+    border-radius: 8px;
+    margin: 0 auto;
+    padding: 15px;
+ 
+
+}
+/*body {
+    background: #fff  !important;
+}*/
+.item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border-top: 0 !important;   
+    margin-top: 10px;
+    
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+.item> input {
+       /* border: 1px solid #ccc;*/
+        width: 55%;
+        font-size: 18px;
+      
+        line-height: 25px;
+        height: 25px;
+        
+}
+
+ .type_item {
+    margin-left: 5px;
+    border-radius: 8px;
+    padding: 0 10px;
+    height: 25px;   
+    line-height: 25px;
+    margin-bottom: 10px;
+}
+.type_active {
+    color: rgb(236, 84, 16);
+    border-color: rgb(236, 84, 16);
+}
+.flex {
+    background: linear-gradient(90deg, rgb(236, 84, 16) 0%, rgb(236, 84, 16) 0%, rgb(230, 34, 51) 100%);
+    color: #fff;
+
+}
+.gotop {   
+    display: inline-block;
+    width: 40%;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    border-radius: 15px;
+    text-align: center; 
+    margin: 0 auto;
+
+     background: linear-gradient(90deg, rgb(236, 84, 16) 0%, rgb(236, 84, 16) 0%, rgb(230, 34, 51) 100%);
+}
+</style>
+<div id="user-order" class="user-order-con">
+    <div class=" flex" style=" padding: 0.12rem 0.1rem; z-index: 999; width: 100%; position: fixed; top: 0; left: 0; ">
+               <span   @click="window.location.href='/wap/my/balance.html'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 3;">
+                    <img  src="/public/uploads/attach/2019/01/15/qback.png" style="width: 15px;">
+                </span>
+                <p style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">
+                    {:L(" 充值","Recharge")}
+                </p>
+    </div>
+    <div style="height: 50px;">
+            
+    </div>
+    <section>
+        <div class="content">
+           <!--  <div class="item" style="padding-bottom: 5px;">
+               <span  style="margin-left: 10px;">
+                    {:L(" 輸入充值金額","Enter the top-up amount")} :
+                </span>
+                <span style="margin: 0 5px; font-size: 18px;">$</span>
+                <input type="number" name="" placeholder="0.00">
+            </div> -->
+            <div class="item">
+                <span  style="margin-left: 10px; margin-top: -12px;">
+                    {:L(" 可充值幣種類型","Rechargeable currency types")} :
+                </span>
+                  <!--   <div class="type_item" v-for="(item, index) in moneyType" 
+                    :key="index" 
+                    @click="typechange(index)"
+                    >
+                        {{item}}
+                    </div> -->
+                    <div class="type_item" v-for="(item, index) in moneyType" :key="index" >
+                       {{item}}  
+                    </div>   
+                    <p style="color: red;margin-left: 10px;font-weight: 700; margin-bottom: 10px;"> {:L(" 充值額度不能小於100","The recharge amount cannot be less than 100")}</p>
+
+                    
+            </div>
+
+             <div >
+                <p style="color: red;margin-left: 10px;font-weight: 700; margin-bottom: 10px;font-size: 16px;">* {:L("注意：轉賬時備註賬號郵箱","Note: Note the account email address when transferring funds")}</p>
+                <span  style="margin-left: 10px; margin-top: -12px;">
+                    {:L("充值錢包地址","Recharge wallet address")} : 
+                </span>
+                <div style="margin: 10px 0; text-align: center;word-break:break-word; " ref="PayUrl"> {{ payurl }} </div>
+                <div style="text-align:center;">
+                     <img src="{$recharge_code}" style="width: 200px;margin: 20px 0;">
+                </div>
+                  <!--   <div class="type_item" v-for="(item, index) in moneyType" 
+                    :key="index" 
+                    @click="typechange(index)"
+                    >
+                        {{item}}
+                    </div> -->
+                   
+            </div>
+            <div style="display:flex;justify-content: center; margin-top: 15px; ">
+                 <a class="gotop" @click="copy"> {:L(" 點擊複製地址","Click copy address")} </a>
+                 <!--  <a class="gotop" > {:L(" 已完成充值","Recharge completed")} </a> -->
+            </div>
+           
+         <!--    <p> <div class="tips"> {:L(" 充值提示：單次充值金額不能低於","Recharge reminder: The single recharge amount cannot be less than")}<span style="color: red;">100</span></div></p> -->
+        </div>
+    </section>
+    <div style="height: 20px;">
+        
+    </div>
+</div>
+<script type="text/javascript">
+    requirejs(['vue','store','helper','layer'],function(Vue,storeApi,$h,layer){
+    
+        new Vue({
+            el:"#user-order",
+            data:{
+              moneyType: ["{$recharge_name}"],
+              typeIndex: 0 ,  
+              payurl: '{$recharge_url}',      // 充值地址
+              copyText: ""
+            },
+            methods:{
+               // typechange(index) {
+               //  this.typeIndex =  index
+               // }
+               copy() {
+                  this.copyText = this.$refs.PayUrl.innerText;
+                   var input = document.createElement("input"); // 直接构建input
+                  input.value = this.copyText; // 设置内容
+                  console.log(input.value);
+
+                  document.body.appendChild(input); // 添加临时实例
+                  input.select(); // 选择实例内容
+                  document.execCommand("Copy"); // 执行复制
+                  document.body.removeChild(input); // 删除临时实例
+                  $h.pushMsg(' {:L(" 複製成功!","Copy successfully!")}');
+                },
+            },
+            mounted:function () {
+                vm = this;
+            }
+        })
+    });
+</script>
+{/block}

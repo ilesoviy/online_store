@@ -1,0 +1,131 @@
+﻿
+* 
+{
+	font-family: "微软雅黑","Microsoft YaHei","宋体",Arial,Helvetica,sans-serif,Tahoma;
+    border: 0 none;
+    margin: 0;
+    padding: 0;
+}
+.telephone {
+  border-radius: 14px;
+  display: block;
+  height: 26px;
+  position: absolute;
+  right: 5px;
+  top: 4px;
+  width: 214px;
+  z-index: 99999;
+  display:none;
+}
+.telephone .bd {
+  border-radius: 14px 0 0 14px;
+  color: #999;
+  float: left;
+  font-size: 14px;
+  height: 26px;
+  line-height: 26px;
+  padding-left: 14px;
+  width: 120px;
+}
+.telephone .btn {
+  line-height: 22px;
+  border-radius: 0 14px 14px 0;
+  color: #fff;
+  cursor: pointer;
+  float: left;
+  font-size: 14px;
+  height: 26px;
+  width: 80px;
+}
+ .btn1 {
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px 15px;
+}
+
+html, body {
+    font-size: 12px;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+img {
+    border: 0 none;
+}
+
+
+ul,li{list-style:none;}
+
+#tab{position:relative;}
+#tab .tabList ul li{
+	float:left;
+	background:#ededed;
+	background:-moz-linear-gradient(top, #fefefe, #ededed);	
+	background:-o-linear-gradient(left top,left bottom, from(#fefefe), to(#ededed));
+	background:-webkit-gradient(linear,left top,left bottom, from(#fefefe), to(#ededed));
+	border:1px solid #ccc;
+	padding:5px 0 5px 0;
+	line-height: 22px;
+	width:100px;
+	height:22px;
+	text-align:center;
+	margin-left:-1px;
+	position:relative;
+	cursor:pointer;
+	font-size:14px;
+}
+#tab .tabCon{
+	position:absolute;
+	left:-1px;
+	top:33px;
+	border:1px solid #ccc;
+	border-top:none;
+	width:350px;
+}
+#tab .tabCon div{
+	padding:0px 10px 8px 10px;
+	width:95%;
+	position:relative;
+	display:none;
+}
+#tab .tabList li.cur1{
+	border-bottom:none;
+	background:#fff;
+}
+#tab .tabList li.kongge{
+	border-top:1px solid #fff;
+	border-right:none;
+	background:#fff;
+	cursor:default;
+}
+#tab .tabCon div.cur1{
+	display:block;
+}
+.input1 {
+
+    height: 30px;
+    line-height: 30px;
+    width: 200px;
+    font-size: 12px;
+    padding-left: 8px;
+}
+.p1
+{
+	font-size:14px;background:url(bimg/notice.png) 12px 1px no-repeat;color:#999;font-weight:normal;word-wrap:break-word;padding: 0px 0px 0px 34px;
+}
+label
+{
+	font-size:14px;
+}
+.red
+{
+	color:Red;
+}

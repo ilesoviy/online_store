@@ -1,0 +1,197 @@
+    {extend name="public/container"}
+{block name="title"}  {:L(" 我的團隊","My team")}{/block}
+{extend name="public/container"}
+{block name="head"}
+<style>
+    .loading-line {
+        background-color: #fff;
+    }
+ 
+    .bbq {
+        z-index: 99;
+        width: 45%;
+        color: #999;
+        background-color: #FFFFFF;
+        font-size: 16px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 5px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    .act {
+        color: #E1000F;
+        font-weight: 700;
+    }
+    .qqinfo {
+        margin-top: 15px;
+        height: 50px;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+     .qqinfo .qqitem {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-direction: column;
+         width: 33%;
+     }
+      .qqinfo .qqitem h1 {
+          font-size: 16px;
+          font-weight: 100;
+          color: #FFFFFF;
+          margin-bottom: 10px;
+      }
+      .qqinfo .qqitem h2 {
+          text-align: center;
+          font-size: 14px;
+          font-weight: 100;
+          color: #FFFFFF;
+          margin-bottom: 10px;
+      }
+      .user_item {
+          margin: 10px 10px 0 10px;
+          padding:  10px;
+          background-color: #fff;
+          border-radius: 8px;
+      }
+       .user_item  .user_info{
+           display: flex;
+           padding-bottom: 10px;
+           border-bottom: 1px solid #ccc;
+           
+       }
+        .user_item  .user_info img {
+            margin-right: 15px;
+            width: 50px;
+            border-radius: 50%;
+        }
+        .user_item  .user_info .user_text {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .user_item  .user_info .user_text span {
+            color: #999999;
+        }
+         .user_item .user_order {
+             margin-top: 10px;
+             display: flex;
+         }
+         .user_item .user_order .order_item {
+             flex: 1;
+             text-align: center;
+             border-right: 1px solid #ccc;
+         }
+         .user_item .user_order .order_item:last-child {
+             border: 0;
+         }
+          .user_item .user_order .order_item span {
+              display: inline-block;
+              margin-bottom: 10px ;
+              color: #999999;
+              font-size: 14px;
+          }
+</style>
+{/block}
+{block name="content"}
+<div id="user-integral" class="integral-content">
+    <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: absolute; top: 0; left: 0; color: #fff;">
+                    <span   @click="window.location.href='/wap/my/distribution.html'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 99;">
+                        <img  src="/public/uploads/attach/2019/01/15/qback.png" style="width: 15px;">
+                    </span>
+                    <p style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">
+                         {:L(" 我的團隊","My team")}
+                    </p>
+            </div>
+           
+    <section>
+        <header ref="head" style="background-color: #e1000f;">
+            <div  style="text-align: left; padding-top: 55px;">
+                <span style="padding-left: 15px; opacity: 0;">可提現金額</span>
+                <p style="padding-left: 15px; font-size: 0.3rem;margin-top:0; display: flex; line-height: 35px;">
+                    <img src="{$userInfo.avatar}" style="height: 55px; border-radius: 50%; margin-right: 10px;">{$userInfo.nickname}</p>
+               <!-- <p style="padding-left: 15px;">{$userInfo.integral|floatval}</p> -->
+          
+                <div class="qqinfo">
+                    <div class="qqitem" style="border-right: 1px solid rgba(255,255,255,0.25);">
+                       <h1>
+                           {$conut_leader}
+                       </h1>
+                       <h2>
+                            {:L(" 邀請人數","Number of invitations")}
+                       </h2>
+                    </div>
+                    <div class="qqitem" style="border-right: 1px solid rgba(255,255,255,0.3);">
+                        <h1>
+                            {$order_num}
+                        </h1>
+                        <h2>
+                            {:L(" 訂單數(總)","Number of orders (total)")}
+                        </h2>
+                    </div>
+                    <div class="qqitem">
+                        <h1>
+                            {$brokerage}
+                        </h1>
+                        <h2>
+                           {:L(" 訂單金額 (總)","Order amount (total)")}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        
+        
+       <div class="user_item" v-for="item in list">
+           <div class="user_info">
+               <img :src="item.avatar" > 
+               <div class="user_text">
+                 <h1> {{item.nickname}}</h1>
+                 <span>{{item.add_times}}</span>
+               </div>
+           </div>
+           <div class="user_order">
+               <div class="order_item">
+                   <span>  {:L("  訂單金額(總)","Order amount (total)")}</span>
+                   <p>{{item.brokerage}}</p>
+               </div>
+               <div class="order_item">
+                   <span>{:L(" 訂單數(筆) ","Number of orders (total)")}</span>
+                   <p>{{item.order_num}}</p>
+               </div>
+               <div class="order_item">
+                   <span> {:L(" 本月數量(筆)","Number of this month (items)")}</span>
+                   <p>{{item.order_num_month}}</p>
+               </div>
+           </div>
+       </div>
+       <div style="height: 30px;">
+           
+       </div>
+    </section>
+</div>
+
+<script>
+  window.$leader_info = <?php echo json_encode($leader_info);?>;
+    (function() {
+        requirejs(['vue', 'helper', 'better-scroll', 'store'], function(Vue, $h, BScroll, storeApi) {
+            var wxApi = mapleWx($jssdk());
+            new Vue({
+                el: '#user-integral',
+                data: {
+                   list:$leader_info
+                },
+                methods: {
+                    
+                },
+                mounted: function() {
+                   
+                }
+            })
+        });
+    })();
+</script>
+{/block}

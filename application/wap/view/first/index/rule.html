@@ -1,0 +1,86 @@
+{extend name="public/container"}
+{block name="title"} {:L(" 獎勵規則","Reward rules")}{/block}
+{block name="content"}
+<style type="text/css">
+    .content {
+        position: relative;
+   /*     text-align: center; */
+    }
+    .content img {
+     
+        width: 100%;
+    }
+    .content #godl {
+        position: absolute;
+        z-index: 2;
+        top: 15%;
+    }
+    .content #jb {
+        /* position: absolute; */
+     /*   margin: 0 auto; */
+     position: relative;
+       z-index: 3333;
+        width: 70%;
+       /* top: 15%; */
+       margin-top: -300px;
+      /* bottom: 10%; */
+        left: 18%;
+    }
+    .text {
+        position: relative;
+        width: 95%;
+        z-index: 5;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 0.1rem;
+        margin-top: -70px;
+        padding: 60px 20px 30px 20px;
+        line-height: 1.5;
+        
+    }
+     .text p {
+         margin-top: 15px;
+     }
+     #right-nav {
+         display: none !important; 
+     }
+</style>
+<body style="background:#d53738">
+    <div class="share-ewm" style="padding: 0;">
+        <div class=" flex"
+            style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: absolute; top: 0; left: 0; ">
+            <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                <img src="/public/uploads/attach/2019/01/15/qback.png" style="width: 20px;">
+            </span>
+            <p style="text-align: center;width: 100%;line-height: 0.4rem; color: #fff; font-size: 16px;">
+                    {:L(" 獎勵規則","Reward rules")}
+            </p>
+            <script type="text/javascript">
+                document.getElementById("qqq").addEventListener("click", function() {
+                    window.history.back(-1);
+                })
+            </script>
+        </div>
+        <section>
+            <div class="content">
+                <img src="/public/uploads/attach/2021/01/25/rulebg.png" >
+                <img id="godl" src="/public/uploads/attach/2021/01/25/godl.png" >
+                <img id="jb" src="/public/uploads/attach/2021/01/25/jbie.png" >
+            </div>
+            <div class="text">
+                {:L($info.content,$info.en_content)}
+                
+              <!--  1、公司給予成就獎獎勵
+                500人X40=20000
+                1000人X60元=60000美元
+                10000X80元=800000美元
+                100000X100元=10000000元
+                1000000X120=120000000元 -->
+            </div>
+        </section>
+        
+    </div>
+    <script>
+
+    </script>
+{/block}

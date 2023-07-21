@@ -1,0 +1,83 @@
+<div style="height:.92rem;">
+    <!--   ['c'=>'Gameapi','a'=>'index','name'=>'游戏','class'=>'index'], -->
+</div>
+<?php
+$request = \think\Request::instance();
+$now_c = $request->controller();$now_a = $request->action();
+$menu = [
+    ['c'=>'Index','a'=>'index','name'=>'Index','class'=>'home'],
+    ['c'=>'Store','a'=>'category','name'=>'Category','class'=>'sort'],
+
+    ['c'=>'Store','a'=>'cart','name'=>'Cart','class'=>'car'],
+    ['c'=>'My','a'=>'index','name'=>'Account','class'=>'user'],
+];
+?>
+<footer class="common-footer flex border-1px" ref="storeMenu" @touchmove.prevent>
+    {volist name="menu" id="vo"}
+    <?php
+        if(strtolower($now_c) == strtolower($vo['c']) && strtolower($now_a) == strtolower($vo['a'])){
+            $href = 'javascript:void(0);';
+            $checked = true;
+        }else{
+            $href = Url($vo['c'].'/'.$vo['a']);
+            $checked = false;
+        }
+    ?>
+    <a class="{$vo.class} <?php if($checked){echo' on ';} ?>" href="{$href}">
+        <span class="footer-icon icon"></span>
+        <p>{$vo['name']}</p>
+    </a>
+    {/volist}
+</footer>
+<script type="text/javascript">
+ 
+  
+   
+</script>
+
+<script type="text/javascript">
+    //判断手机型号
+ var u = navigator.userAgent;
+ var device =""; //当前设备信息
+ if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+     device = "Android";
+     jsBridge.appInfo(function(info){ 
+         var version =info['appVer'];
+         if(version < {$Version.android}){
+           layer.confirm('检测有新的版本发布,是否更新？', {
+              btn: ['确认', '取消'] //可以无限个按钮
+            }, function(index, layero){
+                window.location.href='{$Version.android_url}'
+            }, function(index){
+
+            });
+         }
+       
+    });
+ } else if (u.indexOf('iPhone') > -1) {
+     device = "iPhone";
+ } else if (u.indexOf('Windows Phone') > -1) {
+     device = "Windows Phone";
+ }else{
+    device=""
+ }
+
+
+
+ setTimeout(() => {
+            console.log(localStorage.getItem("lang"))
+        if (localStorage.getItem("lang") == ' 繁 ') {
+           document.querySelector("footer .home p").innerText = '首頁'
+           document.querySelector("footer .sort p").innerText = '分類'
+           document.querySelector("footer .car p").innerText = '購物車'
+           document.querySelector("footer .user p").innerText = '我的'
+           
+        } else {     
+            document.querySelector("footer .home p").innerText = 'Index'
+            document.querySelector("footer .sort p").innerText = 'Category'
+            document.querySelector("footer .car p").innerText = 'Cart'
+            document.querySelector("footer .user p").innerText = 'Account'
+        }
+    }, 500)
+    
+</script>

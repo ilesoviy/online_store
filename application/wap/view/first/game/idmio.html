@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<style type="text/css">
+    /*html
+{
+    font-size: 75px;
+}*/
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url('{__WAP_PATH}newgame/idmio/img/bg.png');
+        background-size: cover;
+    }
+
+    #plate {
+        margin: 0.5rem;
+        background-image:url('{__WAP_PATH}newgame/idmio/img/box.png') ;
+        background-size: 100%;
+    
+    }
+
+    #answer {
+        margin: 0.5rem;
+    }
+
+    .word {
+        position: absolute;
+        background: #fff;
+        border: solid 0.04rem #8a3237;
+    }
+
+    .select {
+        border: solid 0.04rem #f00;
+    }
+    #header{
+        background-image:url('{__WAP_PATH}newgame/idmio/img/stage.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center ;
+        text-align: center;
+        margin: .1rem 0;
+        padding: .3rem;
+        color:#8a3237
+    }
+    .fanh{
+        width: 100%;
+        height: 40px;
+        background: #fff;
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+    .fanh span{
+        display: block;
+        float: left;
+    }
+    .fanh .fimg{
+        width: 10%;
+            height: 40px;
+    line-height: 52px;
+    }
+    .fanh .fimg img{
+        width: 70%;
+    }
+    .fanh .stitle{
+        width: 80%;
+        text-align: center;
+        height: 40px;
+    line-height: 40px;
+    }
+    .fraction {
+
+        margin: .1rem 0;
+
+        padding: .3rem;
+
+        color: #8a3237;
+
+        font-size: 0.7rem;
+
+    }
+</style>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>成语填词</title>
+    <script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+</head>
+
+<body >
+    <div class="fanh"><span class="fimg"><a href="/wap/my/game_list.html"><img src="{__WAP_PATH}newgame/idmio/img/fanhui.png"></a></span><span class="stitle">成语填词</span></div>
+    <!-- 头部 -->
+    <div id="header" >
+        第1关
+    </div>
+    <!-- 内容 -->
+    <div id="plate" style="height: 9.6rem;width: 9.6rem;margin:auto">
+    </div>
+    <!-- 答题框 -->
+    <div id="answer" style="width: 9.6rem;">
+        <div style="height: 1rem"></div>
+    </div>
+    <!-- 分数统计 -->
+
+    <div class="fraction">
+
+        总计得分：<span class="fraction-text">0</span>
+
+    </div>
+    <input type="hidden" name="uid" value="{$uid}">
+    <script type="text/javascript">
+        const { log } = console;
+        var matrix = {};
+        var idiom_dic = {};
+        // 显示数量
+        var block_num = 10;
+        // 显示的大小
+        var block_size = 0;
+        // 隐藏的数组
+        var hide_arr = [];
+        var select_rect = [-1, -1];
+        var border_width = 0.04;
+        // 关卡数
+        var stage = 0;
+        // 会员id
+        var uid = $(" input[ name='uid' ] ").val();
+        
+        // 随机值 --- 不知道干嘛用的 没有调用到
+        function rand_int(minNum, maxNum) {
+            return parseInt(Math.random() * (maxNum - minNum) + minNum);
+        }
+        
+        // 获取matrix数组对象中的值
+        function matrix_get_val(x, y) {
+            return matrix.data[y * matrix.cols + x];
+        }
+        
+        // 修改matrix数组对象中的值
+        function matrix_set_val(x, y, val) {
+            matrix.data[y * matrix.cols + x] = val;
+        }
+
+        function exist_val_four_around(x, y, self_x, self_y) {
+            var move_arr = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+            for (var i = 0; i < move_arr.length; i++) {
+                var tmp = move_arr[i];
+                var dx = tmp[0];
+                var dy = tmp[1];
+                var tx = x + dx;
+                var ty = y + dy;
+                if (tx == self_x && ty == self_y) continue;
+                if (tx < 0 || tx >= matrix.cols || ty < 0 || ty >= matrix.rows) continue;
+                if (matrix.data[ty * self.cols + tx]) return 1;
+            }
+            return 0;
+        }
+        
+        // 初始化关卡数据
+         function load_next_stage() {
+
+            // 初始化数据
+
+            $.ajax({
+
+                url: '/wap/game/index',
+
+                type: 'post',
+
+                dataType: 'json',
+
+                data: {
+
+                    uid: uid
+
+                },
+
+                success: function (res) {
+                    console.log('qqqq',res);
+
+                    if (res.code == 200) {
+
+                        // gid = getPar('gid');
+
+                        uid = res.data.uid;
+
+                        stage = res.data.num
+
+                        $('.fraction-text').text(res.data.integral?res.data.integral:0);
+
+
+
+                        // 给matrix 这个对象赋初值
+
+                        stage++;
+
+                        matrix = {}
+
+                        matrix.cols = block_num;
+
+                        matrix.rows = block_num;
+
+                        matrix.data = [];
+
+
+
+                        // 给matrix.data 添加144 个空的数据
+
+                        for (var i = 0; i < 12 * 12; i++) {
+
+                            matrix.data.push(null);
+
+                        }
+
+
+
+                        // 给idiom_dic这个对象赋值
+
+                        idiom_dic = {};
+
+                        // 获取本次关卡的值
+
+                        var stage_data = stage_arr[stage - 1];
+
+                        block_num = stage_data.block_num;
+
+
+
+                        // 数据切割
+
+                        var stage_idiom_arr = stage_data.idiom_arr.split(';');
+
+                        // 循环拿到后台数据(stage_arr现在是静态的) 进行循环处理
+
+                        for (var i = 0; i < stage_idiom_arr.length; i++) {
+
+                            // 
+
+                            var idiom_paras = stage_idiom_arr[i].split(',');
+
+                            var idiom = idiom_paras[0];
+
+                            var dire = parseInt(idiom_paras[1]);
+
+
+
+
+
+                            idiom_dic[idiom] = {};
+
+                            // 成语数组
+
+                            idiom_dic[idiom].word_arr = [];
+
+                            idiom_dic[idiom].dire = dire;
+
+                            // 对每一个成语的数据进行切割
+
+                            var word_arr = idiom_paras[2].split('|');
+
+                            // 对切割之后的数据(已转成数组) 进行循环
+
+                            for (var j = 0; j < word_arr.length; j++) {
+
+                                var word_paras = word_arr[j].split(' ');
+
+                                var x = parseInt(word_paras[0]);
+
+                                var y = parseInt(word_paras[1]);
+
+                                var word = word_paras[2];
+
+
+
+                                // 判断matrix显示数组的数组中是否有值
+
+                                if (matrix_get_val(x, y) == null) {
+
+                                    // 无值
+
+                                    var word_info = {};
+
+                                    word_info.word = word;
+
+                                    word_info.i = x;
+
+                                    word_info.j = y;
+
+                                    word_info.is_lock = true;
+
+                                    // is_lock 这个值表示显不显示
+
+                                    // 声明一个word_info对象 调用matrix修改数据的方法
+
+                                    matrix_set_val(x, y, word_info);
+
+                                    idiom_dic[idiom].word_arr.push(word_info);
+
+                                } else {
+
+                                    // 有值
+
+                                    var word_info = matrix_get_val(x, y);
+
+                                    // 获取 添加
+
+                                    idiom_dic[idiom].word_arr.push(word_info);
+
+                                }
+
+                            }
+
+                        }
+
+
+
+                        // 将 hide_arr 赋值为空
+
+                        hide_arr = [];
+
+                        // 获取数组中该需要隐藏的字符串然后进行切割
+
+                        var stage_hide_arr = stage_data.hide_arr.split(';');
+
+                        for (var i = 0; i < stage_hide_arr.length; i++) {
+
+                            // 将字符切割成数组
+
+                            var hide_paras = stage_hide_arr[i].split(' ');
+
+                            var x = parseInt(hide_paras[0]);
+
+                            var y = parseInt(hide_paras[1]);
+
+                            var word = hide_paras[2];
+
+                            // 使用 x 和 y 获取到对应位置的数据
+
+                            var info = matrix_get_val(x, y);
+
+
+
+                            // 将相对数字的值
+
+                            info.word = '';
+
+                            info.hide_index = hide_arr.length;
+
+                            info.is_lock = false;
+
+                            hide_arr.push([x, y, word, null, null]);
+
+                        }
+
+
+
+                        select_rect = [hide_arr[0][0], hide_arr[0][1]];
+
+                        // 获取第一个需要输入的值的位置
+
+                        init_game();
+
+                        refresh_bg();
+
+                        document.getElementById('header').innerText = '第' + stage + '关';
+
+                    } else {
+
+                        alert(res.data);
+
+                        return;
+
+                    }
+
+                }
+
+            });
+
+        }
+        
+        function set_word_select(x, y) {
+            select_rect = [x, y];
+            var info = matrix_get_val(x, y);
+            info.div.className = 'word select';
+        }
+        
+        // 这个方法 获取答题的值是否正确
+        function check_success() {
+            
+            for (var idiom in idiom_dic) {
+                var idiom_info = idiom_dic[idiom];
+                var word_arr = idiom_info.word_arr;
+                for (var i = 0; i < word_arr.length; i++) {
+                    var word_info = word_arr[i];
+                    if (word_info.state != 1) word_info.state = 0;
+                }
+            }
+            
+            for (var idiom in idiom_dic) {
+                var idiom_info = idiom_dic[idiom];
+                var tmp_idiom_str = '';
+                var word_arr = idiom_info.word_arr;
+                for (var i = 0; i < word_arr.length; i++) {
+                    var word_info = word_arr[i];
+                    if (word_info.word.length > 0) tmp_idiom_str += word_info.word;
+                }
+                var state = 0
+                if (tmp_idiom_str.length == idiom.length) {
+                    state = (tmp_idiom_str == idiom ? 1 : 2);
+                }
+
+                for (var i = 0; i < word_arr.length; i++) {
+                    var word_info = word_arr[i];
+                    if (word_info.state != 1) {
+                        if (state != 0 || word_info.state != 2) word_info.state = state;
+                    }
+                }
+            }
+
+            for (var idiom in idiom_dic) {
+                var idiom_info = idiom_dic[idiom];
+                var word_arr = idiom_info.word_arr;
+                for (var i = 0; i < word_arr.length; i++) {
+                    var word_info = word_arr[i];
+                    if (word_info.state != 1) return false;
+                }
+            }
+
+            return true;
+        }
+        
+        function check_same_idiom(x, y) {
+            for (var idiom in idiom_dic) {
+                var word_arr = idiom_dic[idiom].word_arr;
+                var contain_word = false;
+                for (var i = 0; i < word_arr.length; i++) {
+                    var word_info = word_arr[i]
+                    if (word_info.i == x && word_info.j == y) {
+                        contain_word = true;
+                        break;
+                    }
+                }
+                if (contain_word) {
+                    for (var i = 0; i < word_arr.length; i++) {
+                        var word_info = word_arr[i]
+                        if (word_info.word.length == 0) {
+                            set_word_select(word_info.i, word_info.j);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        // 获取下一个赋值的对象
+        function make_next_select() {
+            var x = select_rect[0];
+            var y = select_rect[1];
+            if (x + 1 < block_num && matrix_get_val(x + 1, y) != null && matrix_get_val(x + 1, y).word.length == 0) {
+                set_word_select(x + 1, y);
+            } else if (y + 1 < block_num && matrix_get_val(x, y + 1) != null && matrix_get_val(x, y + 1).word.length == 0) {
+                set_word_select(x, y + 1);
+            } else if (x - 1 >= 0 && matrix_get_val(x - 1, y) != null && matrix_get_val(x - 1, y).word.length == 0) {
+                set_word_select(x - 1, y);
+            } else if (y - 1 >= 0 && matrix_get_val(x, y - 1) != null && matrix_get_val(x, y - 1).word.length == 0) {
+                set_word_select(x, y - 1);
+            } else if (!check_same_idiom(x, y)) {
+                var arr = [];
+                for (var i = 0; i < block_num; i++) {
+                    for (var j = 0; j < block_num; j++) {
+                        var info = matrix_get_val(i, j);
+                        if (info != null && info.word.length == 0) {
+                            var dist = (i - x) * (i - x) + (j - y) * (j - y);
+                            arr.push([i, j, dist]);
+                        }
+                    }
+                }
+                if (arr.length == 0) return;
+
+                arr.sort(function (u, v) { return u[2] - v[2]; })
+                set_word_select(arr[0][0], arr[0][1])
+            }
+        }
+
+        // 重新渲染面板
+        function refresh_bg() {
+            var word_divs = document.getElementById('plate').getElementsByClassName('word');
+            // 获取 plant 容器中的
+            for (var i = 0; i < word_divs.length; i++) {
+                var word_div = word_divs[i];
+                var xy = word_div.dataV.split(',');
+                var x = parseInt(xy[0]);
+                var y = parseInt(xy[1]);
+                var word_info = matrix_get_val(x, y);
+                // 获取 每个div 在 matrix 数组对象中的值 默认这个undefined
+                if (word_info.state == 1){
+                    word_div.style.color = '#fff';
+                    word_div.style.background = '#8a3237';
+
+                }
+                else if (word_info.state == 2)
+                    word_div.style.color = '#f01';
+                else if (word_info.is_lock) {
+                    word_div.style.background = '#8a3237';
+                    word_div.style.color = '#fff';
+                }
+                else {
+                    // word_div.style.background = '#8a3237';
+                    // word_div.style.color = '#000';
+                    word_div.style.background = '#fff';
+                    word_div.style.color = '#000';
+
+                }
+            }
+        }
+        
+        var tc = 3;
+        
+        function timeout_load_next_stage() {
+            tc--;
+            document.getElementById('header').innerText = '挑战成功,' + tc + '秒后进入第' + (stage + 1) + '关';
+            if (tc <= 0){
+                 // 添加积分
+
+                $.ajax({
+
+                    url: '/wap/game/idmioUpdate',
+
+                    type: 'post',
+
+                    dataType: 'json',
+
+                    data: {
+
+                        gid: stage,
+
+                        uid: uid,
+
+                        integral: 10
+
+                    },
+
+                    success: function (res) {
+                        console.log('wwww',res);
+                        if (res.code == 200) {
+
+                            load_next_stage();
+
+                        } else {
+
+                            alert(res.msg);    
+
+                        }
+
+                    }
+
+                });
+
+            }else{setTimeout(timeout_load_next_stage, 1000);} 
+        }
+
+        // 点击事件
+        function click_item(e) {
+            // 获取点击目标的DOM对象的数据
+            // 获取 是回答问题 还是纠正问题 answer则是回答问题 plant纠正问题
+            var t = e.target.dataT;
+            // 获取当前要回答问题的窗口
+            var old_select_info = matrix_get_val(select_rect[0], select_rect[1]);
+            old_select_info.div.className = 'word';
+            if (t == 'plate') {
+                // 纠正问题
+                // if(e.target.innerText.length>0){
+                var tmp = e.target.dataV.split(",");
+                var i = parseInt(tmp[0]);
+                var j = parseInt(tmp[1]);
+                var info = matrix_get_val(i, j);
+                if (info.state == 1) {
+                    set_word_select(select_rect[0], select_rect[1]);
+                    return;
+                }
+                if (info.word.length > 0) {
+                    hide_arr[info.op_hide_index][2] = e.target.innerText;
+                    hide_arr[info.op_hide_index][3] = null;
+                    hide_arr[info.op_hide_index][4].innerText = e.target.innerText;
+                    info.word = '';
+                    info.div.innerText = '';
+                    check_success();
+                }
+                set_word_select(i, j);
+                //}
+            } else if (t == 'answer') {
+                // 回答问题 
+                // log(e.target.innerText.length)
+                // 判断点击事件上的是否有可以响应的值
+                if (e.target.innerText.length > 0) {
+                    var index = parseInt(e.target.dataV);
+
+                    // 获取点击的是第一个值
+                    log(hide_arr,index,select_rect)
+                    hide_arr[index][2] = '';
+                    hide_arr[index][3] = select_rect;
+
+                    // 改变对象的值
+                    var info = matrix_get_val(select_rect[0], select_rect[1]);
+                    info.word = e.target.innerText;
+                    info.div.innerText = e.target.innerText;
+                    info.op_hide_index = index;
+                    
+                    // 注意! 前者赋值结束之后 才可执行下面的语句 否者前面会赋值失败
+                    hide_arr[index][4].innerText = '';
+                    make_next_select();
+                    if (check_success()) {
+                        document.getElementById('header').innerText = '挑战成功,3秒后进入第' + (stage + 1) + '关';
+                        tc = 3;
+                        setTimeout(timeout_load_next_stage, 1000);
+                    }
+                }
+            }
+            refresh_bg();
+        }
+        
+        // 进入游戏 渲染数据
+        function init_game() {
+            // 获取plate 并且删除他的子元素
+            var plate = document.getElementById("plate");
+            while (plate.hasChildNodes()) {
+                plate.removeChild(plate.lastChild);
+            }
+
+            // 循环创建一个 10*10 的模板
+            for (var i = 0; i < block_num; i++) {
+                for (var j = 0; j < block_num; j++) {
+                    // 获取每一个字符的位置
+                    var info = matrix_get_val(i, j);
+                    if (info) {
+                        // 创建div 放到 plant容器
+                        var div = document.createElement("div");
+                        div.dataT = "plate";
+                        div.dataV = i + "," + j;
+                        div.className = "word";
+                        div.style.left = (i * block_size + 0.5 + border_width) + "rem";
+                        div.style.top = (j * block_size + 3.3 + border_width) + "rem";
+                        div.style.width = (block_size - border_width * 2) + "rem";
+                        div.style.height = (block_size - border_width * 2) + "rem";
+                        div.style.boxSizing='border-box'
+                        div.innerText = info.word;
+                        div.style.lineHeight = (block_size - border_width * 2) + "rem";
+                        div.style.fontSize = (block_size * 0.48) + "rem";
+                        div.style.textAlign = "center";
+                        // 假如是一个需要输入的值就会添加一个点击事件
+                        if (info.word.length == 0) div.onclick = click_item;
+                        plate.appendChild(div);
+                        info.div = div;
+                    }
+                }
+            }
+
+            // 判断答题容器是否有值 如果有就全部删除
+            while (answer.hasChildNodes()) { answer.removeChild(answer.lastChild); }
+
+            var ans_line_num = 8;
+            if (block_size * 8 > 9.0) ans_line_num = Math.floor(9.0 * 0.9 / block_size);
+            var sps = 9.0 / ans_line_num;
+            var bsize = sps * 0.8;
+            log(ans_line_num, sps, bsize)
+            // 给答题容器循环渲染 要隐藏的值
+            for (var i = 0; i < hide_arr.length; i++) {
+                // 将要循环的值渲染到页面
+                var tmp = hide_arr[i];
+                var xi = tmp[0];
+                var yi = tmp[1];
+                var word = tmp[2];
+                var op = tmp[3];
+                var div = document.createElement("div");
+                div.dataT = "answer";
+                div.dataV = i;
+                div.className = "word";
+                div.style.left = (Math.floor(i % ans_line_num) * sps + 0.5 + sps * 0.1) + "rem";
+                div.style.top = (Math.floor(i / ans_line_num) * sps + 2.5 + 10 + sps * 0.1) + "rem";
+                div.style.width = bsize + "rem";
+                div.style.height = bsize + "rem";
+                div.style.borderRadius = '5px'
+                div.style.border = "solid 1px #8a3237";
+                div.innerText = word;
+                div.style.lineHeight = bsize + "rem";
+                div.style.fontSize = (bsize * 0.48) + "rem";
+                div.style.backgroundColor="#8a3237";
+                div.style.color="#fff";
+                div.style.padding="1px"
+                div.style.textAlign = "center";
+                // 给每一个值添加一个点击事件
+                div.onclick = click_item;
+                answer.appendChild(div);
+                tmp[4] = div;
+            }
+
+            // 渲染答题容器
+            document.getElementById('answer').style.height = (Math.ceil(i / ans_line_num) * sps + 1) + 'rem';
+
+            // 给第一个需要答题的框架添加一个重量色的select值
+            var info = matrix_get_val(select_rect[0], select_rect[1]);
+            info.div.className = "word select";
+        }
+
+        window.onload = function () {
+            // 本地存储一个关卡数
+            // var his_stage = localStorage.getItem('stage');
+            // if (his_stage != null) {
+            //     // 假如关卡数不为 0 则 -1
+            //     stage = parseInt(his_stage) - 1;
+            // }
+            // 自适应操作
+            var documentWidth = window.screen.availWidth
+            // 初始化block_size的值
+            block_size = 9.0 / block_num;
+            load_next_stage();
+            document.documentElement.style.fontSize = (documentWidth / 10) + 'px';
+            document.getElementById('header').style.fontSize = '0.5rem';
+        }
+
+        // 数据
+        var stage_arr = [{ "hide_arr": "3 4 \u9b3c;6 1 \u8d4f;5 4 \u795e", "word_num": 10, "idiom_arr": "\u5b64\u9b42\u91ce\u9b3c,1,3 1 \u5b64|3 2 \u9b42|3 3 \u91ce|3 4 ;\u5b64\u82b3\u81ea\u8d4f,0,3 1 \u5b64|4 1 \u82b3|5 1 \u81ea|6 1 ;\u9b3c\u4f7f\u795e\u5dee,0,3 4 |4 4 \u4f7f|5 4 |6 4 \u5dee", "block_num": 10 }, { "hide_arr": "2 4 \u96be;3 7 \u539f;5 4 \u8fd8", "word_num": 10, "idiom_arr": "\u79ef\u91cd\u96be\u8fd4,0,0 4 \u79ef|1 4 \u91cd|2 4 |3 4 \u8fd4;\u8fd4\u672c\u8fd8\u539f,1,3 4 \u8fd4|3 5 \u672c|3 6 \u8fd8|3 7 ;\u8fd4\u8001\u8fd8\u7ae5,0,3 4 \u8fd4|4 4 \u8001|5 4 |6 4 \u7ae5", "block_num": 10 }, { "hide_arr": "3 2 \u6b64;5 4 \u4e0d;5 1 \u591a", "word_num": 10, "idiom_arr": "\u591a\u6b64\u4e00\u4e3e,1,3 1 \u591a|3 2 |3 3 \u4e00|3 4 \u4e3e;\u4e3e\u68cb\u4e0d\u5b9a,0,3 4 \u4e3e|4 4 \u68cb|5 4 |6 4 \u5b9a;\u591a\u624d\u591a\u827a,0,3 1 \u591a|4 1 \u624d|5 1 |6 1 \u827a", "block_num": 10 }, { "hide_arr": "3 1 \u4e3e;6 4 \u95e8;3 7 \u827e", "word_num": 10, "idiom_arr": "\u4e3e\u6b62\u5927\u65b9,1,3 1 |3 2 \u6b62|3 3 \u5927|3 4 \u65b9;\u65b9\u4fbf\u4e4b\u95e8,0,3 4 \u65b9|4 4 \u4fbf|5 4 \u4e4b|6 4 ;\u65b9\u5174\u672a\u827e,1,3 4 \u65b9|3 5 \u5174|3 6 \u672a|3 7 ", "block_num": 10 }, { "hide_arr": "3 6 \u54c8;2 7 \u718a;3 4 \u70b9;0 4 \u53ef", "word_num": 13, "idiom_arr": "\u70b9\u5934\u54c8\u8170,1,3 4 |3 5 \u5934|3 6 |3 7 \u8170;\u864e\u80cc\u718a\u8170,0,0 7 \u864e|1 7 \u80cc|2 7 |3 7 \u8170;\u70b9\u77f3\u6210\u91d1,0,3 4 |4 4 \u77f3|5 4 \u6210|6 4 \u91d1;\u53ef\u5708\u53ef\u70b9,0,0 4 |1 4 \u5708|2 4 \u53ef|3 4 ", "block_num": 10 }, { "hide_arr": "3 4 \u4e5d;0 5 \u6c14;5 4 \u5f52", "word_num": 13, "idiom_arr": "\u4e5d\u4e5d\u5f52\u4e00,0,3 4 |4 4 \u4e5d|5 4 |6 4 \u4e00;\u4e5d\u725b\u4e00\u6bdb,1,3 4 |3 5 \u725b|3 6 \u4e00|3 7 \u6bdb;\u6c14\u5598\u5982\u725b,0,0 5 |1 5 \u5598|2 5 \u5982|3 5 \u725b;\u653e\u864e\u5f52\u5c71,1,5 2 \u653e|5 3 \u864e|5 4 |5 5 \u5c71", "block_num": 10 }, { "hide_arr": "3 4 \u6d6e;3 7 \u5f71;5 3 \u56f0;3 6 \u63a0", "word_num": 13, "idiom_arr": "\u6d6e\u76ae\u6f66\u8349,0,3 4 |4 4 \u76ae|5 4 \u6f66|6 4 \u8349;\u4e0e\u4e16\u6c89\u6d6e,1,3 1 \u4e0e|3 2 \u4e16|3 3 \u6c89|3 4 ;\u6d6e\u5149\u63a0\u5f71,1,3 4 |3 5 \u5149|3 6 |3 7 ;\u7a77\u56f0\u6f66\u5012,1,5 2 \u7a77|5 3 |5 4 \u6f66|5 5 \u5012", "block_num": 10 }, { "hide_arr": "3 4 \u7a7a;2 1 \u5012;3 1 \u6d77;3 3 \u5929", "word_num": 13, "idiom_arr": "\u6d77\u9614\u5929\u7a7a,1,3 1 |3 2 \u9614|3 3 |3 4 ;\u7ffb\u6c5f\u5012\u6d77,0,0 1 \u7ffb|1 1 \u6c5f|2 1 |3 1 ;\u6d77\u5e95\u635e\u6708,0,3 1 |4 1 \u5e95|5 1 \u635e|6 1 \u6708;\u7a7a\u5934\u652f\u7968,0,3 4 |4 4 \u5934|5 4 \u652f|6 4 \u7968", "block_num": 10 }, { "hide_arr": "5 2 \u6c57;5 4 \u5145;3 3 \u6cdb;6 2 \u6d41", "word_num": 13, "idiom_arr": "\u6c57\u725b\u5145\u680b,1,5 2 |5 3 \u725b|5 4 |5 5 \u680b;\u6ee5\u7afd\u5145\u6570,0,3 4 \u6ee5|4 4 \u7afd|5 4 |6 4 \u6570;\u6cdb\u6ee5\u6210\u707e,1,3 3 |3 4 \u6ee5|3 5 \u6210|3 6 \u707e;\u6c57\u6d41\u6d43\u80cc,0,5 2 |6 2 |7 2 \u6d43|8 2 \u80cc", "block_num": 10 }, { "hide_arr": "3 4 \u900d;1 5 \u5b64;4 6 \u4e3b;4 4 \u9065;1 9 \u65f6", "word_num": 16, "idiom_arr": "\u900d\u9065\u81ea\u5728,1,3 4 |3 5 \u9065|3 6 \u81ea|3 7 \u5728;\u9ccf\u5be1\u5b64\u72ec,1,1 3 \u9ccf|1 4 \u5be1|1 5 |1 6 \u72ec;\u72ec\u7acb\u81ea\u4e3b,0,1 6 \u72ec|2 6 \u7acb|3 6 \u81ea|4 6 ;\u900d\u9065\u6cd5\u5916,0,3 4 |4 4 |5 4 \u6cd5|6 4 \u5916;\u72ec\u6b65\u5f53\u65f6,1,1 6 \u72ec|1 7 \u6b65|1 8 \u5f53|1 9 ", "block_num": 10 }, { "hide_arr": "5 6 \u5254;6 4 \u73d1;3 4 \u5a07;3 1 \u91d1;6 2 \u5de7", "word_num": 16, "idiom_arr": "\u73b2\u73d1\u5254\u900f,1,5 4 \u73b2|5 5 \u73d1|5 6 |5 7 \u900f;\u5a07\u5c0f\u73b2\u73d1,0,3 4 |4 4 \u5c0f|5 4 \u73b2|6 4 ;\u5a07\u751f\u60ef\u517b,1,3 4 |3 5 \u751f|3 6 \u60ef|3 7 \u517b;\u91d1\u5c4b\u85cf\u5a07,1,3 1 |3 2 \u5c4b|3 3 \u85cf|3 4 ;\u5c0f\u5de7\u73b2\u73d1,1,6 1 \u5c0f|6 2 |6 3 \u73b2|6 4 ", "block_num": 10 }, { "hide_arr": "2 5 \u62d4;3 4 \u54ac;6 4 \u5b57;3 6 \u5207;0 4 \u8c03", "word_num": 16, "idiom_arr": "\u864e\u53e3\u62d4\u7259,0,0 5 \u864e|1 5 \u53e3|2 5 |3 5 \u7259;\u54ac\u7259\u5207\u9f7f,1,3 4 |3 5 \u7259|3 6 |3 7 \u9f7f;\u54ac\u6587\u56bc\u5b57,0,3 4 |4 4 \u6587|5 4 \u56bc|6 4 ;\u5207\u80a4\u4e4b\u75db,0,3 6 |4 6 \u80a4|5 6 \u4e4b|6 6 \u75db;\u8c03\u864e\u79bb\u5c71,1,0 4 |0 5 \u864e|0 6 \u79bb|0 7 \u5c71", "block_num": 10 }, { "hide_arr": "0 7 \u6d41;3 5 \u5c18;2 4 \u4e0b;4 6 \u540e;4 4 \u9910", "word_num": 16, "idiom_arr": "\u7518\u5904\u4e0b\u6d41,1,0 4 \u7518|0 5 \u5904|0 6 \u4e0b|0 7 ;\u98ce\u5c18\u4ec6\u4ec6,1,3 4 \u98ce|3 5 |3 6 \u4ec6|3 7 \u4ec6;\u7518\u62dc\u4e0b\u98ce,0,0 4 \u7518|1 4 \u62dc|2 4 |3 4 \u98ce;\u524d\u4ec6\u540e\u7ee7,0,2 6 \u524d|3 6 \u4ec6|4 6 |5 6 \u7ee7;\u98ce\u9910\u9732\u5bbf,0,3 4 \u98ce|4 4 |5 4 \u9732|6 4 \u5bbf", "block_num": 10 }, { "hide_arr": "1 1 \u6b62;3 1 \u65b9;6 4 \u96c0;0 1 \u4e3e;4 4 \u53ef", "word_num": 16, "idiom_arr": "\u4e3e\u6b62\u5927\u65b9,0,0 1 |1 1 |2 1 \u5927|3 1 ;\u65b9\u4fbf\u4e4b\u95e8,1,3 1 |3 2 \u4fbf|3 3 \u4e4b|3 4 \u95e8;\u95e8\u53ef\u7f57\u96c0,0,3 4 \u95e8|4 4 |5 4 \u7f57|6 4 ;\u7eb2\u4e3e\u76ee\u5f20,1,0 0 \u7eb2|0 1 |0 2 \u76ee|0 3 \u5f20;\u65b9\u5174\u672a\u827e,0,3 1 |4 1 \u5174|5 1 \u672a|6 1 \u827e", "block_num": 10 }, { "hide_arr": "7 6 \u95fe;5 7 \u76cf;4 1 \u9ad8;5 1 \u8bba;6 4 \u9519", "word_num": 16, "idiom_arr": "\u6539\u6362\u95e8\u95fe,0,4 6 \u6539|5 6 \u6362|6 6 \u95e8|7 6 ;\u4ea4\u676f\u6362\u76cf,1,5 4 \u4ea4|5 5 \u676f|5 6 \u6362|5 7 ;\u9ad8\u4eba\u4e00\u7b79,1,4 1 |4 2 \u4eba|4 3 \u4e00|4 4 \u7b79;\u653e\u8a00\u9ad8\u8bba,0,2 1 \u653e|3 1 \u8a00|4 1 |5 1 ;\u89e5\u7b79\u4ea4\u9519,0,3 4 \u89e5|4 4 \u7b79|5 4 \u4ea4|6 4 ", "block_num": 10 }, { "hide_arr": "6 2 \u6025;4 3 \u558b;8 1 \u5bcc;5 4 \u5e94;6 5 \u6210;6 4 \u6c42;8 3 \u654c;4 5 \u4f11", "word_num": 16, "idiom_arr": "\u6025\u4e0d\u53ef\u5f85,0,6 2 |7 2 \u4e0d|8 2 \u53ef|9 2 \u5f85;\u558b\u558b\u4e0d\u4f11,1,4 2 \u558b|4 3 |4 4 \u4e0d|4 5 ;\u5bcc\u53ef\u654c\u56fd,1,8 1 |8 2 \u53ef|8 3 |8 4 \u56fd;\u4f9b\u4e0d\u5e94\u6c42,0,3 4 \u4f9b|4 4 \u4e0d|5 4 |6 4 ;\u6025\u4e8e\u6c42\u6210,1,6 2 |6 3 \u4e8e|6 4 |6 5 ", "block_num": 10 }, { "hide_arr": "4 4 \u660e;6 7 \u4e4b;0 4 \u54c8;3 4 \u7b80;3 2 \u91d1;0 2 \u70b9", "word_num": 19, "idiom_arr": "\u7b80\u660e\u627c\u8981,0,3 4 |4 4 |5 4 \u627c|6 4 \u8981;\u8981\u800c\u8a00\u4e4b,1,6 4 \u8981|6 5 \u800c|6 6 \u8a00|6 7 ;\u70b9\u5934\u54c8\u8170,1,0 2 |0 3 \u5934|0 4 |0 5 \u8170;\u91d1\u5175\u7b80\u653f,1,3 2 |3 3 \u5175|3 4 |3 5 \u653f;\u91d1\u699c\u9898\u540d,0,3 2 |4 2 \u699c|5 2 \u9898|6 2 \u540d;\u70b9\u77f3\u6210\u91d1,0,0 2 |1 2 \u77f3|2 2 \u6210|3 2 ", "block_num": 10 }, { "hide_arr": "8 1 \u673a;2 1 \u975e;6 4 \u6c34;5 7 \u91d1;2 2 \u6210;5 2 \u5708", "word_num": 19, "idiom_arr": "\u53ef\u4e58\u4e4b\u673a,0,5 1 \u53ef|6 1 \u4e58|7 1 \u4e4b|8 1 ;\u975e\u540c\u5c0f\u53ef,0,2 1 |3 1 \u540c|4 1 \u5c0f|5 1 \u53ef;\u873b\u8713\u70b9\u6c34,0,3 4 \u873b|4 4 \u8713|5 4 \u70b9|6 4 ;\u70b9\u77f3\u6210\u91d1,1,5 4 \u70b9|5 5 \u77f3|5 6 \u6210|5 7 ;\u79ef\u975e\u6210\u662f,1,2 0 \u79ef|2 1 |2 2 |2 3 \u662f;\u53ef\u5708\u53ef\u70b9,1,5 1 \u53ef|5 2 |5 3 \u53ef|5 4 \u70b9", "block_num": 10 }, { "hide_arr": "0 2 \u4e00;0 5 \u6124;1 3 \u6b62;6 4 \u968f;3 4 \u592b;4 6 \u865a", "word_num": 19, "idiom_arr": "\u591a\u6b64\u4e00\u4e3e,1,0 0 \u591a|0 1 \u6b64|0 2 |0 3 \u4e3e;\u6124\u4e16\u5ac9\u4fd7,0,0 5 |1 5 \u4e16|2 5 \u5ac9|3 5 \u4fd7;\u4e3e\u6b62\u4e0d\u51e1,0,0 3 \u4e3e|1 3 |2 3 \u4e0d|3 3 \u51e1;\u592b\u5531\u5987\u968f,0,3 4 |4 4 \u5531|5 4 \u5987|6 4 ;\u51e1\u592b\u4fd7\u5b50,1,3 3 \u51e1|3 4 |3 5 \u4fd7|3 6 \u5b50;\u5b50\u865a\u4e4c\u6709,0,3 6 \u5b50|4 6 |5 6 \u4e4c|6 6 \u6709", "block_num": 10 }, { "hide_arr": "9 1 \u542c;4 4 \u4eba;5 4 \u4e0d;3 1 \u5fcd;3 5 \u4e8e;6 1 \u5a13", "word_num": 19, "idiom_arr": "\u5a13\u5a13\u52a8\u542c,0,6 1 |7 1 \u5a13|8 1 \u52a8|9 1 ;\u7779\u7269\u601d\u4eba,1,4 1 \u7779|4 2 \u7269|4 3 \u601d|4 4 ;\u6bc1\u4eba\u4e0d\u5026,0,3 4 \u6bc1|4 4 |5 4 |6 4 \u5026;\u76ee\u4e0d\u5fcd\u7779,0,1 1 \u76ee|2 1 \u4e0d|3 1 |4 1 \u7779;\u6bc1\u4e8e\u4e00\u65e6,1,3 4 \u6bc1|3 5 |3 6 \u4e00|3 7 \u65e6;\u5a13\u5a13\u4e0d\u5026,1,6 1 |6 2 \u5a13|6 3 \u4e0d|6 4 \u5026", "block_num": 10 }, { "hide_arr": "6 7 \u8bc6;8 4 \u9ad8;3 4 \u8a00;5 1 \u6e10;6 2 \u5fae;3 3 \u653e", "word_num": 19, "idiom_arr": "\u8fdc\u89c1\u5353\u8bc6,1,6 4 \u8fdc|6 5 \u89c1|6 6 \u5353|6 7 ;\u8fdc\u8d70\u9ad8\u98de,0,6 4 \u8fdc|7 4 \u8d70|8 4 |9 4 \u98de;\u8a00\u8fd1\u65e8\u8fdc,0,3 4 |4 4 \u8fd1|5 4 \u65e8|6 4 \u8fdc;\u675c\u6e10\u9632\u840c,0,4 1 \u675c|5 1 |6 1 \u9632|7 1 \u840c;\u9632\u5fae\u8651\u8fdc,1,6 1 \u9632|6 2 |6 3 \u8651|6 4 \u8fdc;\u653e\u8a00\u9ad8\u8bba,1,3 3 |3 4 |3 5 \u9ad8|3 6 \u8bba", "block_num": 10 }, { "hide_arr": "3 5 \u5982;5 3 \u79ef;4 4 \u6708;0 6 \u901a;0 3 \u8c41;1 0 \u98de;3 0 \u6d41", "word_num": 22, "idiom_arr": "\u5ea6\u65e5\u5982\u5e74,1,3 3 \u5ea6|3 4 \u65e5|3 5 |3 6 \u5e74;\u5806\u79ef\u5982\u5c71,1,5 2 \u5806|5 3 |5 4 \u5982|5 5 \u5c71;\u65e5\u6708\u5982\u68ad,0,3 4 \u65e5|4 4 |5 4 \u5982|6 4 \u68ad;\u8c41\u7136\u8d2f\u901a,1,0 3 |0 4 \u7136|0 5 \u8d2f|0 6 ;\u8c41\u8fbe\u5927\u5ea6,0,0 3 |1 3 \u8fbe|2 3 \u5927|3 3 \u5ea6;\u98de\u9ec4\u817e\u8fbe,1,1 0 |1 1 \u9ec4|1 2 \u817e|1 3 \u8fbe;\u98de\u77ed\u6d41\u957f,0,1 0 |2 0 \u77ed|3 0 |4 0 \u957f", "block_num": 10 }, { "hide_arr": "3 6 \u91cc;1 6 \u884c;1 4 \u793c;3 9 \u67aa;3 4 \u5bb6;4 4 \u5e38;2 9 \u78e8", "word_num": 22, "idiom_arr": "\u884c\u5bb6\u91cc\u624b,0,1 6 |2 6 \u5bb6|3 6 |4 6 \u624b;\u884c\u5175\u5e03\u9635,1,1 6 |1 7 \u5175|1 8 \u5e03|1 9 \u9635;\u8bd7\u793c\u4f20\u5bb6,0,0 4 \u8bd7|1 4 |2 4 \u4f20|3 4 ;\u4e34\u9635\u78e8\u67aa,0,0 9 \u4e34|1 9 \u9635|2 9 |3 9 ;\u5bb6\u957f\u91cc\u77ed,1,3 4 |3 5 \u957f|3 6 |3 7 \u77ed;\u5bb6\u5e38\u4fbf\u996d,0,3 4 |4 4 |5 4 \u4fbf|6 4 \u996d;\u544a\u8001\u8fd8\u5bb6,1,3 1 \u544a|3 2 \u8001|3 3 \u8fd8|3 4 ", "block_num": 10 }, { "hide_arr": "4 6 \u624b;5 4 \u6237;1 9 \u9635;3 4 \u5bb6;3 5 \u957f;5 5 \u5bf9;5 2 \u95e8", "word_num": 22, "idiom_arr": "\u884c\u5bb6\u91cc\u624b,0,1 6 \u884c|2 6 \u5bb6|3 6 \u91cc|4 6 ;\u5bb6\u55bb\u6237\u6653,0,3 4 |4 4 \u55bb|5 4 |6 4 \u6653;\u884c\u5175\u5e03\u9635,1,1 6 \u884c|1 7 \u5175|1 8 \u5e03|1 9 ;\u8bd7\u793c\u4f20\u5bb6,0,0 4 \u8bd7|1 4 \u793c|2 4 \u4f20|3 4 ;\u5bb6\u957f\u91cc\u77ed,1,3 4 |3 5 |3 6 \u91cc|3 7 \u77ed;\u544a\u8001\u8fd8\u5bb6,1,3 1 \u544a|3 2 \u8001|3 3 \u8fd8|3 4 ;\u95e8\u5f53\u6237\u5bf9,1,5 2 |5 3 \u5f53|5 4 |5 5 ", "block_num": 10 }, { "hide_arr": "3 2 \u6dc6;3 4 \u975e;2 1 \u767d;1 5 \u8089;5 2 \u9f0e;2 3 \u5373;0 5 \u9aa8;3 3 \u662f", "word_num": 22, "idiom_arr": "\u6df7\u6dc6\u662f\u975e,1,3 1 \u6df7|3 2 |3 3 |3 4 ;\u975e\u5206\u4e4b\u60f3,0,3 4 |4 4 \u5206|5 4 \u4e4b|6 4 \u60f3;\u975e\u4eb2\u975e\u6545,1,3 4 |3 5 \u4eb2|3 6 \u975e|3 7 \u6545;\u9ed1\u767d\u6df7\u6dc6,0,1 1 \u9ed1|2 1 |3 1 \u6df7|4 1 \u6dc6;\u9aa8\u8089\u81f3\u4eb2,0,0 5 |1 5 |2 5 \u81f3|3 5 \u4eb2;\u9f0e\u8db3\u4e4b\u52bf,1,5 2 |5 3 \u8db3|5 4 \u4e4b|5 5 \u52bf;\u4fef\u62fe\u5373\u662f,0,0 3 \u4fef|1 3 \u62fe|2 3 |3 3 ", "block_num": 10 }, { "hide_arr": "6 1 \u7a0b;3 3 \u5df1;3 2 \u6301;3 5 \u978d;2 6 \u7269;0 5 \u8bae;3 4 \u89c1;0 2 \u529b;0 4 \u4f17", "word_num": 22, "idiom_arr": "\u5404\u5954\u524d\u7a0b,0,3 1 \u5404|4 1 \u5954|5 1 \u524d|6 1 ;\u6392\u65a5\u5f02\u5df1,0,0 3 \u6392|1 3 \u65a5|2 3 \u5f02|3 3 ;\u5404\u6301\u5df1\u89c1,1,3 1 \u5404|3 2 |3 3 |3 4 ;\u89c1\u978d\u601d\u9a6c,1,3 4 |3 5 |3 6 \u601d|3 7 \u9a6c;\u7779\u7269\u601d\u4eba,0,1 6 \u7779|2 6 |3 6 \u601d|4 6 \u4eba;\u529b\u6392\u4f17\u8bae,1,0 2 |0 3 \u6392|0 4 |0 5 ;\u89c1\u5f02\u601d\u8fc1,0,3 4 |4 4 \u5f02|5 4 \u601d|6 4 \u8fc1", "block_num": 10 }, { "hide_arr": "4 4 \u5fc3;7 6 \u81ea;3 4 \u82e6;5 6 \u81ea;0 4 \u542b;3 6 \u4ec3;5 5 \u82b3;3 3 \u5b64;0 3 \u5c48;0 5 \u51a4;3 5 \u4f36;8 6 \u5f03;7 7 \u4e3a;5 7 \u8d4f", "word_num": 22, "idiom_arr": "\u82e6\u5fc3\u5b64\u8be3,0,3 4 |4 4 |5 4 \u5b64|6 4 \u8be3;\u5404\u81ea\u4e3a\u653f,1,7 5 \u5404|7 6 |7 7 |7 8 \u653f;\u542b\u8f9b\u8339\u82e6,0,0 4 |1 4 \u8f9b|2 4 \u8339|3 4 ;\u5b64\u82b3\u81ea\u8d4f,1,5 4 \u5b64|5 5 |5 6 |5 7 ;\u81ea\u66b4\u81ea\u5f03,0,5 6 |6 6 \u66b4|7 6 |8 6 ;\u8d1f\u5c48\u542b\u51a4,1,0 2 \u8d1f|0 3 |0 4 |0 5 ;\u5b64\u82e6\u4f36\u4ec3,1,3 3 |3 4 |3 5 |3 6 ", "block_num": 10 }, { "hide_arr": "4 2 \u4e3e;3 4 \u4e1c;4 6 \u6b6a;4 9 \u98df;4 1 \u7eb2;1 6 \u4e1c;6 4 \u671b;6 3 \u5b88;4 3 \u76ee", "word_num": 25, "idiom_arr": "\u7eb2\u4e3e\u76ee\u5f20,1,4 1 |4 2 |4 3 |4 4 \u5f20;\u4e1c\u5954\u897f\u8dd1,1,3 4 |3 5 \u5954|3 6 \u897f|3 7 \u8dd1;\u4e1c\u5012\u897f\u6b6a,0,1 6 |2 6 \u5012|3 6 \u897f|4 6 ;\u53d1\u6124\u5fd8\u98df,0,1 9 \u53d1|2 9 \u6124|3 9 \u5fd8|4 9 ;\u63d0\u7eb2\u6308\u9886,0,3 1 \u63d0|4 1 |5 1 \u6308|6 1 \u9886;\u4e1c\u7a97\u4e8b\u53d1,1,1 6 |1 7 \u7a97|1 8 \u4e8b|1 9 \u53d1;\u4e1c\u5f20\u897f\u671b,0,3 4 |4 4 \u5f20|5 4 \u897f|6 4 ;\u5b88\u671b\u76f8\u52a9,1,6 3 |6 4 |6 5 \u76f8|6 6 \u52a9", "block_num": 10 }, { "hide_arr": "7 8 \u5f53;3 6 \u7edd;0 8 \u4ec7;5 7 \u573a;6 4 \u7ecf;1 6 \u65ad;3 7 \u4f26;1 4 \u80a0;6 6 \u751f", "word_num": 25, "idiom_arr": "\u6562\u4f5c\u6562\u5f53,0,4 8 \u6562|5 8 \u4f5c|6 8 \u6562|7 8 ;\u7edd\u5904\u9022\u751f,0,3 6 |4 6 \u5904|5 6 \u9022|6 6 ;\u6069\u5c06\u4ec7\u62a5,1,0 6 \u6069|0 7 \u5c06|0 8 |0 9 \u62a5;\u9022\u573a\u4f5c\u620f,1,5 6 \u9022|5 7 |5 8 \u4f5c|5 9 \u620f;\u8352\u8bde\u4e0d\u7ecf,0,3 4 \u8352|4 4 \u8bde|5 4 \u4e0d|6 4 ;\u6069\u65ad\u4e49\u7edd,0,0 6 \u6069|1 6 |2 6 \u4e49|3 6 ;\u8352\u8c2c\u7edd\u4f26,1,3 4 \u8352|3 5 \u8c2c|3 6 |3 7 ;\u809d\u80a0\u5bf8\u65ad,1,1 3 \u809d|1 4 |1 5 \u5bf8|1 6 ", "block_num": 10 }, { "hide_arr": "5 2 \u864e;2 2 \u6d77;7 2 \u98df;2 3 \u5317;4 4 \u8e1e;4 0 \u8d77;0 5 \u4e00;3 5 \u79bb;0 4 \u67ef", "word_num": 25, "idiom_arr": "\u864e\u7a74\u9f99\u6f6d,1,5 2 |5 3 \u7a74|5 4 \u9f99|5 5 \u6f6d;\u5c71\u5357\u6d77\u5317,1,2 0 \u5c71|2 1 \u5357|2 2 |2 3 ;\u997f\u864e\u6251\u98df,0,4 2 \u997f|5 2 |6 2 \u6251|7 2 ;\u5357\u8154\u5317\u8c03,0,0 3 \u5357|1 3 \u8154|2 3 |3 3 \u8c03;\u864e\u8e1e\u9f99\u76d8,0,3 4 \u864e|4 4 |5 4 \u9f99|6 4 \u76d8;\u4e1c\u5c71\u518d\u8d77,0,1 0 \u4e1c|2 0 \u5c71|3 0 \u518d|4 0 ;\u5357\u67ef\u4e00\u68a6,1,0 3 \u5357|0 4 |0 5 |0 6 \u68a6;\u8c03\u864e\u79bb\u5c71,1,3 3 \u8c03|3 4 \u864e|3 5 |3 6 \u5c71", "block_num": 10 }, { "hide_arr": "7 4 \u6362;3 4 \u5e9e;2 6 \u7136;6 3 \u7779;1 7 \u5982;4 5 \u6094;8 1 \u5be5;7 6 \u624d;6 6 \u4eba", "word_num": 25, "idiom_arr": "\u7269\u6362\u661f\u79fb,0,6 4 \u7269|7 4 |8 4 \u661f|9 4 \u79fb;\u5e9e\u7136\u5927\u7269,0,3 4 |4 4 \u7136|5 4 \u5927|6 4 \u7269;\u604d\u7136\u5927\u609f,0,1 6 \u604d|2 6 |3 6 \u5927|4 6 \u609f;\u7779\u7269\u601d\u4eba,1,6 3 |6 4 \u7269|6 5 \u601d|6 6 ;\u604d\u5982\u9694\u4e16,1,1 6 \u604d|1 7 |1 8 \u9694|1 9 \u4e16;\u7ffb\u7136\u6094\u609f,1,4 3 \u7ffb|4 4 \u7136|4 5 |4 6 \u609f;\u5be5\u82e5\u6668\u661f,1,8 1 |8 2 \u82e5|8 3 \u6668|8 4 \u661f;\u4eba\u624d\u8f88\u51fa,0,6 6 |7 6 |8 6 \u8f88|9 6 \u51fa", "block_num": 10 }, { "hide_arr": "6 1 \u72ec;4 4 \u4ee5;4 6 \u8272;8 1 \u5f53;5 6 \u53e4;3 9 \u80a0;4 3 \u5047;9 1 \u65f6;3 8 \u70ed", "word_num": 25, "idiom_arr": "\u72ec\u6b65\u5f53\u65f6,0,6 1 |7 1 \u6b65|8 1 |9 1 ;\u6389\u4ee5\u8f7b\u5fc3,0,3 4 \u6389|4 4 |5 4 \u8f7b|6 4 \u5fc3;\u53e4\u8272\u53e4\u9999,0,3 6 \u53e4|4 6 |5 6 |6 6 \u9999;\u72ec\u5f53\u4e00\u9762,1,8 0 \u72ec|8 1 |8 2 \u4e00|8 3 \u9762;\u53e4\u5f80\u4eca\u6765,1,5 6 |5 7 \u5f80|5 8 \u4eca|5 9 \u6765;\u72ec\u5177\u5320\u5fc3,1,6 1 |6 2 \u5177|6 3 \u5320|6 4 \u5fc3;\u53e4\u9053\u70ed\u80a0,1,3 6 \u53e4|3 7 \u9053|3 8 |3 9 ;\u5047\u4ee5\u8f9e\u8272,1,4 3 |4 4 |4 5 \u8f9e|4 6 ", "block_num": 10 }, { "hide_arr": "5 4 \u5f52;0 4 \u5669;6 0 \u5b64;7 2 \u81ea;3 3 \u65e0;0 2 \u6d51;8 2 \u6d41;5 5 \u5c71;0 5 \u5669", "word_num": 25, "idiom_arr": "\u5b8c\u74a7\u5f52\u8d75,0,3 4 \u5b8c|4 4 \u74a7|5 4 |6 4 \u8d75;\u6d51\u6d51\u5669\u5669,1,0 2 |0 3 \u6d51|0 4 |0 5 ;\u9ccf\u5be1\u5b64\u72ec,0,4 0 \u9ccf|5 0 \u5be1|6 0 |7 0 \u72ec;\u72ec\u7acb\u81ea\u4e3b,1,7 0 \u72ec|7 1 \u7acb|7 2 |7 3 \u4e3b;\u4f53\u65e0\u5b8c\u80a4,1,3 2 \u4f53|3 3 |3 4 \u5b8c|3 5 \u80a4;\u6d51\u7136\u4e00\u4f53,0,0 2 |1 2 \u7136|2 2 \u4e00|3 2 \u4f53;\u653e\u4efb\u81ea\u6d41,0,5 2 \u653e|6 2 \u4efb|7 2 |8 2 ;\u653e\u864e\u5f52\u5c71,1,5 2 \u653e|5 3 \u864e|5 4 |5 5 ", "block_num": 10 }, { "hide_arr": "4 2 \u6389;5 4 \u6b89;3 6 \u7a0e;7 1 \u4eba;0 5 \u9f99;5 2 \u4ee5;6 0 \u8349;2 5 \u6df7;5 3 \u8eab;0 6 \u76d8;5 0 \u5439;0 3 \u864e;4 4 \u8eaf", "word_num": 25, "idiom_arr": "\u6389\u4ee5\u8f7b\u5fc3,0,4 2 |5 2 |6 2 \u8f7b|7 2 \u5fc3;\u6350\u8eaf\u6b89\u56fd,0,3 4 \u6350|4 4 |5 4 |6 4 \u56fd;\u82db\u6350\u6742\u7a0e,1,3 3 \u82db|3 4 \u6350|3 5 \u6742|3 6 ;\u52a8\u4eba\u5fc3\u5f26,1,7 0 \u52a8|7 1 |7 2 \u5fc3|7 3 \u5f26;\u864e\u8e1e\u9f99\u76d8,1,0 3 |0 4 \u8e1e|0 5 |0 6 ;\u4ee5\u8eab\u6b89\u56fd,1,5 2 |5 3 |5 4 |5 5 \u56fd;\u98ce\u5439\u8349\u52a8,0,4 0 \u98ce|5 0 |6 0 |7 0 \u52a8;\u9f99\u86c7\u6df7\u6742,0,0 5 |1 5 \u86c7|2 5 |3 5 \u6742", "block_num": 10 }, { "hide_arr": "1 1 \u5206;3 7 \u8170;0 3 \u5c0f;6 7 \u8d2f;1 4 \u5708;5 8 \u706b;0 7 \u864e;3 4 \u70b9;0 8 \u79bb;4 7 \u7f20", "word_num": 28, "idiom_arr": "\u975e\u5206\u4e4b\u60f3,0,0 1 \u975e|1 1 |2 1 \u4e4b|3 1 \u60f3;\u70b9\u5934\u54c8\u8170,1,3 4 |3 5 \u5934|3 6 \u54c8|3 7 ;\u975e\u540c\u5c0f\u53ef,1,0 1 \u975e|0 2 \u540c|0 3 |0 4 \u53ef;\u8170\u7f20\u4e07\u8d2f,0,3 7 |4 7 |5 7 \u4e07|6 7 ;\u53ef\u5708\u53ef\u70b9,0,0 4 \u53ef|1 4 |2 4 \u53ef|3 4 ;\u5341\u4e07\u706b\u6025,1,5 6 \u5341|5 7 \u4e07|5 8 |5 9 \u6025;\u864e\u80cc\u718a\u8170,0,0 7 |1 7 \u80cc|2 7 \u718a|3 7 ;\u70b9\u77f3\u6210\u91d1,0,3 4 |4 4 \u77f3|5 4 \u6210|6 4 \u91d1;\u8c03\u864e\u79bb\u5c71,1,0 6 \u8c03|0 7 |0 8 |0 9 \u5c71", "block_num": 10 }, { "hide_arr": "8 4 \u635e;6 5 \u5e95;3 2 \u77e5;8 2 \u6c34;4 2 \u5341;3 4 \u6f02;1 0 \u4e3e;6 3 \u5012;3 7 \u98ce;2 2 \u4e00;5 4 \u8fc7", "word_num": 28, "idiom_arr": "\u6d77\u5e95\u635e\u9488,0,6 4 \u6d77|7 4 \u5e95|8 4 |9 4 \u9488;\u6d77\u5e95\u635e\u6708,1,6 4 \u6d77|6 5 |6 6 \u635e|6 7 \u6708;\u95fb\u4e00\u77e5\u5341,0,1 2 \u95fb|2 2 |3 2 |4 2 ;\u6c34\u4e2d\u635e\u6708,1,8 2 |8 3 \u4e2d|8 4 |8 5 \u6708;\u5341\u91cc\u6d0b\u573a,1,4 2 |4 3 \u91cc|4 4 \u6d0b|4 5 \u573a;\u6f02\u6d0b\u8fc7\u6d77,0,3 4 |4 4 \u6d0b|5 4 |6 4 \u6d77;\u4e3e\u4e16\u95fb\u540d,1,1 0 |1 1 \u4e16|1 2 \u95fb|1 3 \u540d;\u7ffb\u6c5f\u5012\u6d77,1,6 1 \u7ffb|6 2 \u6c5f|6 3 |6 4 \u6d77;\u98ce\u82b1\u96ea\u6708,0,3 7 |4 7 \u82b1|5 7 \u96ea|6 7 \u6708", "block_num": 10 }, { "hide_arr": "2 3 \u5f53;5 3 \u5927;3 6 \u5fb7;3 4 \u529f;5 1 \u9f0e;2 1 \u4f5c;0 4 \u7b54;0 3 \u5bf9;0 2 \u6237;5 6 \u529b;6 4 \u5c31", "word_num": 28, "idiom_arr": "\u5bf9\u9152\u5f53\u6b4c,0,0 3 |1 3 \u9152|2 3 |3 3 \u6b4c;\u9f0e\u9f0e\u5927\u540d,1,5 1 |5 2 \u9f0e|5 3 |5 4 \u540d;\u6b4c\u529f\u9882\u5fb7,1,3 3 \u6b4c|3 4 |3 5 \u9882|3 6 ;\u529f\u6210\u540d\u5c31,0,3 4 |4 4 \u6210|5 4 \u540d|6 4 ;\u9f0e\u529b\u76f8\u52a9,0,5 1 |6 1 \u529b|7 1 \u76f8|8 1 \u52a9;\u6562\u4f5c\u6562\u5f53,1,2 0 \u6562|2 1 |2 2 \u6562|2 3 ;\u5bf9\u7b54\u5982\u6d41,1,0 3 |0 4 |0 5 \u5982|0 6 \u6d41;\u5ea6\u5fb7\u91cf\u529b,0,2 6 \u5ea6|3 6 |4 6 \u91cf|5 6 ;\u95e8\u5f53\u6237\u5bf9,1,0 0 \u95e8|0 1 \u5f53|0 2 |0 3 ", "block_num": 10 }, { "hide_arr": "1 8 \u7c7b;5 4 \u5f97;2 6 \u8f7b;3 5 \u4eba;3 1 \u98ce;5 6 \u6240;2 4 \u96f7;8 6 \u95fb;3 3 \u8349;0 6 \u6389;4 4 \u8f84", "word_num": 28, "idiom_arr": "\u4ee5\u6b64\u7c7b\u63a8,1,1 6 \u4ee5|1 7 \u6b64|1 8 |1 9 \u63a8;\u52a8\u8f84\u5f97\u548e,0,3 4 \u52a8|4 4 |5 4 |6 4 \u548e;\u6389\u4ee5\u8f7b\u5fc3,0,0 6 |1 6 \u4ee5|2 6 |3 6 \u5fc3;\u52a8\u4eba\u5fc3\u5f26,1,3 4 \u52a8|3 5 |3 6 \u5fc3|3 7 \u5f26;\u98ce\u9910\u9732\u5bbf,0,3 1 |4 1 \u9910|5 1 \u9732|6 1 \u5bbf;\u5404\u5f97\u5176\u6240,1,5 3 \u5404|5 4 |5 5 \u5176|5 6 ;\u6b22\u58f0\u96f7\u52a8,0,0 4 \u6b22|1 4 \u58f0|2 4 |3 4 \u52a8;\u6240\u89c1\u6240\u95fb,0,5 6 |6 6 \u89c1|7 6 \u6240|8 6 ;\u98ce\u5439\u8349\u52a8,1,3 1 |3 2 \u5439|3 3 |3 4 \u52a8", "block_num": 10 }, { "hide_arr": "8 2 \u4e3a;4 7 \u5883;1 8 \u6728;2 9 \u751f;6 1 \u6545;4 4 \u6e10;2 6 \u7edd;8 1 \u81ea;6 2 \u6001;9 1 \u5c01;7 1 \u6b65;3 1 \u975e", "word_num": 28, "idiom_arr": "\u5404\u81ea\u4e3a\u653f,1,8 0 \u5404|8 1 |8 2 |8 3 \u653f;\u6e10\u5165\u4f73\u5883,1,4 4 |4 5 \u5165|4 6 \u4f73|4 7 ;\u67af\u6728\u9022\u6625,0,0 8 \u67af|1 8 |2 8 \u9022|3 8 \u6625;\u7edd\u5904\u9022\u751f,1,2 6 |2 7 \u5904|2 8 \u9022|2 9 ;\u975e\u4eb2\u975e\u6545,0,3 1 |4 1 \u4eb2|5 1 \u975e|6 1 ;\u675c\u6e10\u9632\u840c,0,3 4 \u675c|4 4 |5 4 \u9632|6 4 \u840c;\u7edd\u4ee3\u4f73\u4eba,0,2 6 |3 6 \u4ee3|4 6 \u4f73|5 6 \u4eba;\u6545\u6b65\u81ea\u5c01,0,6 1 |7 1 |8 1 |9 1 ;\u6545\u6001\u590d\u840c,1,6 1 |6 2 |6 3 \u590d|6 4 \u840c", "block_num": 10 }, { "hide_arr": "3 5 \u5954;1 6 \u4e1c;7 1 \u6000;5 4 \u897f;3 9 \u5fd8;6 0 \u6349;5 3 \u62c9;8 2 \u8179;1 8 \u4e8b;7 3 \u767d;3 7 \u8dd1;5 2 \u4e1c", "word_num": 28, "idiom_arr": "\u4e1c\u5954\u897f\u8dd1,1,3 4 \u4e1c|3 5 |3 6 \u897f|3 7 ;\u4e1c\u5012\u897f\u6b6a,0,1 6 |2 6 \u5012|3 6 \u897f|4 6 \u6b6a;\u895f\u6000\u5766\u767d,1,7 0 \u895f|7 1 |7 2 \u5766|7 3 ;\u4e1c\u8eb2\u897f\u85cf,0,3 4 \u4e1c|4 4 \u8eb2|5 4 |6 4 \u85cf;\u53d1\u6124\u5fd8\u98df,0,1 9 \u53d1|2 9 \u6124|3 9 |4 9 \u98df;\u6349\u895f\u73b0\u8098,0,6 0 |7 0 \u895f|8 0 \u73b0|9 0 \u8098;\u4e1c\u62c9\u897f\u626f,1,5 2 |5 3 |5 4 |5 5 \u626f;\u4e1c\u5e8a\u5766\u8179,0,5 2 |6 2 \u5e8a|7 2 \u5766|8 2 ;\u4e1c\u7a97\u4e8b\u53d1,1,1 6 |1 7 \u7a97|1 8 |1 9 \u53d1", "block_num": 10 }, { "hide_arr": "2 8 \u865a;0 7 \u8eab;1 2 \u5f97;3 2 \u53cd;3 5 \u80dc;1 9 \u8106;3 4 \u4e3a;1 4 \u53d1;0 2 \u9002;2 9 \u5229;3 9 \u843d;0 9 \u5e72;6 4 \u4f25;3 7 \u88c2", "word_num": 28, "idiom_arr": "\u6d6e\u540d\u865a\u5229,1,2 6 \u6d6e|2 7 \u540d|2 8 |2 9 ;\u594b\u4e0d\u987e\u8eab,1,0 4 \u594b|0 5 \u4e0d|0 6 \u987e|0 7 ;\u8eab\u8d25\u540d\u88c2,0,0 7 |1 7 \u8d25|2 7 \u540d|3 7 ;\u9002\u5f97\u5176\u53cd,0,0 2 |1 2 |2 2 \u5176|3 2 ;\u53cd\u5507\u76f8\u8ba5,0,3 2 |4 2 \u5507|5 2 \u76f8|6 2 \u8ba5;\u53cd\u8d25\u4e3a\u80dc,1,3 2 |3 3 \u8d25|3 4 |3 5 ;\u5e72\u8106\u5229\u843d,0,0 9 |1 9 |2 9 |3 9 ;\u4e3a\u864e\u4f5c\u4f25,0,3 4 |4 4 \u864e|5 4 \u4f5c|6 4 ;\u594b\u53d1\u6709\u4e3a,0,0 4 \u594b|1 4 |2 4 \u6709|3 4 ", "block_num": 10 }, { "hide_arr": "0 3 \u5c06;0 0 \u8c03;2 0 \u4e8e;0 6 \u9519;5 0 \u6127;5 6 \u640f;3 4 \u6cb3;3 5 \u62c6;7 7 \u7a9f;2 2 \u65e0;0 4 \u9519;0 1 \u5175;5 4 \u72ee;6 7 \u4e09;3 3 \u8fc7;0 2 \u9063;2 1 \u4e8b", "word_num": 28, "idiom_arr": "\u5c06\u529f\u8865\u8fc7,0,0 3 |1 3 \u529f|2 3 \u8865|3 3 ;\u8c03\u5175\u9063\u5c06,1,0 0 |0 1 |0 2 |0 3 ;\u4e8e\u4e8b\u65e0\u8865,1,2 0 |2 1 |2 2 |2 3 \u8865;\u5c06\u9519\u5c31\u9519,1,0 3 |0 4 |0 5 \u5c31|0 6 ;\u4e8e\u5fc3\u65e0\u6127,0,2 0 |3 0 \u5fc3|4 0 \u65e0|5 0 ;\u72ee\u5b50\u640f\u5154,1,5 4 |5 5 \u5b50|5 6 |5 7 \u5154;\u6cb3\u4e1c\u72ee\u543c,0,3 4 |4 4 \u4e1c|5 4 |6 4 \u543c;\u8fc7\u6cb3\u62c6\u6865,1,3 3 |3 4 |3 5 |3 6 \u6865;\u72e1\u5154\u4e09\u7a9f,0,4 7 \u72e1|5 7 \u5154|6 7 |7 7 ", "block_num": 10 }, { "hide_arr": "5 2 \u5357;1 7 \u6b65;8 3 \u5175;6 4 \u8f99;4 6 \u9762;1 9 \u65f6;1 4 \u5be1;3 7 \u68a6;1 8 \u5f53;0 9 \u5ba1;3 5 \u67ef;8 5 \u5c06;8 4 \u9063;7 2 \u5317;2 6 \u5f53;8 2 \u8c03;3 6 \u4e00;6 2 \u8154", "word_num": 28, "idiom_arr": "\u5357\u6765\u5317\u5f80,1,5 2 |5 3 \u6765|5 4 \u5317|5 5 \u5f80;\u72ec\u6b65\u5f53\u65f6,1,1 6 \u72ec|1 7 |1 8 |1 9 ;\u8c03\u5175\u9063\u5c06,1,8 2 |8 3 |8 4 |8 5 ;\u5357\u8f95\u5317\u8f99,0,3 4 \u5357|4 4 \u8f95|5 4 \u5317|6 4 ;\u72ec\u5f53\u4e00\u9762,0,1 6 \u72ec|2 6 |3 6 |4 6 ;\u5357\u8154\u5317\u8c03,0,5 2 |6 2 |7 2 |8 2 ;\u5ba1\u65f6\u5ea6\u52bf,0,0 9 |1 9 |2 9 \u5ea6|3 9 \u52bf;\u9ccf\u5be1\u5b64\u72ec,1,1 3 \u9ccf|1 4 |1 5 \u5b64|1 6 \u72ec;\u5357\u67ef\u4e00\u68a6,1,3 4 \u5357|3 5 |3 6 |3 7 ", "block_num": 10 }, { "hide_arr": "2 3 \u8865;0 3 \u5c06;2 1 \u4e8b;0 4 \u9519;3 0 \u5fc3;5 5 \u5b50;4 4 \u4e1c;3 3 \u8fc7;5 7 \u5154;2 0 \u4e8e;0 6 \u9519;0 0 \u8c03;5 6 \u640f;4 0 \u65e0;4 7 \u72e1;0 1 \u5175;5 4 \u72ee;3 4 \u6cb3", "word_num": 28, "idiom_arr": "\u5c06\u529f\u8865\u8fc7,0,0 3 |1 3 \u529f|2 3 |3 3 ;\u8c03\u5175\u9063\u5c06,1,0 0 |0 1 |0 2 \u9063|0 3 ;\u4e8e\u4e8b\u65e0\u8865,1,2 0 |2 1 |2 2 \u65e0|2 3 ;\u5c06\u9519\u5c31\u9519,1,0 3 |0 4 |0 5 \u5c31|0 6 ;\u4e8e\u5fc3\u65e0\u6127,0,2 0 |3 0 |4 0 |5 0 \u6127;\u72ee\u5b50\u640f\u5154,1,5 4 |5 5 |5 6 |5 7 ;\u6cb3\u4e1c\u72ee\u543c,0,3 4 |4 4 |5 4 |6 4 \u543c;\u8fc7\u6cb3\u62c6\u6865,1,3 3 |3 4 |3 5 \u62c6|3 6 \u6865;\u72e1\u5154\u4e09\u7a9f,0,4 7 |5 7 |6 7 \u4e09|7 7 \u7a9f", "block_num": 10 }, { "hide_arr": "5 6 \u65e0;7 6 \u98ce;9 8 \u673a;8 5 \u96ea;5 4 \u86ee;3 5 \u8bf4;3 4 \u80e1;0 4 \u89c1;8 4 \u82b1;5 5 \u6a2a;4 4 \u6405;8 8 \u5929;3 7 \u9053;0 7 \u8fc1;7 8 \u9732;1 5 \u7aef;7 9 \u5bbf;6 8 \u6cc4;6 6 \u8fb9;0 5 \u5f02", "word_num": 28, "idiom_arr": "\u86ee\u6a2a\u65e0\u7406,1,5 4 |5 5 |5 6 |5 7 \u7406;\u65e0\u8fb9\u98ce\u6708,0,5 6 |6 6 |7 6 |8 6 \u6708;\u6cc4\u9732\u5929\u673a,0,6 8 |7 8 |8 8 |9 8 ;\u98ce\u82b1\u96ea\u6708,1,8 3 \u98ce|8 4 |8 5 |8 6 \u6708;\u80e1\u6405\u86ee\u7f20,0,3 4 |4 4 |5 4 |6 4 \u7f20;\u5f02\u7aef\u90aa\u8bf4,0,0 5 |1 5 |2 5 \u90aa|3 5 ;\u98ce\u9910\u9732\u5bbf,1,7 6 |7 7 \u9910|7 8 |7 9 ;\u80e1\u8bf4\u516b\u9053,1,3 4 |3 5 |3 6 \u516b|3 7 ;\u89c1\u5f02\u601d\u8fc1,1,0 4 |0 5 |0 6 \u601d|0 7 ", "block_num": 10 }, { "hide_arr": "2 3 \u672a;5 6 \u52a9;3 6 \u5df1;3 4 \u636e;0 3 \u4e98;2 7 \u53d1;3 1 \u8a00;5 1 \u8bba;6 7 \u624d;8 6 \u4e50;3 2 \u5fc5;6 6 \u4eba", "word_num": 31, "idiom_arr": "\u4e98\u53e4\u672a\u6709,0,0 3 |1 3 \u53e4|2 3 |3 3 \u6709;\u9f0e\u529b\u76f8\u52a9,1,5 3 \u9f0e|5 4 \u529b|5 5 \u76f8|5 6 ;\u636e\u4e3a\u5df1\u6709,1,3 4 |3 5 \u4e3a|3 6 |3 7 \u6709;\u636e\u7406\u529b\u4e89,0,3 4 |4 4 \u7406|5 4 \u529b|6 4 \u4e89;\u4e98\u53e4\u4e0d\u706d,1,0 3 |0 4 \u53e4|0 5 \u4e0d|0 6 \u706d;\u594b\u53d1\u6709\u4e3a,0,1 7 \u594b|2 7 |3 7 \u6709|4 7 \u4e3a;\u8a00\u5fc5\u6709\u636e,1,3 1 |3 2 |3 3 \u6709|3 4 ;\u653e\u8a00\u9ad8\u8bba,0,2 1 \u653e|3 1 |4 1 \u9ad8|5 1 ;\u4eba\u624d\u8f88\u51fa,1,6 6 |6 7 |6 8 \u8f88|6 9 \u51fa;\u52a9\u4eba\u4e3a\u4e50,0,5 6 |6 6 |7 6 \u4e3a|8 6 ", "block_num": 10 }, { "hide_arr": "6 8 \u65e0;4 4 \u8c0b;3 4 \u8001;1 3 \u91cd;5 4 \u6df1;6 9 \u8865;8 6 \u5c71;8 4 \u864e;0 4 \u5982;2 0 \u8fdb;2 3 \u96be;5 8 \u4e00", "word_num": 31, "idiom_arr": "\u72ec\u4e00\u65e0\u4e8c,0,4 8 \u72ec|5 8 |6 8 |7 8 \u4e8c;\u8001\u8c0b\u6df1\u7b97,0,3 4 |4 4 |5 4 |6 4 \u7b97;\u8fd4\u8001\u8fd8\u7ae5,1,3 3 \u8fd4|3 4 |3 5 \u8fd8|3 6 \u7ae5;\u79ef\u91cd\u96be\u8fd4,0,0 3 \u79ef|1 3 |2 3 |3 3 \u8fd4;\u6069\u6df1\u4e49\u91cd,1,5 3 \u6069|5 4 |5 5 \u4e49|5 6 \u91cd;\u4e8e\u4e8b\u65e0\u8865,1,6 6 \u4e8e|6 7 \u4e8b|6 8 |6 9 ;\u91cd\u4e8e\u6cf0\u5c71,0,5 6 \u91cd|6 6 \u4e8e|7 6 \u6cf0|8 6 ;\u8c03\u864e\u79bb\u5c71,1,8 3 \u8c03|8 4 |8 5 \u79bb|8 6 ;\u5806\u79ef\u5982\u5c71,1,0 2 \u5806|0 3 \u79ef|0 4 |0 5 \u5c71;\u8fdb\u9000\u4e24\u96be,1,2 0 |2 1 \u9000|2 2 \u4e24|2 3 ", "block_num": 10 }, { "hide_arr": "2 8 \u8f84;3 6 \u5fc3;7 0 \u9f0e;4 4 \u90bb;5 3 \u8d25;0 5 \u98df;1 9 \u811a;2 6 \u4eba;7 2 \u76f8;1 4 \u4e4e;0 2 \u53d1;3 8 \u5f97", "word_num": 31, "idiom_arr": "\u52a8\u8f84\u5f97\u548e,0,1 8 \u52a8|2 8 |3 8 |4 8 \u548e;\u6389\u4ee5\u8f7b\u5fc3,1,3 3 \u6389|3 4 \u4ee5|3 5 \u8f7b|3 6 ;\u9f0e\u529b\u76f8\u52a9,1,7 0 |7 1 \u529b|7 2 |7 3 \u52a9;\u4ee5\u90bb\u4e3a\u58d1,0,3 4 \u4ee5|4 4 |5 4 \u4e3a|6 4 \u58d1;\u53cd\u8d25\u4e3a\u80dc,1,5 2 \u53cd|5 3 |5 4 \u4e3a|5 5 \u80dc;\u53d1\u6124\u5fd8\u98df,1,0 2 |0 3 \u6124|0 4 \u5fd8|0 5 ;\u52a8\u624b\u52a8\u811a,1,1 6 \u52a8|1 7 \u624b|1 8 \u52a8|1 9 ;\u52a8\u4eba\u5fc3\u5f26,0,1 6 \u52a8|2 6 |3 6 |4 6 \u5f26;\u53cd\u5507\u76f8\u8ba5,0,5 2 \u53cd|6 2 \u5507|7 2 |8 2 \u8ba5;\u5fd8\u4e4e\u6240\u4ee5,0,0 4 \u5fd8|1 4 |2 4 \u6240|3 4 \u4ee5", "block_num": 10 }, { "hide_arr": "6 6 \u5206;3 1 \u716e;5 4 \u5a9a;8 9 \u6cd5;8 6 \u60f3;4 2 \u53d1;7 4 \u8089;6 1 \u7c89;3 7 \u819d;8 4 \u56e2;3 6 \u5a62;4 3 \u7ae5;8 7 \u65b9", "word_num": 31, "idiom_arr": "\u9aa8\u8089\u5206\u79bb,1,6 4 \u9aa8|6 5 \u8089|6 6 |6 7 \u79bb;\u711a\u7434\u716e\u9e64,0,1 1 \u711a|2 1 \u7434|3 1 |4 1 \u9e64;\u5974\u989c\u5a9a\u9aa8,0,3 4 \u5974|4 4 \u989c|5 4 |6 4 \u9aa8;\u5949\u516c\u5b88\u6cd5,0,5 9 \u5949|6 9 \u516c|7 9 \u5b88|8 9 ;\u975e\u5206\u4e4b\u60f3,0,5 6 \u975e|6 6 |7 6 \u4e4b|8 6 ;\u60f3\u65b9\u8bbe\u6cd5,1,8 6 |8 7 |8 8 \u8bbe|8 9 ;\u9e64\u53d1\u7ae5\u989c,1,4 1 \u9e64|4 2 |4 3 |4 4 \u989c;\u9aa8\u8089\u56e2\u5706,0,6 4 \u9aa8|7 4 |8 4 |9 4 \u5706;\u7c89\u8eab\u788e\u9aa8,1,6 1 |6 2 \u8eab|6 3 \u788e|6 4 \u9aa8;\u5974\u989c\u5a62\u819d,1,3 4 \u5974|3 5 \u989c|3 6 |3 7 ", "block_num": 10 }, { "hide_arr": "8 3 \u5206;1 1 \u5be1;3 1 \u72ec;1 6 \u4e60;8 1 \u6069;6 6 \u67f4;3 4 \u9762;3 7 \u8272;1 4 \u4f17;4 1 \u6b65;0 1 \u9ccf;2 6 \u96be;8 4 \u660e", "word_num": 31, "idiom_arr": "\u9aa8\u8089\u5206\u79bb,0,6 3 \u9aa8|7 3 \u8089|8 3 |9 3 \u79bb;\u5be1\u4e0d\u654c\u4f17,1,1 1 |1 2 \u4e0d|1 3 \u654c|1 4 ;\u72ec\u6b65\u5f53\u65f6,0,3 1 |4 1 |5 1 \u5f53|6 1 \u65f6;\u9ccf\u5be1\u5b64\u72ec,0,0 1 |1 1 |2 1 \u5b64|3 1 ;\u72ec\u5f53\u4e00\u9762,1,3 1 |3 2 \u5f53|3 3 \u4e00|3 4 ;\u79ef\u4e60\u96be\u6539,0,0 6 \u79ef|1 6 |2 6 |3 6 \u6539;\u6069\u6028\u5206\u660e,1,8 1 |8 2 \u6028|8 3 |8 4 ;\u9aa8\u7626\u5982\u67f4,1,6 3 \u9aa8|6 4 \u7626|6 5 \u5982|6 6 ;\u9762\u9ec4\u808c\u7626,0,3 4 |4 4 \u9ec4|5 4 \u808c|6 4 \u7626;\u9762\u4e0d\u6539\u8272,1,3 4 |3 5 \u4e0d|3 6 \u6539|3 7 ", "block_num": 10 }, { "hide_arr": "4 6 \u7acb;5 6 \u4e4b;6 1 \u6c42;0 2 \u918d;3 5 \u5730;5 4 \u6687;4 4 \u4e0d;6 8 \u4e0d;0 5 \u9876;5 9 \u4e5f;3 1 \u4f9b;4 8 \u6765;3 6 \u800c;3 7 \u5750", "word_num": 31, "idiom_arr": "\u800c\u7acb\u4e4b\u5e74,0,3 6 |4 6 |5 6 |6 6 \u5e74;\u4e4b\u4e4e\u8005\u4e5f,1,5 6 |5 7 \u4e4e|5 8 \u8005|5 9 ;\u4f9b\u4e0d\u5e94\u6c42,0,3 1 |4 1 \u4e0d|5 1 \u5e94|6 1 ;\u918d\u9190\u704c\u9876,1,0 2 |0 3 \u9190|0 4 \u704c|0 5 ;\u9876\u5929\u7acb\u5730,0,0 5 |1 5 \u5929|2 5 \u7acb|3 5 ;\u5e2d\u5730\u800c\u5750,1,3 4 \u5e2d|3 5 |3 6 |3 7 ;\u5e94\u63a5\u4e0d\u6687,1,5 1 \u5e94|5 2 \u63a5|5 3 \u4e0d|5 4 ;\u5e2d\u4e0d\u6687\u6696,0,3 4 \u5e2d|4 4 |5 4 |6 4 \u6696;\u6765\u8005\u4e0d\u62d2,0,4 8 |5 8 \u8005|6 8 |7 8 \u62d2;\u9876\u793c\u819c\u62dc,1,0 5 |0 6 \u793c|0 7 \u819c|0 8 \u62dc", "block_num": 10 }, { "hide_arr": "7 0 \u80a5;6 2 \u9f0e;3 7 \u4e09;3 2 \u5175;3 4 \u63a5;6 4 \u81f3;2 6 \u706b;7 1 \u5934;0 1 \u5bb6;5 5 \u7acb;3 1 \u77ed;3 6 \u8fde;7 3 \u8033;5 3 \u8db3;5 2 \u9f0e", "word_num": 31, "idiom_arr": "\u73af\u80a5\u71d5\u7626,0,6 0 \u73af|7 0 |8 0 \u71d5|9 0 \u7626;\u9f0e\u9f0e\u5927\u540d,0,5 2 |6 2 |7 2 \u5927|8 2 \u540d;\u63a5\u4e8c\u8fde\u4e09,1,3 4 |3 5 \u4e8c|3 6 |3 7 ;\u77ed\u5175\u76f8\u63a5,1,3 1 |3 2 |3 3 \u76f8|3 4 ;\u9752\u9ec4\u4e0d\u63a5,0,0 4 \u9752|1 4 \u9ec4|2 4 \u4e0d|3 4 ;\u63a5\u8e35\u800c\u81f3,0,3 4 |4 4 \u8e35|5 4 \u800c|6 4 ;\u70fd\u706b\u8fde\u5929,0,1 6 \u70fd|2 6 |3 6 |4 6 \u5929;\u80a5\u5934\u5927\u8033,1,7 0 |7 1 |7 2 \u5927|7 3 ;\u5bb6\u957f\u91cc\u77ed,0,0 1 |1 1 \u957f|2 1 \u91cc|3 1 ;\u9f0e\u8db3\u800c\u7acb,1,5 2 |5 3 |5 4 \u800c|5 5 ", "block_num": 10 }, { "hide_arr": "5 6 \u5fc3;3 4 \u5982;4 6 \u629a;0 4 \u8d2f;6 4 \u507f;2 2 \u5927;7 8 \u8bcd;2 9 \u4f5c;4 8 \u5408;2 8 \u5408;0 2 \u8c41;3 5 \u5e74;2 7 \u529b;1 2 \u8fbe;5 4 \u4ee5", "word_num": 31, "idiom_arr": "\u5fc3\u5b89\u7406\u5f97,1,5 6 |5 7 \u5b89|5 8 \u7406|5 9 \u5f97;\u6389\u4ee5\u8f7b\u5fc3,1,5 3 \u6389|5 4 |5 5 \u8f7b|5 6 ;\u5ea6\u65e5\u5982\u5e74,1,3 2 \u5ea6|3 3 \u65e5|3 4 |3 5 ;\u629a\u5fc3\u81ea\u95ee,0,4 6 |5 6 |6 6 \u81ea|7 6 \u95ee;\u8c41\u7136\u8d2f\u901a,1,0 2 |0 3 \u7136|0 4 |0 5 \u901a;\u5982\u613f\u4ee5\u507f,0,3 4 |4 4 \u613f|5 4 |6 4 ;\u8c41\u8fbe\u5927\u5ea6,0,0 2 |1 2 |2 2 |3 2 \u5ea6;\u7406\u5c48\u8bcd\u7a77,0,5 8 \u7406|6 8 \u5c48|7 8 |8 8 \u7a77;\u901a\u529b\u5408\u4f5c,1,2 6 \u901a|2 7 |2 8 |2 9 ;\u5408\u60c5\u5408\u7406,0,2 8 |3 8 \u60c5|4 8 |5 8 \u7406", "block_num": 10 }, { "hide_arr": "3 4 \u76ee;8 2 \u9a6c;0 4 \u5149;7 2 \u601d;7 0 \u7779;0 7 \u4eba;3 3 \u806a;5 4 \u8bc6;3 7 \u51fa;0 2 \u80a5;7 3 \u4eba;2 4 \u593a;0 6 \u7167;2 2 \u5927;6 0 \u5fcd", "word_num": 31, "idiom_arr": "\u76ee\u4e0d\u8bc6\u4e01,0,3 4 |4 4 \u4e0d|5 4 |6 4 \u4e01;\u89c1\u978d\u601d\u9a6c,0,5 2 \u89c1|6 2 \u978d|7 2 |8 2 ;\u5149\u5f69\u593a\u76ee,0,0 4 |1 4 \u5f69|2 4 |3 4 ;\u7779\u7269\u601d\u4eba,1,7 0 |7 1 \u7269|7 2 |7 3 ;\u76ee\u4e0d\u5fcd\u7779,0,4 0 \u76ee|5 0 \u4e0d|6 0 |7 0 ;\u5149\u5f69\u7167\u4eba,1,0 4 |0 5 \u5f69|0 6 |0 7 ;\u8033\u806a\u76ee\u660e,1,3 2 \u8033|3 3 |3 4 |3 5 \u660e;\u89c1\u591a\u8bc6\u5e7f,1,5 2 \u89c1|5 3 \u591a|5 4 |5 5 \u5e7f;\u4eba\u624d\u8f88\u51fa,0,0 7 |1 7 \u624d|2 7 \u8f88|3 7 ;\u80a5\u5934\u5927\u8033,0,0 2 |1 2 \u5934|2 2 |3 2 \u8033", "block_num": 10 }, { "hide_arr": "4 7 \u865a;8 2 \u4e95;1 4 \u571f;0 7 \u5982;4 4 \u8749;5 2 \u4e34;3 4 \u91d1;5 4 \u8131;4 1 \u775b;3 3 \u6210;3 6 \u9898;0 6 \u81ea;5 5 \u9003;7 2 \u6398;2 4 \u5982;6 4 \u58f3;8 4 \u4e4b", "word_num": 31, "idiom_arr": "\u6d6e\u540d\u865a\u5229,0,2 7 \u6d6e|3 7 \u540d|4 7 |5 7 \u5229;\u4e95\u5e95\u4e4b\u86d9,1,8 2 |8 3 \u5e95|8 4 |8 5 \u86d9;\u6325\u571f\u5982\u91d1,0,0 4 \u6325|1 4 |2 4 |3 4 ;\u6325\u6d12\u81ea\u5982,1,0 4 \u6325|0 5 \u6d12|0 6 |0 7 ;\u91d1\u8749\u8131\u58f3,0,3 4 |4 4 |5 4 |6 4 ;\u4e34\u6e34\u6398\u4e95,0,5 2 |6 2 \u6e34|7 2 |8 2 ;\u91d1\u699c\u9898\u540d,1,3 4 |3 5 \u699c|3 6 |3 7 \u540d;\u4e34\u9635\u8131\u9003,1,5 2 |5 3 \u9635|5 4 |5 5 ;\u753b\u9f99\u70b9\u775b,0,1 1 \u753b|2 1 \u9f99|3 1 \u70b9|4 1 ;\u70b9\u77f3\u6210\u91d1,1,3 1 \u70b9|3 2 \u77f3|3 3 |3 4 ", "block_num": 10 }, { "hide_arr": "5 5 \u65bd;7 3 \u52a0;2 6 \u4e09;3 4 \u7ffb;0 3 \u601d;6 0 \u5eb8;7 2 \u4ea4;3 7 \u6d77;2 3 \u4e4b;1 4 \u4ef0;5 3 \u884c;3 5 \u6c5f;2 1 \u5bb3;6 4 \u67dc;7 0 \u98ce;6 2 \u4e4b;0 1 \u7779", "word_num": 31, "idiom_arr": "\u9006\u884c\u5012\u65bd,1,5 2 \u9006|5 3 |5 4 \u5012|5 5 ;\u98ce\u96e8\u4ea4\u52a0,1,7 0 |7 1 \u96e8|7 2 |7 3 ;\u98a0\u4e09\u5012\u56db,0,1 6 \u98a0|2 6 |3 6 \u5012|4 6 \u56db;\u7ffb\u7bb1\u5012\u67dc,0,3 4 |4 4 \u7bb1|5 4 \u5012|6 4 ;\u7779\u7269\u601d\u4eba,1,0 1 |0 2 \u7269|0 3 |0 4 \u4eba;\u9644\u5eb8\u98ce\u96c5,0,5 0 \u9644|6 0 |7 0 |8 0 \u96c5;\u83ab\u9006\u4e4b\u4ea4,0,4 2 \u83ab|5 2 \u9006|6 2 |7 2 ;\u7ffb\u6c5f\u5012\u6d77,1,3 4 |3 5 |3 6 \u5012|3 7 ;\u5bb3\u7fa4\u4e4b\u9a6c,1,2 1 |2 2 \u7fa4|2 3 |2 4 \u9a6c;\u4eba\u4ef0\u9a6c\u7ffb,0,0 4 \u4eba|1 4 |2 4 \u9a6c|3 4 ", "block_num": 10 }, { "hide_arr": "3 4 \u6b4c;3 6 \u9882;6 4 \u69ad;2 3 \u6562;6 1 \u6d41;0 5 \u6562;6 8 \u4e1c;5 7 \u5206;3 1 \u5bf9;0 1 \u95e8;1 1 \u5f53;3 7 \u5fb7;2 1 \u6237;4 8 \u4ed8;5 6 \u975e;4 4 \u53f0;3 2 \u9152;3 5 \u529f;0 4 \u4f5c;0 6 \u4e3a;4 6 \u53e4", "word_num": 31, "idiom_arr": "\u5bf9\u9152\u5f53\u6b4c,1,3 1 |3 2 |3 3 \u5f53|3 4 ;\u9882\u53e4\u975e\u4eca,0,3 6 |4 6 |5 6 |6 6 \u4eca;\u6b4c\u529f\u9882\u5fb7,1,3 4 |3 5 |3 6 |3 7 ;\u6b4c\u53f0\u821e\u69ad,0,3 4 |4 4 |5 4 \u821e|6 4 ;\u6562\u4f5c\u6562\u5f53,0,0 3 \u6562|1 3 \u4f5c|2 3 |3 3 \u5f53;\u5bf9\u7b54\u5982\u6d41,0,3 1 |4 1 \u7b54|5 1 \u5982|6 1 ;\u6562\u4f5c\u6562\u4e3a,1,0 3 \u6562|0 4 |0 5 |0 6 ;\u4ed8\u4e4b\u4e1c\u6d41,0,4 8 |5 8 \u4e4b|6 8 |7 8 \u6d41;\u975e\u5206\u4e4b\u60f3,1,5 6 |5 7 |5 8 \u4e4b|5 9 \u60f3;\u95e8\u5f53\u6237\u5bf9,0,0 1 |1 1 |2 1 |3 1 ", "block_num": 10 }, { "hide_arr": "5 4 \u5728;3 7 \u5f97;3 2 \u4ee5;5 5 \u4e0a;3 5 \u5b89;0 5 \u82df;0 0 \u53d1;7 0 \u61a8;8 2 \u6500;4 4 \u4e0d;0 2 \u5fd8;4 7 \u548e;2 7 \u8f84;0 3 \u98df;1 2 \u4e4e;3 1 \u6389;7 1 \u6001;1 7 \u52a8;5 3 \u9ad8;5 2 \u9ad8;6 4 \u7109;6 2 \u4e0d", "word_num": 31, "idiom_arr": "\u5fc3\u4e0d\u5728\u7109,0,3 4 \u5fc3|4 4 |5 4 |6 4 ;\u52a8\u8f84\u5f97\u548e,0,1 7 |2 7 |3 7 |4 7 ;\u6389\u4ee5\u8f7b\u5fc3,1,3 1 |3 2 |3 3 \u8f7b|3 4 \u5fc3;\u9ad8\u9ad8\u5728\u4e0a,1,5 2 |5 3 |5 4 |5 5 ;\u5fc3\u5b89\u7406\u5f97,1,3 4 \u5fc3|3 5 |3 6 \u7406|3 7 ;\u82df\u4e14\u5077\u5b89,0,0 5 |1 5 \u4e14|2 5 \u5077|3 5 ;\u53d1\u6124\u5fd8\u98df,1,0 0 |0 1 \u6124|0 2 |0 3 ;\u61a8\u6001\u53ef\u63ac,1,7 0 |7 1 |7 2 \u53ef|7 3 \u63ac;\u5fd8\u4e4e\u6240\u4ee5,0,0 2 |1 2 |2 2 \u6240|3 2 ;\u9ad8\u4e0d\u53ef\u6500,0,5 2 |6 2 |7 2 \u53ef|8 2 ", "block_num": 10 }, { "hide_arr": "7 0 \u5bf9;3 7 \u5e7c;6 2 \u6b65;4 4 \u5c0f;0 3 \u5929;0 6 \u56f0;5 4 \u65e0;0 5 \u6551;1 2 \u5934;3 3 \u9000;5 0 \u5f53;0 1 \u798f;1 5 \u82e6;1 7 \u8001", "word_num": 34, "idiom_arr": "\u5bf9\u9152\u5f53\u6b4c,1,7 0 |7 1 \u9152|7 2 \u5f53|7 3 \u6b4c;\u6276\u8001\u643a\u5e7c,0,0 7 \u6276|1 7 |2 7 \u643a|3 7 ;\u72ec\u6b65\u5f53\u65f6,0,5 2 \u72ec|6 2 |7 2 \u5f53|8 2 \u65f6;\u4e24\u5c0f\u65e0\u731c,0,3 4 \u4e24|4 4 |5 4 |6 4 \u731c;\u6d2a\u798f\u9f50\u5929,1,0 0 \u6d2a|0 1 |0 2 \u9f50|0 3 ;\u6551\u56f0\u6276\u5371,1,0 5 |0 6 |0 7 \u6276|0 8 \u5371;\u72ec\u4e00\u65e0\u4e8c,1,5 2 \u72ec|5 3 \u4e00|5 4 |5 5 \u4e8c;\u6551\u82e6\u6551\u96be,0,0 5 |1 5 |2 5 \u6551|3 5 \u96be;\u9f50\u5934\u5e76\u8fdb,0,0 2 \u9f50|1 2 |2 2 \u5e76|3 2 \u8fdb;\u8fdb\u9000\u4e24\u96be,1,3 2 \u8fdb|3 3 |3 4 \u4e24|3 5 \u96be;\u95e8\u5f53\u6237\u5bf9,0,4 0 \u95e8|5 0 |6 0 \u6237|7 0 ", "block_num": 10 }, { "hide_arr": "1 4 \u6b4c;4 3 \u6302;1 2 \u9152;9 1 \u9999;6 4 \u80a0;0 5 \u5806;8 0 \u4e98;5 4 \u9e21;6 2 \u9053;3 6 \u5bf8;3 7 \u5149;6 1 \u53e4;4 4 \u809a;8 1 \u53e4;4 1 \u7275", "word_num": 34, "idiom_arr": "\u5bf9\u9152\u5f53\u6b4c,1,1 1 \u5bf9|1 2 |1 3 \u5f53|1 4 ;\u7275\u80a0\u6302\u809a,1,4 1 |4 2 \u80a0|4 3 |4 4 ;\u9152\u6709\u522b\u80a0,0,1 2 |2 2 \u6709|3 2 \u522b|4 2 \u80a0;\u53e4\u8272\u53e4\u9999,0,6 1 |7 1 \u8272|8 1 |9 1 ;\u9f20\u809a\u9e21\u80a0,0,3 4 \u9f20|4 4 |5 4 |6 4 ;\u5806\u79ef\u5982\u5c71,1,0 5 |0 6 \u79ef|0 7 \u5982|0 8 \u5c71;\u4e98\u53e4\u4e0d\u706d,1,8 0 |8 1 |8 2 \u4e0d|8 3 \u706d;\u9e21\u98de\u86cb\u6253,1,5 4 |5 5 \u98de|5 6 \u86cb|5 7 \u6253;\u53e4\u9053\u70ed\u80a0,1,6 1 |6 2 |6 3 \u70ed|6 4 ;\u79ef\u94e2\u7d2f\u5bf8,0,0 6 \u79ef|1 6 \u94e2|2 6 \u7d2f|3 6 ;\u9f20\u76ee\u5bf8\u5149,1,3 4 \u9f20|3 5 \u76ee|3 6 |3 7 ", "block_num": 10 }, { "hide_arr": "7 2 \u5f53;2 2 \u8bc6;5 3 \u5f53;0 5 \u7779;3 5 \u4eba;0 4 \u5fcd;4 4 \u4e8e;3 7 \u5026;6 0 \u6237;2 3 \u5e7f;2 1 \u591a;1 7 \u5a13;7 3 \u6b4c;0 2 \u76ee;2 5 \u601d", "word_num": 34, "idiom_arr": "\u5bf9\u9152\u5f53\u6b4c,1,7 0 \u5bf9|7 1 \u9152|7 2 |7 3 ;\u72ec\u6b65\u5f53\u65f6,0,5 2 \u72ec|6 2 \u6b65|7 2 |8 2 \u65f6;\u89c1\u591a\u8bc6\u5e7f,1,2 0 \u89c1|2 1 |2 2 |2 3 ;\u72ec\u5f53\u4e00\u9762,1,5 2 \u72ec|5 3 |5 4 \u4e00|5 5 \u9762;\u7779\u7269\u601d\u4eba,0,0 5 |1 5 \u7269|2 5 |3 5 ;\u6bc1\u4eba\u4e0d\u5026,1,3 4 \u6bc1|3 5 |3 6 \u4e0d|3 7 ;\u76ee\u4e0d\u5fcd\u7779,1,0 2 |0 3 \u4e0d|0 4 |0 5 ;\u6bc1\u4e8e\u4e00\u65e6,0,3 4 \u6bc1|4 4 |5 4 \u4e00|6 4 \u65e6;\u5a13\u5a13\u4e0d\u5026,0,0 7 \u5a13|1 7 |2 7 \u4e0d|3 7 ;\u76ee\u4e0d\u8bc6\u4e01,0,0 2 |1 2 \u4e0d|2 2 |3 2 \u4e01;\u95e8\u5f53\u6237\u5bf9,0,4 0 \u95e8|5 0 \u5f53|6 0 |7 0 \u5bf9", "block_num": 10 }, { "hide_arr": "6 2 \u6597;2 7 \u6b65;3 3 \u548c;2 8 \u5f53;3 0 \u5fc3;0 2 \u5987;0 3 \u968f;3 6 \u51fa;3 5 \u6258;3 4 \u76d8;1 8 \u72ec;3 2 \u6c14;4 6 \u5fc3;3 8 \u4e00;2 6 \u72ec;4 0 \u81ea", "word_num": 34, "idiom_arr": "\u6c14\u51b2\u725b\u6597,0,3 2 |4 2 \u51b2|5 2 \u725b|6 2 ;\u72ec\u6b65\u5f53\u65f6,1,2 6 |2 7 |2 8 |2 9 \u65f6;\u5fc3\u5e73\u6c14\u548c,1,3 0 |3 1 \u5e73|3 2 |3 3 ;\u72ec\u5f53\u4e00\u9762,0,1 8 |2 8 |3 8 |4 8 \u9762;\u629a\u5fc3\u81ea\u95ee,0,2 0 \u629a|3 0 |4 0 |5 0 \u95ee;\u592b\u5531\u5987\u968f,1,0 0 \u592b|0 1 \u5531|0 2 |0 3 ;\u968f\u58f0\u9644\u548c,0,0 3 |1 3 \u58f0|2 3 \u9644|3 3 ;\u968f\u6ce2\u9010\u6d41,1,0 3 |0 4 \u6ce2|0 5 \u9010|0 6 \u6d41;\u72ec\u51fa\u5fc3\u88c1,0,2 6 |3 6 |4 6 |5 6 \u88c1;\u548c\u76d8\u6258\u51fa,1,3 3 |3 4 |3 5 |3 6 ;\u76d8\u6839\u7a76\u5730,0,3 4 |4 4 \u6839|5 4 \u7a76|6 4 \u5730", "block_num": 10 }, { "hide_arr": "1 5 \u4e5d;2 8 \u609a;6 4 \u4f20;3 4 \u6811;3 3 \u72ec;5 2 \u9876;8 3 \u4e0b;0 6 \u725b;1 2 \u548c;1 0 \u66f2;5 5 \u5730;3 5 \u4e00;3 8 \u7136;4 0 \u5999;0 8 \u6bdb;8 4 \u98ce;5 3 \u5929", "word_num": 34, "idiom_arr": "\u4e5d\u4e5d\u5f52\u4e00,0,0 5 \u4e5d|1 5 |2 5 \u5f52|3 5 ;\u6bdb\u9aa8\u609a\u7136,0,0 8 |1 8 \u9aa8|2 8 |3 8 ;\u6811\u7891\u7acb\u4f20,0,3 4 |4 4 \u7891|5 4 \u7acb|6 4 ;\u72ec\u6811\u4e00\u5e1c,1,3 3 |3 4 |3 5 |3 6 \u5e1c;\u9ccf\u5be1\u5b64\u72ec,0,0 3 \u9ccf|1 3 \u5be1|2 3 \u5b64|3 3 ;\u9876\u793c\u819c\u62dc,0,5 2 |6 2 \u793c|7 2 \u819c|8 2 \u62dc;\u7518\u62dc\u4e0b\u98ce,1,8 1 \u7518|8 2 \u62dc|8 3 |8 4 ;\u4e5d\u725b\u4e00\u6bdb,1,0 5 \u4e5d|0 6 |0 7 \u4e00|0 8 ;\u66f2\u9ad8\u548c\u5be1,1,1 0 |1 1 \u9ad8|1 2 |1 3 \u5be1;\u66f2\u5c3d\u5176\u5999,0,1 0 |2 0 \u5c3d|3 0 \u5176|4 0 ;\u9876\u5929\u7acb\u5730,1,5 2 |5 3 |5 4 \u7acb|5 5 ", "block_num": 10 }, { "hide_arr": "3 6 \u91cc;5 2 \u5ea6;1 6 \u884c;1 1 \u77e5;8 2 \u529b;0 4 \u8bd7;0 9 \u4e34;6 4 \u6d17;3 3 \u8fd8;6 2 \u5fb7;2 4 \u4f20;1 9 \u9635;3 1 \u544a;8 4 \u52a9;2 9 \u78e8;3 7 \u77ed;3 2 \u8001;1 7 \u5175;2 6 \u5bb6", "word_num": 34, "idiom_arr": "\u884c\u5bb6\u91cc\u624b,0,1 6 |2 6 |3 6 |4 6 \u624b;\u5ea6\u65e5\u5982\u5e74,1,5 2 |5 3 \u65e5|5 4 \u5982|5 5 \u5e74;\u884c\u5175\u5e03\u9635,1,1 6 |1 7 |1 8 \u5e03|1 9 ;\u77e5\u4e66\u8fbe\u793c,1,1 1 |1 2 \u4e66|1 3 \u8fbe|1 4 \u793c;\u9f0e\u529b\u76f8\u52a9,1,8 1 \u9f0e|8 2 |8 3 \u76f8|8 4 ;\u5bb6\u957f\u91cc\u77ed,1,3 4 \u5bb6|3 5 \u957f|3 6 |3 7 ;\u8bd7\u793c\u4f20\u5bb6,0,0 4 |1 4 \u793c|2 4 |3 4 \u5bb6;\u4e34\u9635\u78e8\u67aa,0,0 9 |1 9 |2 9 |3 9 \u67aa;\u5bb6\u8d2b\u5982\u6d17,0,3 4 \u5bb6|4 4 \u8d2b|5 4 \u5982|6 4 ;\u544a\u8001\u8fd8\u5bb6,1,3 1 |3 2 |3 3 |3 4 \u5bb6;\u5ea6\u5fb7\u91cf\u529b,0,5 2 |6 2 |7 2 \u91cf|8 2 ", "block_num": 10 }, { "hide_arr": "5 6 \u5fc3;3 8 \u7c7b;2 6 \u6389;0 2 \u591a;6 1 \u961c;3 3 \u6c11;7 5 \u636e;0 1 \u5bcc;4 4 \u7cb1;2 8 \u5206;6 6 \u5b89;4 1 \u5b89;0 0 \u4e30;6 4 \u5f1f;3 6 \u4ee5;8 6 \u5f97;5 3 \u72fc;5 8 \u7d2f;3 7 \u6b64", "word_num": 34, "idiom_arr": "\u72fc\u5b50\u91ce\u5fc3,1,5 3 |5 4 \u5b50|5 5 \u91ce|5 6 ;\u4ee5\u6b64\u7c7b\u63a8,1,3 6 |3 7 |3 8 |3 9 \u63a8;\u6389\u4ee5\u8f7b\u5fc3,0,2 6 |3 6 |4 6 \u8f7b|5 6 ;\u4e30\u5bcc\u591a\u5f69,1,0 0 |0 1 |0 2 |0 3 \u5f69;\u6c11\u5b89\u7269\u961c,0,3 1 \u6c11|4 1 |5 1 \u7269|6 1 ;\u6c11\u8102\u6c11\u818f,1,3 1 \u6c11|3 2 \u8102|3 3 |3 4 \u818f;\u636e\u7406\u529b\u4e89,1,7 5 |7 6 \u7406|7 7 \u529b|7 8 \u4e89;\u5bcc\u56fd\u5b89\u6c11,0,0 1 |1 1 \u56fd|2 1 \u5b89|3 1 \u6c11;\u818f\u7cb1\u5b50\u5f1f,0,3 4 \u818f|4 4 |5 4 \u5b50|6 4 ;\u5206\u7c7b\u522b\u7d2f,0,2 8 |3 8 |4 8 \u522b|5 8 ;\u5fc3\u5b89\u7406\u5f97,0,5 6 |6 6 |7 6 \u7406|8 6 ", "block_num": 10 }, { "hide_arr": "0 4 \u56fd;3 4 \u751f;3 1 \u82df;4 5 \u4e39;6 3 \u6d82;2 5 \u5b89;9 5 \u5957;0 3 \u5bcc;8 5 \u786c;0 6 \u6c11;4 4 \u7075;2 7 \u961c;1 1 \u4e1d;4 6 \u5999;1 4 \u8ba1;6 1 \u5b89;5 1 \u5077;0 1 \u4e00;6 4 \u70ad;2 6 \u7269", "word_num": 34, "idiom_arr": "\u56fd\u8ba1\u6c11\u751f,0,0 4 |1 4 |2 4 \u6c11|3 4 ;\u751f\u7075\u6d82\u70ad,0,3 4 |4 4 |5 4 \u6d82|6 4 ;\u82df\u4e14\u5077\u5b89,0,3 1 |4 1 \u4e14|5 1 |6 1 ;\u7075\u4e39\u5999\u836f,1,4 4 |4 5 |4 6 |4 7 \u836f;\u6d82\u70ad\u751f\u7075,1,6 3 |6 4 |6 5 \u751f|6 6 \u7075;\u6c11\u5b89\u7269\u961c,1,2 4 \u6c11|2 5 |2 6 |2 7 ;\u751f\u642c\u786c\u5957,0,6 5 \u751f|7 5 \u642c|8 5 |9 5 ;\u5bcc\u56fd\u5b89\u6c11,1,0 3 |0 4 |0 5 \u5b89|0 6 ;\u4e00\u4e1d\u4e0d\u82df,0,0 1 |1 1 |2 1 \u4e0d|3 1 ;\u6b3a\u8f6f\u6015\u786c,1,8 2 \u6b3a|8 3 \u8f6f|8 4 \u6015|8 5 ;\u82df\u4e14\u5077\u751f,1,3 1 |3 2 \u4e14|3 3 \u5077|3 4 ", "block_num": 10 }, { "hide_arr": "7 6 \u8005;0 6 \u6c57;3 3 \u5806;7 8 \u62d2;3 5 \u5982;0 5 \u6325;4 1 \u6028;3 4 \u79ef;5 2 \u7c7b;5 6 \u4e4b;1 8 \u540e;0 2 \u622a;8 6 \u4e5f;7 5 \u6765;7 7 \u4e0d;0 8 \u96e8;2 8 \u6625;6 4 \u5bf8;4 4 \u94e2;0 4 \u53d1;2 5 \u81ea", "word_num": 34, "idiom_arr": "\u4e4b\u4e4e\u8005\u4e5f,0,5 6 |6 6 \u4e4e|7 6 |8 6 ;\u6325\u6c57\u6210\u96e8,1,0 5 |0 6 |0 7 \u6210|0 8 ;\u5806\u79ef\u5982\u5c71,1,3 3 |3 4 |3 5 |3 6 \u5c71;\u6765\u8005\u4e0d\u62d2,1,7 5 |7 6 |7 7 |7 8 ;\u6325\u6d12\u81ea\u5982,0,0 5 |1 5 \u6d12|2 5 |3 5 ;\u622a\u56fe\u53d1\u6325,1,0 2 |0 3 \u56fe|0 4 |0 5 ;\u6069\u6028\u5206\u660e,0,3 1 \u6069|4 1 |5 1 \u5206|6 1 \u660e;\u79ef\u94e2\u7d2f\u5bf8,0,3 4 |4 4 |5 4 \u7d2f|6 4 ;\u5206\u7c7b\u522b\u7d2f,1,5 1 \u5206|5 2 |5 3 \u522b|5 4 \u7d2f;\u7d2f\u5375\u4e4b\u5371,1,5 4 \u7d2f|5 5 \u5375|5 6 |5 7 \u5371;\u96e8\u540e\u6625\u7b0b,0,0 8 |1 8 |2 8 |3 8 \u7b0b", "block_num": 10 }, { "hide_arr": "4 8 \u98ce;3 9 \u96ea;0 3 \u6b4c;4 6 \u65e0;2 4 \u5706;5 5 \u767e;5 4 \u75ae;3 7 \u65e0;3 3 \u670b;3 2 \u9ad8;5 8 \u9910;1 2 \u653e;7 6 \u5165;0 5 \u9882;4 9 \u6708;1 9 \u98ce;5 6 \u5b54;4 7 \u8fb9;1 4 \u5fb7;7 8 \u5bbf;5 3 \u5343;0 6 \u5fb7", "word_num": 34, "idiom_arr": "\u65e0\u8fb9\u98ce\u6708,1,4 6 |4 7 |4 8 |4 9 ;\u98ce\u82b1\u96ea\u6708,0,1 9 |2 9 \u82b1|3 9 |4 9 ;\u6b4c\u529f\u9882\u5fb7,1,0 3 |0 4 \u529f|0 5 |0 6 ;\u65e0\u5b54\u4e0d\u5165,0,4 6 |5 6 |6 6 \u4e0d|7 6 ;\u529f\u5fb7\u5706\u6ee1,0,0 4 \u529f|1 4 |2 4 |3 4 \u6ee1;\u5343\u75ae\u767e\u5b54,1,5 3 |5 4 |5 5 |5 6 ;\u6ee1\u76ee\u75ae\u75cd,0,3 4 \u6ee1|4 4 \u76ee|5 4 |6 4 \u75cd;\u98ce\u6708\u65e0\u8fb9,0,1 7 \u98ce|2 7 \u6708|3 7 |4 7 ;\u9ad8\u670b\u6ee1\u5ea7,1,3 2 |3 3 |3 4 \u6ee1|3 5 \u5ea7;\u653e\u8a00\u9ad8\u8bba,0,1 2 |2 2 \u8a00|3 2 |4 2 \u8bba;\u98ce\u9910\u9732\u5bbf,0,4 8 |5 8 |6 8 \u9732|7 8 ", "block_num": 10 }, { "hide_arr": "8 2 \u540d;0 4 \u8c03;3 6 \u767b;3 9 \u751f;1 7 \u7b14;1 1 \u67ef;5 3 \u79d1;5 2 \u91d1;3 7 \u573a;5 4 \u7389;1 9 \u8da3;2 1 \u4e00;8 3 \u865a;4 6 \u5c71;6 2 \u699c;5 5 \u5f8b;3 1 \u68a6;3 4 \u7c89;6 4 \u7422;0 1 \u5357;0 2 \u8154;1 4 \u8102;7 2 \u9898;1 6 \u6d89", "word_num": 34, "idiom_arr": "\u6d6e\u540d\u865a\u5229,1,8 1 \u6d6e|8 2 |8 3 |8 4 \u5229;\u8c03\u8102\u5f04\u7c89,0,0 4 |1 4 |2 4 \u5f04|3 4 ;\u6d89\u6d77\u767b\u5c71,0,1 6 |2 6 \u6d77|3 6 |4 6 ;\u5357\u8154\u5317\u8c03,1,0 1 |0 2 |0 3 \u5317|0 4 ;\u5999\u8da3\u6a2a\u751f,0,0 9 \u5999|1 9 |2 9 \u6a2a|3 9 ;\u6d89\u7b14\u6210\u8da3,1,1 6 |1 7 |1 8 \u6210|1 9 ;\u5357\u67ef\u4e00\u68a6,0,0 1 |1 1 |2 1 |3 1 ;\u91d1\u79d1\u7389\u5f8b,1,5 2 |5 3 |5 4 |5 5 ;\u91d1\u699c\u9898\u540d,0,5 2 |6 2 |7 2 |8 2 ;\u7c89\u58a8\u767b\u573a,1,3 4 |3 5 \u58a8|3 6 |3 7 ;\u7c89\u5986\u7389\u7422,0,3 4 |4 4 \u5986|5 4 |6 4 ", "block_num": 10 }, { "hide_arr": "0 5 \u6b65;3 4 \u5fc3;0 3 \u5b64;5 9 \u77ed;1 7 \u4e0d;8 6 \u9752;6 6 \u77ed;5 4 \u6f8e;3 7 \u6211;3 2 \u4ee5;5 7 \u957f;8 9 \u63a5;0 6 \u5f53;5 6 \u53d6;0 7 \u65f6;2 7 \u5f85", "word_num": 37, "idiom_arr": "\u72ec\u6b65\u5f53\u65f6,1,0 4 \u72ec|0 5 |0 6 |0 7 ;\u6389\u4ee5\u8f7b\u5fc3,1,3 1 \u6389|3 2 |3 3 \u8f7b|3 4 ;\u9ccf\u5be1\u5b64\u72ec,1,0 1 \u9ccf|0 2 \u5be1|0 3 |0 4 \u72ec;\u77ed\u5175\u76f8\u63a5,0,5 9 |6 9 \u5175|7 9 \u76f8|8 9 ;\u72ec\u5177\u5320\u5fc3,0,0 4 \u72ec|1 4 \u5177|2 4 \u5320|3 4 ;\u65f6\u4e0d\u5f85\u6211,0,0 7 |1 7 |2 7 |3 7 ;\u9752\u9ec4\u4e0d\u63a5,1,8 6 |8 7 \u9ec4|8 8 \u4e0d|8 9 ;\u820d\u957f\u53d6\u77ed,0,3 6 \u820d|4 6 \u957f|5 6 |6 6 ;\u5fc3\u6f6e\u6f8e\u6e43,0,3 4 |4 4 \u6f6e|5 4 |6 4 \u6e43;\u820d\u6211\u5176\u8c01,1,3 6 \u820d|3 7 |3 8 \u5176|3 9 \u8c01;\u5047\u4ee5\u8f9e\u8272,0,2 2 \u5047|3 2 |4 2 \u8f9e|5 2 \u8272;\u53d6\u957f\u8865\u77ed,1,5 6 |5 7 |5 8 \u8865|5 9 ", "block_num": 10 }, { "hide_arr": "0 6 \u8ba1;8 7 \u4e8b;7 6 \u80dc;6 5 \u4e0d;0 7 \u6c11;2 5 \u5175;4 4 \u56fd;6 9 \u6c5f;3 5 \u5f3a;4 2 \u82b1;1 3 \u56fd;8 4 \u56fd;0 8 \u751f;6 7 \u751f;1 5 \u5bcc;3 7 \u961c;9 6 \u65e0", "word_num": 37, "idiom_arr": "\u56fd\u8ba1\u6c11\u751f,1,0 5 \u56fd|0 6 |0 7 |0 8 ;\u4e8e\u4e8b\u65e0\u8865,1,8 6 \u4e8e|8 7 |8 8 \u65e0|8 9 \u8865;\u804a\u80dc\u4e8e\u65e0,0,6 6 \u804a|7 6 |8 6 \u4e8e|9 6 ;\u6c11\u4e0d\u804a\u751f,1,6 4 \u6c11|6 5 |6 6 \u804a|6 7 ;\u6c11\u5b89\u7269\u961c,0,0 7 |1 7 \u5b89|2 7 \u7269|3 7 ;\u56fd\u5bcc\u5175\u5f3a,0,0 5 \u56fd|1 5 |2 5 |3 5 ;\u5bcc\u56fd\u5b89\u6c11,0,3 4 \u5bcc|4 4 |5 4 \u5b89|6 4 \u6c11;\u6c5f\u5fc3\u8865\u6f0f,0,6 9 |7 9 \u5fc3|8 9 \u8865|9 9 \u6f0f;\u7e41\u8363\u5bcc\u5f3a,1,3 2 \u7e41|3 3 \u8363|3 4 \u5bcc|3 5 ;\u7e41\u82b1\u4f3c\u9526,0,3 2 \u7e41|4 2 |5 2 \u4f3c|6 2 \u9526;\u5356\u56fd\u6c42\u8363,0,0 3 \u5356|1 3 |2 3 \u6c42|3 3 \u8363;\u6c11\u5bcc\u56fd\u5f3a,0,6 4 \u6c11|7 4 \u5bcc|8 4 |9 4 \u5f3a", "block_num": 10 }, { "hide_arr": "3 5 \u65e0;0 6 \u4e58;8 1 \u751a;6 3 \u4e91;6 8 \u4e00;5 4 \u4eba;0 5 \u53ef;1 5 \u6709;9 6 \u8f9e;4 3 \u4e8e;6 6 \u5728;9 1 \u5bc6;9 4 \u98ce;6 1 \u8fc7;0 3 \u540c;2 5 \u53ef;6 2 \u773c", "word_num": 37, "idiom_arr": "\u6e3a\u65e0\u97f3\u8baf,1,3 4 \u6e3a|3 5 |3 6 \u97f3|3 7 \u8baf;\u53ef\u4e58\u4e4b\u673a,1,0 5 |0 6 |0 7 \u4e4b|0 8 \u673a;\u8fc7\u4ece\u751a\u5bc6,0,6 1 |7 1 \u4ece|8 1 |9 1 ;\u8fc7\u773c\u4e91\u70df,1,6 1 |6 2 |6 3 |6 4 \u70df;\u5728\u6b64\u4e00\u4e3e,1,6 6 |6 7 \u6b64|6 8 |6 9 \u4e3e;\u6e3a\u65e0\u4eba\u70df,0,3 4 \u6e3a|4 4 \u65e0|5 4 |6 4 \u70df;\u975e\u540c\u5c0f\u53ef,1,0 2 \u975e|0 3 |0 4 \u5c0f|0 5 ;\u53ef\u6709\u53ef\u65e0,0,0 5 |1 5 |2 5 |3 5 ;\u5728\u6240\u4e0d\u8f9e,0,6 6 |7 6 \u6240|8 6 \u4e0d|9 6 ;\u804a\u80dc\u4e8e\u65e0,1,4 1 \u804a|4 2 \u80dc|4 3 |4 4 \u65e0;\u97f3\u5bb9\u5b9b\u5728,0,3 6 \u97f3|4 6 \u5bb9|5 6 \u5b9b|6 6 ;\u5bc6\u4e0d\u901a\u98ce,1,9 1 |9 2 \u4e0d|9 3 \u901a|9 4 ", "block_num": 10 }, { "hide_arr": "3 4 \u6251;9 8 \u56db;5 2 \u9189;7 5 \u63a5;1 5 \u6124;5 4 \u8ff7;9 6 \u4e09;4 6 \u7565;0 6 \u53f7;7 1 \u6587;0 3 \u6572;1 3 \u5c71;0 8 \u4ee4;7 8 \u4e09;2 3 \u9707;5 6 \u77e5;9 7 \u843d", "word_num": 37, "idiom_arr": "\u997f\u864e\u6251\u98df,1,3 2 \u997f|3 3 \u864e|3 4 |3 5 \u98df;\u98a0\u4e09\u5012\u56db,0,6 8 \u98a0|7 8 |8 8 \u5012|9 8 ;\u7eb8\u9189\u91d1\u8ff7,1,5 1 \u7eb8|5 2 |5 3 \u91d1|5 4 ;\u63a5\u4e8c\u8fde\u4e09,1,7 5 |7 6 \u4e8c|7 7 \u8fde|7 8 ;\u53d1\u6124\u5fd8\u98df,0,0 5 \u53d1|1 5 |2 5 \u5fd8|3 5 \u98df;\u8ff7\u9014\u77e5\u8fd4,1,5 4 |5 5 \u9014|5 6 |5 7 \u8fd4;\u4e22\u4e09\u843d\u56db,1,9 5 \u4e22|9 6 |9 7 |9 8 ;\u7565\u77e5\u4e00\u4e8c,0,4 6 |5 6 |6 6 \u4e00|7 6 \u4e8c;\u53d1\u53f7\u65bd\u4ee4,1,0 5 \u53d1|0 6 |0 7 \u65bd|0 8 ;\u4e00\u7eb8\u7a7a\u6587,0,4 1 \u4e00|5 1 \u7eb8|6 1 \u7a7a|7 1 ;\u6251\u6714\u8ff7\u79bb,0,3 4 |4 4 \u6714|5 4 |6 4 \u79bb;\u6572\u5c71\u9707\u864e,0,0 3 |1 3 |2 3 |3 3 \u864e", "block_num": 10 }, { "hide_arr": "7 6 \u5a01;9 8 \u80c6;2 9 \u7acb;4 7 \u60b2;4 1 \u72ee;1 6 \u9f13;4 6 \u72d0;5 1 \u543c;6 7 \u80cc;2 1 \u6cb3;3 4 \u72e1;4 4 \u5154;4 3 \u640f;1 7 \u4e50;2 2 \u62c6;9 5 \u660e;7 8 \u5fc3;3 9 \u5730;6 9 \u8170;2 3 \u6865;2 7 \u6781;1 8 \u55a7", "word_num": 37, "idiom_arr": "\u72d0\u5047\u864e\u5a01,0,4 6 |5 6 \u5047|6 6 \u864e|7 6 ;\u660e\u76ee\u5f20\u80c6,1,9 5 |9 6 \u76ee|9 7 \u5f20|9 8 ;\u718a\u5fc3\u8c79\u80c6,0,6 8 \u718a|7 8 |8 8 \u8c79|9 8 ;\u9876\u5929\u7acb\u5730,0,0 9 \u9876|1 9 \u5929|2 9 |3 9 ;\u4e50\u6781\u751f\u60b2,0,1 7 |2 7 |3 7 \u751f|4 7 ;\u72ee\u5b50\u640f\u5154,1,4 1 |4 2 \u5b50|4 3 |4 4 ;\u9f13\u4e50\u55a7\u5929,1,1 6 |1 7 |1 8 |1 9 \u5929;\u5154\u6b7b\u72d0\u60b2,1,4 4 |4 5 \u6b7b|4 6 |4 7 ;\u6cb3\u4e1c\u72ee\u543c,0,2 1 |3 1 \u4e1c|4 1 |5 1 ;\u864e\u80cc\u718a\u8170,1,6 6 \u864e|6 7 |6 8 \u718a|6 9 ;\u8fc7\u6cb3\u62c6\u6865,1,2 0 \u8fc7|2 1 |2 2 |2 3 ;\u72e1\u5154\u4e09\u7a9f,0,3 4 |4 4 |5 4 \u4e09|6 4 \u7a9f", "block_num": 10 }, { "hide_arr": "3 4 \u6b4c;5 6 \u975e;6 4 \u5fb7;3 7 \u69ad;0 8 \u5c3a;7 8 \u6d41;1 3 \u4f5c;6 1 \u6d41;7 7 \u4e1c;1 5 \u6c34;7 6 \u4e4b;2 1 \u6237;5 5 \u53e4;6 6 \u5206;9 8 \u96c5;0 7 \u54ab;3 2 \u9152;5 7 \u4eca;5 4 \u9882;0 3 \u6562;0 6 \u5728;3 5 \u53f0", "word_num": 37, "idiom_arr": "\u5bf9\u9152\u5f53\u6b4c,1,3 1 \u5bf9|3 2 |3 3 \u5f53|3 4 ;\u9882\u53e4\u975e\u4eca,1,5 4 |5 5 |5 6 |5 7 ;\u6b4c\u529f\u9882\u5fb7,0,3 4 |4 4 \u529f|5 4 |6 4 ;\u6b4c\u53f0\u821e\u69ad,1,3 4 |3 5 |3 6 \u821e|3 7 ;\u8fd1\u5728\u54ab\u5c3a,1,0 5 \u8fd1|0 6 |0 7 |0 8 ;\u98ce\u6d41\u5112\u96c5,0,6 8 \u98ce|7 8 |8 8 \u5112|9 8 ;\u6562\u4f5c\u6562\u5f53,0,0 3 |1 3 |2 3 \u6562|3 3 \u5f53;\u5bf9\u7b54\u5982\u6d41,0,3 1 \u5bf9|4 1 \u7b54|5 1 \u5982|6 1 ;\u4ed8\u4e4b\u4e1c\u6d41,1,7 5 \u4ed8|7 6 |7 7 |7 8 ;\u8fd1\u6c34\u697c\u53f0,0,0 5 \u8fd1|1 5 |2 5 \u697c|3 5 ;\u975e\u5206\u4e4b\u60f3,0,5 6 |6 6 |7 6 |8 6 \u60f3;\u95e8\u5f53\u6237\u5bf9,0,0 1 \u95e8|1 1 \u5f53|2 1 |3 1 \u5bf9", "block_num": 10 }, { "hide_arr": "7 3 \u7406;1 9 \u7389;3 2 \u62dc;7 2 \u593a;3 6 \u9732;5 1 \u97ec;3 4 \u98ce;0 5 \u5730;9 0 \u5c48;3 7 \u5bbf;3 9 \u8a00;1 8 \u5f15;0 2 \u9876;6 4 \u669d;6 2 \u5f69;7 1 \u8bcd;3 5 \u9910;1 2 \u793c;1 6 \u629b;2 6 \u5934;5 4 \u6666;2 9 \u826f", "word_num": 37, "idiom_arr": "\u5f3a\u8bcd\u593a\u7406,1,7 0 \u5f3a|7 1 |7 2 |7 3 ;\u91d1\u7389\u826f\u8a00,0,0 9 \u91d1|1 9 |2 9 |3 9 ;\u9876\u793c\u819c\u62dc,0,0 2 |1 2 |2 2 \u819c|3 2 ;\u629b\u7816\u5f15\u7389,1,1 6 |1 7 \u7816|1 8 |1 9 ;\u5149\u5f69\u593a\u76ee,0,5 2 \u5149|6 2 |7 2 |8 2 \u76ee;\u7518\u62dc\u4e0b\u98ce,1,3 1 \u7518|3 2 |3 3 \u4e0b|3 4 ;\u629b\u5934\u9732\u9762,0,1 6 |2 6 |3 6 |4 6 \u9762;\u97ec\u5149\u517b\u6666,1,5 1 |5 2 \u5149|5 3 \u517b|5 4 ;\u98ce\u96e8\u6666\u669d,0,3 4 |4 4 \u96e8|5 4 |6 4 ;\u98ce\u9910\u9732\u5bbf,1,3 4 |3 5 |3 6 |3 7 ;\u9876\u5929\u7acb\u5730,1,0 2 |0 3 \u5929|0 4 \u7acb|0 5 ;\u575a\u5f3a\u4e0d\u5c48,0,6 0 \u575a|7 0 \u5f3a|8 0 \u4e0d|9 0 ", "block_num": 10 }, { "hide_arr": "6 2 \u5934;7 3 \u5d29;6 4 \u8138;4 6 \u8170;6 8 \u65e0;6 6 \u4e07;5 6 \u7f20;6 1 \u7070;4 1 \u6728;9 6 \u7530;1 8 \u5c71;9 1 \u706d;7 1 \u98de;3 6 \u718a;1 7 \u79bb;7 8 \u4e8c;9 5 \u5f52;9 4 \u7532;6 9 \u5948;4 5 \u54c8;3 1 \u69c1;4 8 \u72ec;2 6 \u80cc;6 7 \u822c;5 8 \u4e00;6 3 \u571f", "word_num": 37, "idiom_arr": "\u7070\u5934\u571f\u8138,1,6 1 |6 2 |6 3 |6 4 ;\u571f\u5d29\u74e6\u89e3,0,6 3 |7 3 |8 3 \u74e6|9 3 \u89e3;\u5288\u5934\u76d6\u8138,0,3 4 \u5288|4 4 \u5934|5 4 \u76d6|6 4 ;\u70b9\u5934\u54c8\u8170,1,4 3 \u70b9|4 4 \u5934|4 5 |4 6 ;\u72ec\u4e00\u65e0\u4e8c,0,4 8 |5 8 |6 8 |7 8 ;\u4e07\u822c\u65e0\u5948,1,6 6 |6 7 |6 8 |6 9 ;\u8170\u7f20\u4e07\u8d2f,0,4 6 |5 6 |6 6 |7 6 \u8d2f;\u7070\u98de\u70df\u706d,0,6 1 |7 1 |8 1 \u70df|9 1 ;\u69c1\u6728\u6b7b\u7070,0,3 1 |4 1 |5 1 \u6b7b|6 1 ;\u864e\u80cc\u718a\u8170,0,1 6 \u864e|2 6 |3 6 |4 6 ;\u89e3\u7532\u5f52\u7530,1,9 3 \u89e3|9 4 |9 5 |9 6 ;\u8c03\u864e\u79bb\u5c71,1,1 5 \u8c03|1 6 \u864e|1 7 |1 8 ", "block_num": 10 }, { "hide_arr": "3 6 \u6597;3 9 \u672c;2 5 \u8f7b;8 9 \u52a8;8 8 \u8349;5 1 \u4e0d;4 6 \u8f6c;3 4 \u52fe;8 0 \u4ed8;7 1 \u5f13;1 4 \u5047;6 3 \u52a8;5 9 \u539f;6 2 \u5fc3;8 1 \u4e4b;8 6 \u98ce;3 5 \u5fc3;6 1 \u60ca;4 9 \u8fd8", "word_num": 40, "idiom_arr": "\u52fe\u5fc3\u6597\u89d2,1,3 4 |3 5 |3 6 |3 7 \u89d2;\u8fd4\u672c\u8fd8\u539f,0,2 9 \u8fd4|3 9 |4 9 |5 9 ;\u6389\u4ee5\u8f7b\u5fc3,0,0 5 \u6389|1 5 \u4ee5|2 5 |3 5 ;\u539f\u5c01\u4e0d\u52a8,0,5 9 |6 9 \u5c01|7 9 \u4e0d|8 9 ;\u98ce\u5439\u8349\u52a8,1,8 6 |8 7 \u5439|8 8 |8 9 ;\u9e21\u72ac\u4e0d\u60ca,0,3 1 \u9e21|4 1 \u72ac|5 1 |6 1 ;\u6597\u8f6c\u661f\u79fb,0,3 6 |4 6 |5 6 \u661f|6 6 \u79fb;\u52fe\u9b42\u6444\u9b44,0,3 4 |4 4 \u9b42|5 4 \u6444|6 4 \u9b44;\u4ed8\u4e4b\u4e1c\u6d41,1,8 0 |8 1 |8 2 \u4e1c|8 3 \u6d41;\u60ca\u5f13\u4e4b\u9e1f,0,6 1 |7 1 |8 1 |9 1 \u9e1f;\u5047\u4ee5\u8f9e\u8272,1,1 4 |1 5 \u4ee5|1 6 \u8f9e|1 7 \u8272;\u60ca\u5fc3\u52a8\u9b44,1,6 1 |6 2 |6 3 |6 4 \u9b44;\u661f\u706b\u71ce\u539f,1,5 6 \u661f|5 7 \u706b|5 8 \u71ce|5 9 ", "block_num": 10 }, { "hide_arr": "3 9 \u5229;3 4 \u593a;6 4 \u597d;8 4 \u591a;1 7 \u9f0e;4 1 \u642c;8 3 \u6210;3 5 \u7736;6 5 \u666f;1 4 \u53d6;1 6 \u9f0e;1 1 \u4e14;1 8 \u5927;2 6 \u8db3;9 4 \u78e8;3 7 \u51fa;0 1 \u82df;6 1 \u5957;2 9 \u865a;6 7 \u957f", "word_num": 40, "idiom_arr": "\u6d6e\u540d\u865a\u5229,0,0 9 \u6d6e|1 9 \u540d|2 9 |3 9 ;\u751f\u6740\u4e88\u593a,1,3 1 \u751f|3 2 \u6740|3 3 \u4e88|3 4 ;\u597d\u4e8b\u591a\u78e8,0,6 4 |7 4 \u4e8b|8 4 |9 4 ;\u591a\u624d\u591a\u827a,1,8 4 |8 5 \u624d|8 6 \u591a|8 7 \u827a;\u9f0e\u9f0e\u5927\u540d,1,1 6 |1 7 |1 8 |1 9 \u540d;\u593a\u4eba\u6240\u597d,0,3 4 |4 4 \u4eba|5 4 \u6240|6 4 ;\u751f\u642c\u786c\u5957,0,3 1 \u751f|4 1 |5 1 \u786c|6 1 ;\u79ef\u5c11\u6210\u591a,1,8 1 \u79ef|8 2 \u5c11|8 3 |8 4 ;\u593a\u7736\u800c\u51fa,1,3 4 |3 5 |3 6 \u800c|3 7 ;\u597d\u666f\u4e0d\u957f,1,6 4 |6 5 |6 6 \u4e0d|6 7 ;\u5de7\u53d6\u8c6a\u593a,0,0 4 \u5de7|1 4 |2 4 \u8c6a|3 4 ;\u9f0e\u8db3\u800c\u7acb,0,1 6 |2 6 |3 6 \u800c|4 6 \u7acb;\u82df\u4e14\u5077\u751f,0,0 1 |1 1 |2 1 \u5077|3 1 \u751f", "block_num": 10 }, { "hide_arr": "3 5 \u6b65;4 1 \u5ac9;1 4 \u5be1;2 6 \u72ec;4 4 \u5177;7 3 \u671f;1 2 \u5b64;7 1 \u4f1a;5 3 \u5de7;7 9 \u78e8;5 6 \u9762;3 9 \u8c8c;5 9 \u8272;3 6 \u5f53;3 7 \u65f6;5 1 \u80fd;5 4 \u5320;2 4 \u5b64;8 6 \u8d64;3 1 \u8d24;2 1 \u5992", "word_num": 40, "idiom_arr": "\u72ec\u6b65\u5f53\u65f6,1,3 4 \u72ec|3 5 |3 6 |3 7 ;\u5992\u8d24\u5ac9\u80fd,0,2 1 |3 1 |4 1 |5 1 ;\u9ccf\u5be1\u5b64\u72ec,0,0 4 \u9ccf|1 4 |2 4 |3 4 \u72ec;\u72ec\u5f53\u4e00\u9762,0,2 6 |3 6 |4 6 \u4e00|5 6 ;\u72ec\u5177\u5320\u5fc3,0,3 4 \u72ec|4 4 |5 4 |6 4 \u5fc3;\u540e\u4f1a\u6709\u671f,1,7 0 \u540e|7 1 |7 2 \u6709|7 3 ;\u5b64\u5bb6\u5be1\u4eba,1,1 2 |1 3 \u5bb6|1 4 |1 5 \u4eba;\u80fd\u6390\u4f1a\u7b97,0,5 1 |6 1 \u6390|7 1 |8 1 \u7b97;\u80fd\u5de5\u5de7\u5320,1,5 1 |5 2 \u5de5|5 3 |5 4 ;\u8033\u9b13\u53ae\u78e8,1,7 6 \u8033|7 7 \u9b13|7 8 \u53ae|7 9 ;\u9762\u7ea2\u8033\u8d64,0,5 6 |6 6 \u7ea2|7 6 \u8033|8 6 ;\u9762\u4e0d\u6539\u8272,1,5 6 |5 7 \u4e0d|5 8 \u6539|5 9 ;\u89c2\u8c8c\u5bdf\u8272,0,2 9 \u89c2|3 9 |4 9 \u5bdf|5 9 ", "block_num": 10 }, { "hide_arr": "0 6 \u4eba;8 1 \u673a;6 6 \u60c5;3 4 \u4fef;2 7 \u5176;2 9 \u624d;2 1 \u975e;5 1 \u53ef;5 6 \u751f;3 6 \u5373;4 8 \u8f6f;7 1 \u4e4b;5 8 \u786c;4 1 \u5c0f;0 7 \u5404;5 4 \u65e0;6 1 \u4e58;5 7 \u642c;3 5 \u62fe;7 2 \u4e1c;0 8 \u6709", "word_num": 40, "idiom_arr": "\u4eba\u5404\u6709\u5fd7,1,0 6 |0 7 |0 8 |0 9 \u5fd7;\u53ef\u4e58\u4e4b\u673a,0,5 1 |6 1 |7 1 |8 1 ;\u5373\u666f\u751f\u60c5,0,3 6 |4 6 \u666f|5 6 |6 6 ;\u4fef\u4ef0\u65e0\u6127,0,3 4 |4 4 \u4ef0|5 4 |6 4 \u6127;\u5404\u884c\u5176\u662f,0,0 7 |1 7 \u884c|2 7 |3 7 \u662f;\u5fd7\u5927\u624d\u758f,0,0 9 \u5fd7|1 9 \u5927|2 9 |3 9 \u758f;\u975e\u540c\u5c0f\u53ef,0,2 1 |3 1 \u540c|4 1 |5 1 ;\u53ef\u6709\u53ef\u65e0,1,5 1 |5 2 \u6709|5 3 \u53ef|5 4 ;\u751f\u642c\u786c\u5957,1,5 6 |5 7 |5 8 |5 9 \u5957;\u79ef\u975e\u6210\u662f,1,2 0 \u79ef|2 1 |2 2 \u6210|2 3 \u662f;\u4fef\u62fe\u5373\u662f,1,3 4 |3 5 |3 6 |3 7 \u662f;\u8f6f\u786c\u7686\u65bd,0,4 8 |5 8 |6 8 \u7686|7 8 \u65bd;\u4ed8\u4e4b\u4e1c\u6d41,1,7 0 \u4ed8|7 1 |7 2 |7 3 \u6d41", "block_num": 10 }, { "hide_arr": "0 6 \u4eba;8 1 \u673a;4 6 \u666f;6 4 \u6127;2 7 \u5176;3 9 \u758f;4 1 \u5c0f;5 2 \u6709;5 9 \u5957;2 2 \u6210;3 4 \u4fef;4 8 \u8f6f;7 3 \u6d41;1 9 \u5927;2 9 \u624d;7 1 \u4e4b;0 8 \u6709;5 1 \u53ef;3 1 \u540c;5 7 \u642c;0 7 \u5404;5 4 \u65e0;4 4 \u4ef0", "word_num": 40, "idiom_arr": "\u4eba\u5404\u6709\u5fd7,1,0 6 |0 7 |0 8 |0 9 \u5fd7;\u53ef\u4e58\u4e4b\u673a,0,5 1 |6 1 \u4e58|7 1 |8 1 ;\u5373\u666f\u751f\u60c5,0,3 6 \u5373|4 6 |5 6 \u751f|6 6 \u60c5;\u4fef\u4ef0\u65e0\u6127,0,3 4 |4 4 |5 4 |6 4 ;\u5404\u884c\u5176\u662f,0,0 7 |1 7 \u884c|2 7 |3 7 \u662f;\u5fd7\u5927\u624d\u758f,0,0 9 \u5fd7|1 9 |2 9 |3 9 ;\u975e\u540c\u5c0f\u53ef,0,2 1 \u975e|3 1 |4 1 |5 1 ;\u53ef\u6709\u53ef\u65e0,1,5 1 |5 2 |5 3 \u53ef|5 4 ;\u751f\u642c\u786c\u5957,1,5 6 \u751f|5 7 |5 8 \u786c|5 9 ;\u79ef\u975e\u6210\u662f,1,2 0 \u79ef|2 1 \u975e|2 2 |2 3 \u662f;\u4fef\u62fe\u5373\u662f,1,3 4 |3 5 \u62fe|3 6 \u5373|3 7 \u662f;\u8f6f\u786c\u7686\u65bd,0,4 8 |5 8 \u786c|6 8 \u7686|7 8 \u65bd;\u4ed8\u4e4b\u4e1c\u6d41,1,7 0 \u4ed8|7 1 |7 2 \u4e1c|7 3 ", "block_num": 10 }, { "hide_arr": "7 2 \u62e3;6 6 \u57ce;3 4 \u6469;5 3 \u76f8;1 7 \u5982;5 7 \u4e09;2 0 \u5b64;0 6 \u884d;3 1 \u957f;7 5 \u4ed8;6 1 \u5c0f;9 8 \u96c5;4 4 \u80a9;6 8 \u98ce;2 3 \u4eba;3 5 \u62f3;6 4 \u8e35;5 2 \u5175;2 1 \u5bb6;7 6 \u4e4b;7 0 \u62e3;8 1 \u608d;7 3 \u80a5", "word_num": 40, "idiom_arr": "\u62e3\u7cbe\u62e3\u80a5,1,7 0 |7 1 \u7cbe|7 2 |7 3 ;\u8fde\u57ce\u4e4b\u74a7,0,5 6 \u8fde|6 6 |7 6 |8 6 \u74a7;\u6469\u80a9\u63a5\u8e35,0,3 4 |4 4 |5 4 \u63a5|6 4 ;\u77ed\u5175\u76f8\u63a5,1,5 1 \u77ed|5 2 |5 3 |5 4 \u63a5;\u4e86\u5982\u6307\u638c,0,0 7 \u4e86|1 7 |2 7 \u6307|3 7 \u638c;\u63a5\u4e8c\u8fde\u4e09,1,5 4 \u63a5|5 5 \u4e8c|5 6 \u8fde|5 7 ;\u6469\u62f3\u64e6\u638c,1,3 4 |3 5 |3 6 \u64e6|3 7 \u638c;\u5b64\u5bb6\u5be1\u4eba,1,2 0 |2 1 |2 2 \u5be1|2 3 ;\u6577\u884d\u4e86\u4e8b,1,0 5 \u6577|0 6 |0 7 \u4e86|0 8 \u4e8b;\u5bb6\u957f\u91cc\u77ed,0,2 1 |3 1 |4 1 \u91cc|5 1 \u77ed;\u4ed8\u4e4b\u4e1c\u6d41,1,7 5 |7 6 |7 7 \u4e1c|7 8 \u6d41;\u77ed\u5c0f\u7cbe\u608d,0,5 1 \u77ed|6 1 |7 1 \u7cbe|8 1 ;\u98ce\u6d41\u5112\u96c5,0,6 8 |7 8 \u6d41|8 8 \u5112|9 8 ", "block_num": 10 }, { "hide_arr": "6 6 \u5e74;3 7 \u6b62;3 4 \u9002;6 2 \u6781;6 4 \u53cd;2 5 \u5c0f;2 7 \u800c;8 3 \u5404;8 1 \u661f;0 2 \u6df7;5 7 \u4e4e;7 8 \u62d2;4 3 \u4e0d;1 7 \u7136;5 6 \u4e4b;8 5 \u5176;0 5 \u975e;3 6 \u800c;3 5 \u53ef;9 4 \u80dc;8 4 \u4e3a;8 6 \u4e3b;9 1 \u79fb;0 7 \u621b;1 5 \u540c;4 8 \u6765", "word_num": 40, "idiom_arr": "\u800c\u7acb\u4e4b\u5e74,0,3 6 |4 6 \u7acb|5 6 |6 6 ;\u9002\u53ef\u800c\u6b62,1,3 4 |3 5 |3 6 |3 7 ;\u9002\u5f97\u5176\u53cd,0,3 4 |4 4 \u5f97|5 4 \u5176|6 4 ;\u7269\u6781\u5fc5\u53cd,1,6 1 \u7269|6 2 |6 3 \u5fc5|6 4 ;\u53cd\u8d25\u4e3a\u80dc,0,6 4 |7 4 \u8d25|8 4 |9 4 ;\u975e\u540c\u5c0f\u53ef,0,0 5 |1 5 |2 5 |3 5 ;\u621b\u7136\u800c\u6b62,0,0 7 |1 7 |2 7 |3 7 ;\u5404\u4e3a\u5176\u4e3b,1,8 3 |8 4 |8 5 |8 6 ;\u7269\u6362\u661f\u79fb,0,6 1 \u7269|7 1 \u6362|8 1 |9 1 ;\u6df7\u6dc6\u662f\u975e,1,0 2 |0 3 \u6dc6|0 4 \u662f|0 5 ;\u4e4b\u4e4e\u8005\u4e5f,1,5 6 |5 7 |5 8 \u8005|5 9 \u4e5f;\u6765\u8005\u4e0d\u62d2,0,4 8 |5 8 \u8005|6 8 \u4e0d|7 8 ;\u54ed\u7b11\u4e0d\u5f97,1,4 1 \u54ed|4 2 \u7b11|4 3 |4 4 \u5f97", "block_num": 10 }, { "hide_arr": "2 2 \u91cd;2 9 \u8109;4 7 \u4ea4;0 1 \u65e5;3 2 \u8d1f;7 7 \u5bb6;3 9 \u8109;5 6 \u878d;8 8 \u8d77;5 5 \u4e50;4 4 \u7cca;3 0 \u529b;5 7 \u878d;3 4 \u542b;6 6 \u4f1a;2 0 \u91cf;0 0 \u5ea6;0 2 \u5982;3 3 \u5c48;7 5 \u4e07;6 4 \u8f9e;0 3 \u5e74;7 6 \u8d2f;5 4 \u5176;2 8 \u8109;5 2 \u8bf7", "word_num": 40, "idiom_arr": "\u5982\u91ca\u91cd\u8d1f,0,0 2 |1 2 \u91ca|2 2 |3 2 ;\u542b\u60c5\u8109\u8109,1,2 6 \u542b|2 7 \u60c5|2 8 |2 9 ;\u60c5\u666f\u4ea4\u878d,0,2 7 \u60c5|3 7 \u666f|4 7 |5 7 ;\u5ea6\u65e5\u5982\u5e74,1,0 0 |0 1 |0 2 |0 3 ;\u8d1f\u5c48\u542b\u51a4,1,3 2 |3 3 |3 4 |3 5 \u51a4;\u4e07\u8d2f\u5bb6\u8d22,1,7 5 |7 6 |7 7 |7 8 \u8d22;\u8109\u8109\u542b\u60c5,0,2 9 |3 9 |4 9 \u542b|5 9 \u60c5;\u878d\u4f1a\u8d2f\u901a,0,5 6 |6 6 |7 6 |8 6 \u901a;\u89c1\u8d22\u8d77\u610f,0,6 8 \u89c1|7 8 \u8d22|8 8 |9 8 \u610f;\u5176\u4e50\u878d\u878d,1,5 4 |5 5 |5 6 |5 7 ;\u542b\u7cca\u5176\u8f9e,0,3 4 |4 4 |5 4 |6 4 ;\u8d1f\u8346\u8bf7\u7f6a,0,3 2 |4 2 \u8346|5 2 |6 2 \u7f6a;\u5ea6\u5fb7\u91cf\u529b,0,0 0 |1 0 \u5fb7|2 0 |3 0 ", "block_num": 10 }, { "hide_arr": "2 4 \u5317;5 7 \u62a5;3 6 \u9063;6 4 \u5c71;2 9 \u53cd;3 7 \u5c06;3 1 \u518d;8 8 \u5ff5;0 6 \u4e00;8 6 \u79c1;8 5 \u65e0;1 1 \u4e1c;0 5 \u67ef;3 5 \u5175;5 9 \u4ec7;5 4 \u79bb;6 8 \u5fc3;6 6 \u800c;2 1 \u5c71;3 4 \u8c03;5 8 \u79c1;6 3 \u5982;4 7 \u4ec7;2 2 \u5357;4 9 \u6210;4 1 \u8d77", "word_num": 40, "idiom_arr": "\u5c71\u5357\u6d77\u5317,1,2 1 |2 2 |2 3 \u6d77|2 4 ;\u516c\u62a5\u79c1\u4ec7,1,5 6 \u516c|5 7 |5 8 |5 9 ;\u8c03\u5175\u9063\u5c06,1,3 4 |3 5 |3 6 |3 7 ;\u5806\u79ef\u5982\u5c71,1,6 1 \u5806|6 2 \u79ef|6 3 |6 4 ;\u5357\u8154\u5317\u8c03,0,0 4 \u5357|1 4 \u8154|2 4 |3 4 ;\u53cd\u76ee\u6210\u4ec7,0,2 9 |3 9 \u76ee|4 9 |5 9 ;\u6069\u5c06\u4ec7\u62a5,0,2 7 \u6069|3 7 |4 7 |5 7 ;\u4e1c\u5c71\u518d\u8d77,0,1 1 |2 1 |3 1 |4 1 ;\u79c1\u5fc3\u6742\u5ff5,0,5 8 |6 8 |7 8 \u6742|8 8 ;\u5357\u67ef\u4e00\u68a6,1,0 4 \u5357|0 5 |0 6 |0 7 \u68a6;\u516c\u800c\u5fd8\u79c1,0,5 6 \u516c|6 6 |7 6 \u5fd8|8 6 ;\u516c\u6b63\u65e0\u79c1,1,8 3 \u516c|8 4 \u6b63|8 5 |8 6 ;\u8c03\u864e\u79bb\u5c71,0,3 4 |4 4 \u864e|5 4 |6 4 ", "block_num": 10 }, { "hide_arr": "3 6 \u4e3a;3 4 \u53cd;2 4 \u5176;3 1 \u7269;1 6 \u53cd;0 4 \u9002;5 1 \u4eba;7 0 \u513f;7 1 \u5973;9 3 \u77ed;6 4 \u5e38;6 3 \u5bb6;8 5 \u5916;0 2 \u65e0;8 3 \u91cc;2 6 \u5ba2;4 4 \u590d;7 3 \u957f;5 4 \u65e0;1 4 \u5f97;9 0 \u5973;2 1 \u7779;8 6 \u56fd;1 7 \u5507;6 6 \u996d;8 0 \u9b3b;4 1 \u601d", "word_num": 40, "idiom_arr": "\u53cd\u5ba2\u4e3a\u4e3b,0,1 6 |2 6 |3 6 |4 6 \u4e3b;\u53cd\u8d25\u4e3a\u80dc,1,3 4 |3 5 \u8d25|3 6 |3 7 \u80dc;\u9002\u5f97\u5176\u53cd,0,0 4 |1 4 |2 4 |3 4 ;\u7269\u6781\u5fc5\u53cd,1,3 1 |3 2 \u6781|3 3 \u5fc5|3 4 ;\u53cd\u5507\u76f8\u8ba5,1,1 6 |1 7 |1 8 \u76f8|1 9 \u8ba5;\u65e0\u6240\u9002\u4ece,1,0 2 |0 3 \u6240|0 4 |0 5 \u4ece;\u7779\u7269\u601d\u4eba,0,2 1 |3 1 |4 1 |5 1 ;\u5356\u513f\u9b3b\u5973,0,6 0 \u5356|7 0 |8 0 |9 0 ;\u513f\u5973\u60c5\u957f,1,7 0 |7 1 |7 2 \u60c5|7 3 ;\u5bb6\u957f\u91cc\u77ed,0,6 3 |7 3 |8 3 |9 3 ;\u53cd\u590d\u65e0\u5e38,0,3 4 |4 4 |5 4 |6 4 ;\u5bb6\u5e38\u4fbf\u996d,1,6 3 |6 4 |6 5 \u4fbf|6 6 ;\u91cc\u901a\u5916\u56fd,1,8 3 |8 4 \u901a|8 5 |8 6 ", "block_num": 10 }, { "hide_arr": "6 5 \u6349;9 6 \u814b;0 1 \u7518;4 4 \u65d7;1 1 \u62dc;9 5 \u8098;3 7 \u5c3e;3 5 \u5934;3 1 \u98ce;4 1 \u9910;8 3 \u9f20;9 8 \u60a3;9 1 \u5177;0 3 \u4e0b;3 4 \u6447;3 3 \u98d8;6 3 \u8d3c;6 1 \u5bbf;6 4 \u558a;8 8 \u4e4b;7 5 \u895f;5 1 \u9732;9 7 \u4e4b;6 6 \u8d3c;5 4 \u5450;4 7 \u7eed;9 2 \u53ea", "word_num": 40, "idiom_arr": "\u8d3c\u558a\u6349\u8d3c,1,6 3 |6 4 |6 5 |6 6 ;\u8098\u814b\u4e4b\u60a3,1,9 5 |9 6 |9 7 |9 8 ;\u7518\u5904\u4e0b\u6d41,1,0 1 |0 2 \u5904|0 3 |0 4 \u6d41;\u6447\u65d7\u5450\u558a,0,3 4 |4 4 |5 4 |6 4 ;\u7518\u62dc\u4e0b\u98ce,0,0 1 |1 1 |2 1 \u4e0b|3 1 ;\u6349\u895f\u73b0\u8098,0,6 5 |7 5 |8 5 \u73b0|9 5 ;\u72d7\u5c3e\u7eed\u8c82,0,2 7 \u72d7|3 7 |4 7 |5 7 \u8c82;\u6447\u5934\u6446\u5c3e,1,3 4 |3 5 |3 6 \u6446|3 7 ;\u98ce\u96e8\u98d8\u6447,1,3 1 |3 2 \u96e8|3 3 |3 4 ;\u98ce\u9910\u9732\u5bbf,0,3 1 |4 1 |5 1 |6 1 ;\u8d3c\u7709\u9f20\u773c,0,6 3 |7 3 \u7709|8 3 |9 3 \u773c;\u8179\u5fc3\u4e4b\u60a3,0,6 8 \u8179|7 8 \u5fc3|8 8 |9 8 ;\u72ec\u5177\u53ea\u773c,1,9 0 \u72ec|9 1 |9 2 |9 3 \u773c", "block_num": 10 }, { "hide_arr": "3 9 \u8377;6 2 \u6559;3 7 \u540d;6 7 \u5b9e;8 3 \u63a5;5 4 \u76f8;0 7 \u6124;5 6 \u540d;6 4 \u52a9;3 1 \u5927;5 0 \u5bb6;4 3 \u91cf;0 4 \u4e00;1 6 \u626c;6 9 \u5f39;6 3 \u5b66;6 0 \u957f;1 4 \u8a00;2 4 \u4e5d;7 2 \u5b66;4 7 \u4e0d", "word_num": 43, "idiom_arr": "\u8377\u67aa\u5b9e\u5f39,0,3 9 |4 9 \u67aa|5 9 \u5b9e|6 9 ;\u6559\u5b66\u76f8\u957f,0,6 2 |7 2 |8 2 \u76f8|9 2 \u957f;\u9f0e\u9f0e\u5927\u540d,1,3 4 \u9f0e|3 5 \u9f0e|3 6 \u5927|3 7 ;\u540d\u4e0d\u526f\u5b9e,0,3 7 |4 7 |5 7 \u526f|6 7 ;\u77ed\u5175\u76f8\u63a5,1,8 0 \u77ed|8 1 \u5175|8 2 \u76f8|8 3 ;\u9f0e\u529b\u76f8\u52a9,0,3 4 \u9f0e|4 4 \u529b|5 4 |6 4 ;\u53d1\u6124\u5fd8\u98df,1,0 6 \u53d1|0 7 |0 8 \u5fd8|0 9 \u98df;\u540d\u526f\u5176\u5b9e,1,5 6 |5 7 \u526f|5 8 \u5176|5 9 \u5b9e;\u6559\u5b66\u52a9\u957f,1,6 2 |6 3 |6 4 |6 5 \u957f;\u8c41\u8fbe\u5927\u5ea6,0,1 1 \u8c41|2 1 \u8fbe|3 1 |4 1 \u5ea6;\u5bb6\u957f\u91cc\u77ed,0,5 0 |6 0 |7 0 \u91cc|8 0 \u77ed;\u5ea6\u5fb7\u91cf\u529b,1,4 1 \u5ea6|4 2 \u5fb7|4 3 |4 4 \u529b;\u4e00\u8a00\u4e5d\u9f0e,0,0 4 |1 4 |2 4 |3 4 \u9f0e;\u53d1\u626c\u5149\u5927,0,0 6 \u53d1|1 6 |2 6 \u5149|3 6 \u5927", "block_num": 10 }, { "hide_arr": "5 6 \u673a;3 6 \u9732;5 4 \u7fe9;0 4 \u7a7a;6 1 \u5149;3 4 \u98ce;5 1 \u6d6e;7 9 \u795e;5 9 \u5931;8 1 \u5f71;3 5 \u9910;1 2 \u793c;4 9 \u60a3;3 1 \u7518;3 2 \u62dc;1 4 \u7a74;5 7 \u4e0d;5 8 \u53ef;0 5 \u6d1e;0 7 \u7269;2 2 \u819c;6 4 \u7fe9", "word_num": 43, "idiom_arr": "\u673a\u5173\u7528\u5c3d,0,5 6 |6 6 \u5173|7 6 \u7528|8 6 \u5c3d;\u6cc4\u9732\u5929\u673a,0,2 6 \u6cc4|3 6 |4 6 \u5929|5 6 ;\u98ce\u5ea6\u7fe9\u7fe9,0,3 4 |4 4 \u5ea6|5 4 |6 4 ;\u7a7a\u7a74\u6765\u98ce,0,0 4 |1 4 |2 4 \u6765|3 4 ;\u6d6e\u5149\u63a0\u5f71,0,5 1 |6 1 |7 1 \u63a0|8 1 ;\u7518\u62dc\u4e0b\u98ce,1,3 1 |3 2 |3 3 \u4e0b|3 4 ;\u6d6e\u60f3\u8054\u7fe9,1,5 1 |5 2 \u60f3|5 3 \u8054|5 4 ;\u7a7a\u6d1e\u65e0\u7269,1,0 4 |0 5 |0 6 \u65e0|0 7 ;\u7528\u5175\u5982\u795e,1,7 6 \u7528|7 7 \u5175|7 8 \u5982|7 9 ;\u673a\u4e0d\u53ef\u5931,1,5 6 |5 7 |5 8 |5 9 ;\u5982\u5f71\u968f\u5f62,1,8 0 \u5982|8 1 |8 2 \u968f|8 3 \u5f62;\u98ce\u9910\u9732\u5bbf,1,3 4 |3 5 |3 6 |3 7 \u5bbf;\u9876\u793c\u819c\u62dc,0,0 2 \u9876|1 2 |2 2 |3 2 ;\u60a3\u5f97\u60a3\u5931,0,2 9 \u60a3|3 9 \u5f97|4 9 |5 9 ", "block_num": 10 }, { "hide_arr": "0 4 \u539a;7 8 \u4e8c;3 7 \u98df;6 6 \u4e8e;3 5 \u6124;8 4 \u79ef;5 6 \u91cd;3 1 \u4e1c;3 2 \u7a97;8 6 \u5c71;0 9 \u4e1c;5 4 \u6df1;0 2 \u9ad8;1 7 \u864e;5 1 \u897f;2 7 \u6251;1 9 \u5c71;0 3 \u5b98;6 4 \u7701;6 8 \u65e0;0 7 \u997f;3 3 \u4e8b;1 8 \u79bb", "word_num": 43, "idiom_arr": "\u539a\u79ef\u8584\u53d1,0,0 4 |1 4 \u79ef|2 4 \u8584|3 4 \u53d1;\u72ec\u4e00\u65e0\u4e8c,0,4 8 \u72ec|5 8 \u4e00|6 8 |7 8 ;\u997f\u864e\u6251\u98df,0,0 7 |1 7 |2 7 |3 7 ;\u4e8e\u4e8b\u65e0\u8865,1,6 6 |6 7 \u4e8b|6 8 |6 9 \u8865;\u53d1\u6124\u5fd8\u98df,1,3 4 \u53d1|3 5 |3 6 \u5fd8|3 7 ;\u5806\u79ef\u5982\u5c71,1,8 3 \u5806|8 4 |8 5 \u5982|8 6 ;\u6069\u6df1\u4e49\u91cd,1,5 3 \u6069|5 4 |5 5 \u4e49|5 6 ;\u4e1c\u5954\u897f\u8dd1,0,3 1 |4 1 \u5954|5 1 |6 1 \u8dd1;\u4e1c\u7a97\u4e8b\u53d1,1,3 1 |3 2 |3 3 |3 4 \u53d1;\u91cd\u4e8e\u6cf0\u5c71,0,5 6 |6 6 |7 6 \u6cf0|8 6 ;\u4e1c\u5c71\u518d\u8d77,0,0 9 |1 9 |2 9 \u518d|3 9 \u8d77;\u53d1\u4eba\u6df1\u7701,0,3 4 \u53d1|4 4 \u4eba|5 4 |6 4 ;\u9ad8\u5b98\u539a\u7984,1,0 2 |0 3 |0 4 |0 5 \u7984;\u8c03\u864e\u79bb\u5c71,1,1 6 \u8c03|1 7 |1 8 |1 9 ", "block_num": 10 }, { "hide_arr": "8 6 \u5fc3;3 8 \u8f98;8 4 \u4ee5;3 3 \u4e30;0 5 \u753b;3 4 \u8863;6 6 \u8179;2 3 \u5e74;0 3 \u6c11;5 6 \u679c;5 0 \u529b;1 5 \u86c7;2 2 \u5982;2 5 \u6dfb;3 6 \u98df;0 6 \u997c;2 1 \u65e5;1 8 \u80a0;2 0 \u5ea6;0 7 \u5145;0 8 \u9965;2 8 \u8f98;6 4 \u891b;8 5 \u8f7b;6 9 \u654c", "word_num": 43, "idiom_arr": "\u5fc3\u5b89\u7406\u5f97,1,8 6 |8 7 \u5b89|8 8 \u7406|8 9 \u5f97;\u9965\u80a0\u8f98\u8f98,0,0 8 |1 8 |2 8 |3 8 ;\u6389\u4ee5\u8f7b\u5fc3,1,8 3 \u6389|8 4 |8 5 |8 6 ;\u4e30\u8863\u8db3\u98df,1,3 3 |3 4 |3 5 \u8db3|3 6 ;\u753b\u997c\u5145\u9965,1,0 5 |0 6 |0 7 |0 8 ;\u8863\u886b\u8934\u891b,0,3 4 |4 4 \u886b|5 4 \u8934|6 4 ;\u8179\u8bfd\u5fc3\u8c24,0,6 6 |7 6 \u8bfd|8 6 |9 6 \u8c24;\u8179\u80cc\u53d7\u654c,1,6 6 |6 7 \u80cc|6 8 \u53d7|6 9 ;\u6c11\u548c\u5e74\u4e30,0,0 3 |1 3 \u548c|2 3 |3 3 ;\u5bcc\u56fd\u5b89\u6c11,1,0 0 \u5bcc|0 1 \u56fd|0 2 \u5b89|0 3 ;\u98df\u4e0d\u679c\u8179,0,3 6 |4 6 \u4e0d|5 6 |6 6 ;\u5ea6\u5fb7\u91cf\u529b,0,2 0 |3 0 \u5fb7|4 0 \u91cf|5 0 ;\u753b\u86c7\u6dfb\u8db3,0,0 5 |1 5 |2 5 |3 5 \u8db3;\u5ea6\u65e5\u5982\u5e74,1,2 0 |2 1 |2 2 |2 3 ", "block_num": 10 }, { "hide_arr": "5 2 \u5f53;5 7 \u4e5f;4 4 \u4e18;3 8 \u4f11;2 2 \u5b64;3 3 \u5f53;7 7 \u8c0f;2 0 \u82b3;7 6 \u62d2;9 6 \u6124;1 0 \u5b64;8 8 \u592a;1 5 \u5934;0 6 \u6076;4 2 \u6b65;2 8 \u7518;4 6 \u6765;5 4 \u4e4b;6 8 \u7c89;1 1 \u5bb6;3 4 \u4e00;2 5 \u6362;7 9 \u975e;3 5 \u9762;3 2 \u72ec;1 8 \u7f62", "word_num": 43, "idiom_arr": "\u72ec\u6b65\u5f53\u65f6,0,3 2 |4 2 |5 2 |6 2 \u65f6;\u4e4b\u4e4e\u8005\u4e5f,1,5 4 |5 5 \u4e4e|5 6 \u8005|5 7 ;\u4e00\u4e18\u4e4b\u8c89,0,3 4 |4 4 |5 4 |6 4 \u8c89;\u5584\u7f62\u7518\u4f11,0,0 8 \u5584|1 8 |2 8 |3 8 ;\u9ccf\u5be1\u5b64\u72ec,0,0 2 \u9ccf|1 2 \u5be1|2 2 |3 2 ;\u72ec\u5f53\u4e00\u9762,1,3 2 |3 3 |3 4 |3 5 ;\u62d2\u8c0f\u9970\u975e,1,7 6 |7 7 |7 8 \u9970|7 9 ;\u5b64\u82b3\u81ea\u8d4f,0,1 0 |2 0 |3 0 \u81ea|4 0 \u8d4f;\u6765\u8005\u4e0d\u62d2,0,4 6 |5 6 \u8005|6 6 \u4e0d|7 6 ;\u6124\u6124\u4e0d\u5e73,1,9 5 \u6124|9 6 |9 7 \u4e0d|9 8 \u5e73;\u5b64\u5bb6\u5be1\u4eba,1,1 0 |1 1 |1 2 \u5be1|1 3 \u4eba;\u7c89\u9970\u592a\u5e73,0,6 8 |7 8 \u9970|8 8 |9 8 \u5e73;\u6539\u5934\u6362\u9762,0,0 5 \u6539|1 5 |2 5 |3 5 ;\u6539\u6076\u4ece\u5584,1,0 5 \u6539|0 6 |0 7 \u4ece|0 8 \u5584", "block_num": 10 }, { "hide_arr": "5 5 \u5782;5 6 \u4e0d;6 2 \u65f6;3 8 \u4f11;3 2 \u72ec;3 3 \u5f53;0 7 \u4ece;7 5 \u95ee;3 0 \u81ea;9 6 \u4e0d;1 3 \u4eba;2 5 \u6362;8 8 \u52a8;4 4 \u52b3;1 0 \u5b64;2 0 \u82b3;0 6 \u6076;7 6 \u7f6a;0 5 \u6539;0 2 \u9ccf;9 7 \u8d23;4 6 \u7f5a;7 8 \u5e08;5 7 \u673d;1 2 \u5be1;2 8 \u7518;3 5 \u9762", "word_num": 43, "idiom_arr": "\u6c38\u5782\u4e0d\u673d,1,5 4 \u6c38|5 5 |5 6 |5 7 ;\u7f5a\u4e0d\u5f53\u7f6a,0,4 6 |5 6 |6 6 \u5f53|7 6 ;\u72ec\u6b65\u5f53\u65f6,0,3 2 |4 2 \u6b65|5 2 \u5f53|6 2 ;\u5584\u7f62\u7518\u4f11,0,0 8 \u5584|1 8 \u7f62|2 8 |3 8 ;\u9ccf\u5be1\u5b64\u72ec,0,0 2 |1 2 |2 2 \u5b64|3 2 ;\u72ec\u5f53\u4e00\u9762,1,3 2 |3 3 |3 4 \u4e00|3 5 ;\u6539\u6076\u4ece\u5584,1,0 5 |0 6 |0 7 |0 8 \u5584;\u95ee\u7f6a\u4e4b\u5e08,1,7 5 |7 6 |7 7 \u4e4b|7 8 ;\u5b64\u82b3\u81ea\u8d4f,0,1 0 |2 0 |3 0 |4 0 \u8d4f;\u7f5a\u4e0d\u8d23\u4f17,1,9 5 \u7f5a|9 6 |9 7 |9 8 \u4f17;\u5b64\u5bb6\u5be1\u4eba,1,1 0 |1 1 \u5bb6|1 2 |1 3 ;\u6539\u5934\u6362\u9762,0,0 5 |1 5 \u5934|2 5 |3 5 ;\u52b3\u5e08\u52a8\u4f17,0,6 8 \u52b3|7 8 |8 8 |9 8 \u4f17;\u4e00\u52b3\u6c38\u9038,0,3 4 \u4e00|4 4 |5 4 \u6c38|6 4 \u9038", "block_num": 10 }, { "hide_arr": "3 3 \u65bd;8 1 \u6d2a;3 4 \u4ee4;6 5 \u4e0d;5 1 \u5fd8;1 7 \u4e86;7 7 \u5531;5 8 \u5055;3 2 \u53f7;0 4 \u666f;7 6 \u592b;3 7 \u6307;0 1 \u4e1c;6 3 \u4e3e;4 7 \u638c;5 4 \u7981;7 3 \u6848;2 3 \u4e50;8 6 \u4fd7;4 1 \u6124;6 4 \u6b62;8 8 \u5e7c;9 6 \u5b50;9 3 \u7709;1 3 \u5584;7 9 \u968f;0 5 \u4e0d;6 8 \u8001", "word_num": 43, "idiom_arr": "\u597d\u5584\u4e50\u65bd,0,0 3 \u597d|1 3 |2 3 |3 3 ;\u6d2a\u798f\u9f50\u5929,1,8 1 |8 2 \u798f|8 3 \u9f50|8 4 \u5929;\u4ee4\u884c\u7981\u6b62,0,3 4 |4 4 \u884c|5 4 |6 4 ;\u4e3e\u6b62\u4e0d\u51e1,1,6 3 |6 4 |6 5 |6 6 \u51e1;\u53d1\u6124\u5fd8\u98df,0,3 1 \u53d1|4 1 |5 1 |6 1 \u98df;\u4e86\u5982\u6307\u638c,0,1 7 |2 7 \u5982|3 7 |4 7 ;\u592b\u5531\u5987\u968f,1,7 6 |7 7 |7 8 \u5987|7 9 ;\u5055\u8001\u5987\u5e7c,0,5 8 |6 8 |7 8 \u5987|8 8 ;\u53d1\u53f7\u65bd\u4ee4,1,3 1 \u53d1|3 2 |3 3 |3 4 ;\u597d\u666f\u4e0d\u957f,1,0 3 \u597d|0 4 |0 5 |0 6 \u957f;\u51e1\u592b\u4fd7\u5b50,0,6 6 \u51e1|7 6 |8 6 |9 6 ;\u4ee4\u4eba\u53d1\u6307,1,3 4 |3 5 \u4eba|3 6 \u53d1|3 7 ;\u4e1c\u7a97\u4e8b\u53d1,0,0 1 |1 1 \u7a97|2 1 \u4e8b|3 1 \u53d1;\u4e3e\u6848\u9f50\u7709,0,6 3 |7 3 |8 3 \u9f50|9 3 ", "block_num": 10 }, { "hide_arr": "0 5 \u5404;0 7 \u524d;6 6 \u725b;4 4 \u8d24;6 1 \u4e3e;2 2 \u4e16;5 7 \u4ec7;7 8 \u89d2;8 1 \u5f20;3 3 \u8d24;2 6 \u89c1;7 7 \u9e9f;9 7 \u5929;5 1 \u7eb2;9 8 \u6daf;0 6 \u5954;3 2 \u5ac9;6 8 \u6d77;0 8 \u7a0b;8 8 \u5929;5 5 \u6076;7 6 \u6bdb;2 7 \u6240;3 5 \u80fd;2 8 \u95fb;1 2 \u6124;6 2 \u8d24;9 6 \u8ff9", "word_num": 43, "idiom_arr": "\u5404\u5c3d\u6240\u80fd,0,0 5 |1 5 \u5c3d|2 5 \u6240|3 5 ;\u5404\u5954\u524d\u7a0b,1,0 5 |0 6 |0 7 |0 8 ;\u591a\u5982\u725b\u6bdb,0,4 6 \u591a|5 6 \u5982|6 6 |7 6 ;\u5992\u8d24\u5ac9\u80fd,0,3 4 \u5992|4 4 |5 4 \u5ac9|6 4 \u80fd;\u7eb2\u4e3e\u76ee\u5f20,0,5 1 |6 1 |7 1 \u76ee|8 1 ;\u6124\u4e16\u5ac9\u4fd7,0,1 2 |2 2 |3 2 |4 2 \u4fd7;\u5ac9\u6076\u5982\u4ec7,1,5 4 \u5ac9|5 5 |5 6 \u5982|5 7 ;\u6d77\u89d2\u5929\u6daf,0,6 8 |7 8 |8 8 |9 8 ;\u4e1c\u5f20\u897f\u671b,1,8 0 \u4e1c|8 1 |8 2 \u897f|8 3 \u671b;\u5ac9\u8d24\u5992\u80fd,1,3 2 |3 3 |3 4 \u5992|3 5 ;\u6240\u89c1\u6240\u95fb,1,2 5 \u6240|2 6 |2 7 |2 8 ;\u51e4\u6bdb\u9e9f\u89d2,1,7 5 \u51e4|7 6 |7 7 |7 8 ;\u4e3e\u8d24\u4efb\u80fd,1,6 1 |6 2 |6 3 \u4efb|6 4 \u80fd;\u6d6a\u8ff9\u5929\u6daf,1,9 5 \u6d6a|9 6 |9 7 |9 8 ", "block_num": 10 }, { "hide_arr": "9 8 \u751f;7 3 \u5f26;5 7 \u63a5;4 4 \u5149;0 4 \u5149;3 4 \u76ee;7 1 \u4eba;0 2 \u80a5;0 5 \u5f69;5 2 \u957f;5 6 \u76f8;3 7 \u51fa;9 7 \u5077;7 7 \u6210;3 5 \u660e;4 6 \u4ea4;6 4 \u6d45;1 4 \u5f69;3 3 \u806a;1 7 \u624d;5 5 \u5175;8 8 \u6a2a;9 5 \u82df;5 4 \u77ed;7 5 \u76f8;7 8 \u8da3;2 7 \u8f88;1 2 \u5934;2 2 \u5927", "word_num": 43, "idiom_arr": "\u5999\u8da3\u6a2a\u751f,0,6 8 \u5999|7 8 |8 8 |9 8 ;\u52a8\u4eba\u5fc3\u5f26,1,7 0 \u52a8|7 1 |7 2 \u5fc3|7 3 ;\u77ed\u5175\u76f8\u63a5,1,5 4 |5 5 |5 6 |5 7 ;\u76ee\u5149\u77ed\u6d45,0,3 4 |4 4 |5 4 |6 4 ;\u5149\u5f69\u593a\u76ee,0,0 4 |1 4 |2 4 \u593a|3 4 ;\u8033\u806a\u76ee\u660e,1,3 2 \u8033|3 3 |3 4 |3 5 ;\u5b64\u5bb6\u5be1\u4eba,0,4 1 \u5b64|5 1 \u5bb6|6 1 \u5be1|7 1 ;\u80a5\u5934\u5927\u8033,0,0 2 |1 2 |2 2 |3 2 \u8033;\u5149\u5f69\u7167\u4eba,1,0 4 |0 5 |0 6 \u7167|0 7 \u4eba;\u5bb6\u957f\u91cc\u77ed,1,5 1 \u5bb6|5 2 |5 3 \u91cc|5 4 ;\u4ea4\u76f8\u8f89\u6620,0,4 6 |5 6 |6 6 \u8f89|7 6 \u6620;\u4eba\u624d\u8f88\u51fa,0,0 7 \u4eba|1 7 |2 7 |3 7 ;\u82df\u4e14\u5077\u751f,1,9 5 |9 6 \u4e14|9 7 |9 8 ;\u76f8\u6620\u6210\u8da3,1,7 5 |7 6 \u6620|7 7 |7 8 ", "block_num": 10 }, { "hide_arr": "7 7 \u540d;0 6 \u611f;8 7 \u88c2;4 2 \u6811;5 4 \u60f9;1 7 \u6df1;8 1 \u63a0;5 9 \u5e72;6 4 \u8349;5 7 \u8eab;1 3 \u96f7;2 1 \u5149;3 5 \u8f7b;6 1 \u6d6e;7 6 \u6d6e;3 1 \u77f3;3 6 \u6015;1 1 \u7535;3 4 \u62c8;7 9 \u5229;0 8 \u6234;6 9 \u8106;3 7 \u91cd;7 1 \u5149;4 3 \u94f6;6 7 \u8d25;7 8 \u865a;4 1 \u706b;8 2 \u4eba;6 2 \u76ae;8 9 \u843d", "word_num": 43, "idiom_arr": "\u6d6e\u540d\u865a\u5229,1,7 6 |7 7 |7 8 |7 9 ;\u611f\u6069\u6234\u5fb7,1,0 6 |0 7 \u6069|0 8 |0 9 \u5fb7;\u8eab\u8d25\u540d\u88c2,0,5 7 |6 7 |7 7 |8 7 ;\u706b\u6811\u94f6\u82b1,1,4 1 |4 2 |4 3 |4 4 \u82b1;\u62c8\u82b1\u60f9\u8349,0,3 4 |4 4 \u82b1|5 4 |6 4 ;\u6069\u6df1\u4e49\u91cd,0,0 7 \u6069|1 7 |2 7 \u4e49|3 7 ;\u6d6e\u5149\u63a0\u5f71,0,6 1 |7 1 |8 1 |9 1 \u5f71;\u5e72\u8106\u5229\u843d,0,5 9 |6 9 |7 9 |8 9 ;\u6d6e\u76ae\u6f66\u8349,1,6 1 |6 2 |6 3 \u6f66|6 4 ;\u60f9\u706b\u70e7\u8eab,1,5 4 |5 5 \u706b|5 6 \u70e7|5 7 ;\u7535\u95ea\u96f7\u9e23,1,1 1 |1 2 \u95ea|1 3 |1 4 \u9e23;\u7535\u5149\u77f3\u706b,0,1 1 |2 1 |3 1 |4 1 ;\u62c8\u8f7b\u6015\u91cd,1,3 4 |3 5 |3 6 |3 7 ;\u63a0\u4eba\u4e4b\u7f8e,1,8 1 |8 2 |8 3 \u4e4b|8 4 \u7f8e", "block_num": 10 }, { "hide_arr": "9 1 \u5e03;3 2 \u5982;0 8 \u71d5;4 3 \u6240;6 1 \u5f00;7 7 \u5343;2 9 \u5d99;3 5 \u814b;5 5 \u5f00;1 4 \u8e48;6 6 \u5fc5;8 0 \u5949;5 4 \u5e7f;9 8 \u4ee3;3 7 \u88d8;3 9 \u5ccb;8 1 \u516c;6 4 \u76ca;6 8 \u5343;1 7 \u9a6c;2 7 \u8f7b;0 7 \u80a5;4 4 \u601d;6 3 \u6709;4 2 \u5937", "word_num": 46, "idiom_arr": "\u5f00\u8bda\u516c\u5e03,0,6 1 |7 1 \u8bda|8 1 |9 1 ;\u8d74\u9669\u5982\u5937,0,1 2 \u8d74|2 2 \u9669|3 2 |4 2 ;\u73af\u80a5\u71d5\u7626,1,0 6 \u73af|0 7 |0 8 |0 9 \u7626;\u532a\u5937\u6240\u601d,1,4 1 \u532a|4 2 |4 3 |4 4 ;\u5f00\u5377\u6709\u76ca,1,6 1 |6 2 \u5377|6 3 |6 4 ;\u5404\u6709\u5343\u79cb,1,7 5 \u5404|7 6 \u6709|7 7 |7 8 \u79cb;\u7626\u9aa8\u5d99\u5ccb,0,0 9 \u7626|1 9 \u9aa8|2 9 |3 9 ;\u96c6\u814b\u6210\u88d8,1,3 4 \u96c6|3 5 |3 6 \u6210|3 7 ;\u5e7f\u5f00\u8a00\u8def,1,5 4 |5 5 |5 6 \u8a00|5 7 \u8def;\u8d74\u6c64\u8e48\u706b,1,1 2 \u8d74|1 3 \u6c64|1 4 |1 5 \u706b;\u8a00\u5fc5\u6709\u636e,0,5 6 \u8a00|6 6 |7 6 \u6709|8 6 \u636e;\u5949\u516c\u5b88\u6cd5,1,8 0 |8 1 |8 2 \u5b88|8 3 \u6cd5;\u96c6\u601d\u5e7f\u76ca,0,3 4 \u96c6|4 4 |5 4 |6 4 ;\u5343\u79cb\u4e07\u4ee3,0,6 8 |7 8 \u79cb|8 8 \u4e07|9 8 ;\u80a5\u9a6c\u8f7b\u88d8,0,0 7 |1 7 |2 7 |3 7 ", "block_num": 10 }, { "hide_arr": "2 3 \u865a;3 6 \u5931;5 8 \u524d;6 1 \u89c1;5 9 \u8f99;2 1 \u5f04;3 8 \u843d;7 3 \u82e5;8 8 \u9274;3 3 \u5229;3 0 \u6b65;4 4 \u7fa4;0 3 \u6d6e;2 5 \u4e0d;6 6 \u5f97;2 2 \u7384;5 6 \u590d;6 8 \u8f66;0 1 \u4e16;0 8 \u5e72;3 9 \u9b44;9 1 \u610f;3 7 \u9b42;3 5 \u5f97;0 0 \u4e0e;7 8 \u4e4b;3 4 \u5bb3;1 8 \u8106;0 2 \u6c89;8 5 \u8986;8 7 \u4e4b;6 2 \u978d;5 7 \u8e48", "word_num": 49, "idiom_arr": "\u6d6e\u540d\u865a\u5229,0,0 3 |1 3 \u540d|2 3 |3 3 ;\u5931\u800c\u590d\u5f97,0,3 6 |4 6 \u800c|5 6 |6 6 ;\u524d\u8f66\u4e4b\u9274,0,5 8 |6 8 |7 8 |8 8 ;\u5931\u9b42\u843d\u9b44,1,3 6 |3 7 |3 8 |3 9 ;\u89c1\u978d\u601d\u9a6c,1,6 1 |6 2 |6 3 \u601d|6 4 \u9a6c;\u590d\u8e48\u524d\u8f99,1,5 6 |5 7 |5 8 |5 9 ;\u6545\u5f04\u7384\u865a,1,2 0 \u6545|2 1 |2 2 |2 3 ;\u5e72\u8106\u5229\u843d,0,0 8 |1 8 |2 8 \u5229|3 8 ;\u601d\u82e5\u6d8c\u6cc9,0,6 3 \u601d|7 3 |8 3 \u6d8c|9 3 \u6cc9;\u8986\u8f66\u4e4b\u9274,1,8 5 |8 6 \u8f66|8 7 |8 8 ;\u89c1\u8d22\u8d77\u610f,0,6 1 |7 1 \u8d22|8 1 \u8d77|9 1 ;\u5229\u5bb3\u5f97\u5931,1,3 3 |3 4 |3 5 |3 6 ;\u6545\u6b65\u81ea\u5c01,0,2 0 \u6545|3 0 |4 0 \u81ea|5 0 \u5c01;\u5bb3\u7fa4\u4e4b\u9a6c,0,3 4 |4 4 |5 4 \u4e4b|6 4 \u9a6c;\u4e0e\u4e16\u6c89\u6d6e,1,0 0 |0 1 |0 2 |0 3 ;\u54ed\u7b11\u4e0d\u5f97,0,0 5 \u54ed|1 5 \u7b11|2 5 |3 5 ", "block_num": 10 }];
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+{extend name="public/container"}
+{block name="title"}  {:L(" 傭金記錄","Commission record")}{/block}
+{extend name="public/container"}
+{block name="head"}
+<style>
+    .loading-line {
+        background-color: #fff;
+    }
+
+    .bbq {
+        z-index: 99;
+        width: 45%;
+        color: #999;
+        background-color: #FFFFFF;
+        font-size: 16px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 5px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    .act {
+        color: #E1000F;
+        font-weight: 700;
+    }
+</style>
+{/block}
+{block name="content"}
+<div id="user-integral" class="integral-content">
+    <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; color: #fff;">
+                    <span   @click="window.location.href='/wap/my/distribution.html'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 99;">
+                        <img  src="/public/uploads/attach/2019/01/15/qback.png" style="width: 15px;">
+                    </span>
+                    <p style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">
+                         {:L(" 傭金記錄","Commission record")}
+                    </p>
+            </div>
+           
+    <section>
+        <header ref="head" style="background-color: #e1000f;">
+            <div class="con-cell">
+              
+             <!--   <p style="margin-bottom: 0.2rem;">{$userInfo.integral|floatval}</p> -->
+                 <p style="margin-bottom: 0.2rem;">{$extract}</p>
+                <?php /*  <a href="">获取积分</a>  */ ?>
+                  <span style="opacity: 1;">{:L(" 已提現傭金","Commission withdrawn")}</span>
+            </div>
+        </header>
+        <?php /*  <div class="entrance">
+              <a href=""><i class="icon integral-mall"></i><span>进入积分商城</span></a>
+              <a href=""><i class="icon address"></i><span>收货地址管理</span></a>
+          </div>  */ ?>
+        <div class="details" style="position: relative;">
+            <!-- <div id="btn" class="flex"
+                style="position: absolute;width: 100%; justify-content: space-around;top: -20px;">
+                <span :class="['bbq', flag ? 'act' : '']"  @click=Switch(true)>
+                    傭金收入
+                </span>
+                <span :class="['bbq', !flag ? 'act' : '']" @click=Switch(false)>
+                    傭金支出
+                </span>
+            </div> -->
+            <div class="titles" style="display: none;" ref="nav"><i class="icon details-icon"></i>{:L(" 傭金明细","Commission details")}</div>
+            <div ref="bsDom">
+                <div style="-webkit-overflow-scrolling : touch; position: relative;margin-top: 10px;">
+                    <ul>
+                        <li class="clearfix" v-for="item in list" v-cloak="">
+                            <div class="infos fl">
+                                <div class="con-cell">
+                                     <p v-text="item.new_mark"></p>
+                                    <!-- <p>{:L(" 提現","Withdraw")}</p> -->
+                                    <span v-text="item.add_time"></span>
+                                </div>
+                            </div>
+                            <div class="count fr" :class="{increase:item.pm == 1}">
+                                <div class="con-cell"><span
+                                        style="color: #E1000F; font-weight: 700;font-size: 18px;margin-right: 5px;">{{item.pm == 1 ? '+' : '-'}}{{item.number}}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="loading-line" v-show="loading == true"><i></i><span>{:L(" 正在加載中","Loading")}</span><i></i></p>
+                    <p class="loading-line" v-show="loading == false && group.loaded == false" v-cloak="">
+                        <i></i><span>{:L(" 加載更多","load more")}</span><i></i></p>
+                    <p class="loading-line" v-show="loading == false && group.loaded == true" v-cloak="">
+                        <i></i><span>{:L(" 沒有更多了","No more")}</span><i></i></p>
+                        <div style="height: 50px;">
+                            
+                        </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<script>
+    (function() {
+        requirejs(['vue', 'helper', 'better-scroll', 'store'], function(Vue, $h, BScroll, storeApi) {
+            var wxApi = mapleWx($jssdk());
+            new Vue({
+                el: '#user-integral',
+                data: {
+                    flag: true,
+                    total: 0,
+                    group: {
+                        first: 0,
+                        limit: 20,
+                        list: [],
+                        loaded: false,
+                    },
+                    loading: false,
+
+                    scroll: null,
+                    list: [],
+                    addlist: [],
+                    backlist: []
+                },
+                methods: {
+                    Switch(flag1) {
+                        this.flag = flag1;
+                        if (flag1) {
+                            this.list = this.addlist
+                        } else {
+                            this.list = this.backlist
+                        }
+                    },
+                    getList: function() {
+
+                        if (this.loading) return;
+                        var that = this,
+                            type = 'group',
+                            group = that.group;
+                        console.log(this.addlist);
+                        if (group.loaded) return;
+                        this.loading = true;
+                        storeApi.getUserWithdrawalList({
+                            first: group.first,
+                            limit: group.limit
+                        }, function(res) {
+                            var list = res.data.data,
+                                groupLength = group.list.length;
+                            that.scroll.stop();
+                            group.loaded = list.length < group.limit;
+                            group.first += list.length;
+                            group.list = group.list.concat(list);
+                            console.log(group.list);
+                            group.list.map((item) => {
+                                if (item.pm == 0) {
+                                    that.backlist.push(item)
+                                } else {
+                                    that.addlist.push(item)
+                                }
+                            })
+                            that.list = that.addlist
+                            // that.addlist.map(item => {
+                            //     that.total  =  that.total + item.number;
+                            // })
+                            // console.log(that.total);
+                            that.$set(that, type, group);
+                            that.loading = false;
+                            that.$nextTick(function() {
+                                if (list.length || !groupLength) that.scroll
+                                    .refresh();
+                                if (!groupLength) setTimeout(function() {
+                                    that.scroll.scrollTo(0, 0, 300);
+                                }, 0);
+                                that.scroll.finishPullUp();
+                            });
+                        }, function() {
+                            that.loading = false
+                        });
+                    },
+                    bScrollInit: function() {
+                        var that = this;
+                        this.$refs.bsDom.style.height = (
+                            document.documentElement.clientHeight -
+                            this.$refs.head.offsetHeight -
+                            this.$refs.nav.offsetHeight - 6.5
+                        ) + 'px';
+                        this.$refs.bsDom.style.overflow = 'hidden';
+                        this.scroll = new BScroll(this.$refs.bsDom, {
+                            observeDOM: false,
+                            useTransition: false,
+                            click: true,
+                            probeType: 1,
+                            cancelable: false,
+                            deceleration: 0.005,
+                            snapThreshold: 0.01
+                        });
+                        this.scroll.on('pullingUp', function() {
+                            that.loading == false && that.getList();
+                        })
+                    }
+                },
+                mounted: function() {
+                    this.bScrollInit();
+                    this.getList();
+                }
+            })
+        });
+    })();
+</script>
+{/block}

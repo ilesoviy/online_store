@@ -1,0 +1,308 @@
+{extend name="public/container"}
+{block name="title"}{:L(" 確認訂單","Confirm Order")}{/block}
+{block name="content"}
+<div id="order-confirm" class="order-confirm">
+    <div class=" flex" style=" padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff; z-index: 999;">
+          <span   @click="window.location.href=document.referrer;"  style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+            </span>
+            <p id="title" style="text-align: center;width: 100%;line-height: 0.4rem;">{:L(" 確認訂單","Confirm Order")}</p>
+    </div>
+    <div style="height: 40px;">
+        
+    </div>
+    <section>
+        <div class="user-address" @click="showAddressList">
+            <i class="icon add"></i>
+            <div class="txt-box" v-if="address !== null" v-cloak>
+                <p class="name"><span v-text="address.real_name"></span> <span class="tel" v-text="address.phone"></span></p>
+                <p v-text="addressDetail"></p>
+            </div>
+            <div class="txt-box" v-if="address === null">
+                <p class="name"><span> {:L(" 請選擇收貨地址","Please select the delivery address")}</span></p>
+            </div>
+        </div>
+        <div class="integ-order-info">
+            <div class="titles"> {:L(" 商品信息","Commodity information")}</div>
+            <div class="integ-order-pro">
+                <?php $goodsNum = 0; ?>
+                {volist name="cartInfo" id="vo"}
+                <?php $goodsNum += $vo['cart_num']; ?>
+                <div class="item clearfix">
+                    <div class="img fl"><img src="{$vo.productInfo.image}"></div>
+                    <div class="infos fr flex" style="height: 82px; flex-direction: column;justify-content: space-between;">
+                     <!--   <p class="name">{$vo.productInfo.store_name}</p> -->
+                         <p class="name"> {:L($vo.productInfo.store_name,$vo.productInfo.en_store_name)}</p>
+                        <p class="shux">
+                            <!-- <span>
+                                {:L("  規格：現貨；1箱3斤","Specification: spot; 1 box 3 kg")}
+                            </span> -->
+                            <span>
+                                <?php if(isset($vo['productInfo']['attrInfo'])){ echo $vo['productInfo']['attrInfo']['suk'];} ?>
+                            </span>
+                        </p>
+                        <p style="font-weight: 700;" class="count">${$vo.truePrice}<span class="fr">X{$vo.cart_num}</span></p>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+            <ul class="parameter">
+                <li class="flex">
+                    <div class="txt" style="color: #ff7271;">
+                         {:L("溫馨提示:每次只能抵扣一張優惠券。","Reminder:Only one coupon can be deducted at a time.")} 
+                    </div>
+                </li>
+                <li class="flex" v-show="seckill_id==0 && bargain_id==0">
+                    <div class="txt">
+                         {:L(" 優惠券","Coupon")}
+                    </div>
+                        <a class="select-txt" href="javascript:void(0);">
+                                {empty name="usableCoupon"}
+                            <span @click.self="showCoupon" v-if="coupon == null"> {:L(" 無優惠券","No coupons")}</span>
+                                {else/}
+                                    <span style="color: #ff7271;" @click.self="showCoupon" v-if="coupon == null">$ {$usableCoupon.coupon_price|floatval}{:L("優惠券可用","Coupons available")}</span>
+                                {/empty}
+                            <span style="color: #ff8d10;" v-else v-cloak="" @click="showCoupon">-${{coupon.coupon_price}}
+                                <span style="color: #666;margin: 0 .1rem;" @click.stop="coupon = null"> {:L(" 取消使用","Cancel use")}</span>
+                            </span>
+                        </a>
+                </li>
+                <li class="flex">
+                    <div class="txt">
+                         {:L(" 運費","Freight")}
+                       <!-- <p v-show="priceGroup.storeFreePostage > 0 && postageMsg == priceGroup.storePostage" v-cloak="">满${{priceGroup.storeFreePostage}}元免配送费</p> -->
+                    </div>
+                   <a href="javascript:void(0);" v-cloak="">{{postageMsg}}</a>
+                     <!-- <a href="javascript:void(0);" v-cloak="">$2.00</a> -->
+                </li>
+              <!-- <li>
+                    <div class="title"> <span class="no_check_title" v-show="useIntegral != true">傭金抵扣</span> <span class="checked_title"  v-show="useIntegral == true" v-cloak="">可用傭金: {$userInfo.integral|floatval}</span>
+                        <input type="checkbox" id="integral-btn" class="regular-checkbox">
+                        <label for="integral-btn" class="check_btn" style="float: right;" @click="useIntegral = !useIntegral"> </label>
+                    </div>
+                </li> -->
+                <li class="flex">
+                    <div class="txt">
+                         {:L(" 備註","Remark")}
+                    </div>
+                    <input type="text" v-model="payMark" placeholder=' {:L(" 請填寫自己需要註明的信息...","Please fill in the information you need to indicate...")}'/>
+                    <input type="hidden" v-model="pin_type"  value="{$pin_type}" />
+                </li>
+            </ul>
+            <div class="all-price"> {:L(" 共","Common")} {$goodsNum}  {:L(" 件商品","Items")}    {:L(" 小計","Subtotal")}: <span style="font-weight: 700;" v-text="priceGroup.totalPrice"> {:L(" 計算中","Calculating")}</span></div>
+        </div>
+        <div class="comfirm-wrapper">
+            <p class="Recharge-top"> {:L(" 支付方式","Payment method")}</p>
+           <!--  <div class="Refund-list">
+                <input type="radio" name="pay_type" v-model="payType" value="weixin" class="regular-checkbox">
+                <label for="checkbox-1-1" class="skin-lable" @click="payType = 'weixin'"></label>
+                <div class="passenger-list no-bbm">
+                    <p class="p-name"><label  @click="payType = 'weixin'"><i class="bank-icon icon-weixin"></i> {:L(" 微信支付","WeChat Pay")}</label></p>
+                </div>
+            </div> -->
+            <div class="Refund-list">
+               
+                <div class="passenger-list no-bbm">
+                    <p class="p-name"> <label  @click="payType = 'yue'"><i class="bank-icon" style="background-image: url({__WAP_PATH}crmeb/images/yue02.png);"></i> {:L(" 余額支付","Balance payment")}({$userInfo.now_money|floatval})</label><!-- <em>可用余额</em> --></p>
+                </div>
+                <input type="radio" name="pay_type" v-model="payType" value="yue" class="regular-checkbox">
+                <label for="checkbox-1-1" class="skin-lable" @click="payType = 'yue'"></label>
+            </div>
+            <?php /*  <div class="Refund-list">
+                  <input type="radio" name="pay_type" v-model="payType" value="offline" class="regular-checkbox">
+                  <label for="checkbox-1-1" class="skin-lable" @click="payType = 'offline'"></label>
+                  <div class="passenger-list no-bbm">
+                      <p class="p-name"><i class="bank-icon" style="background-image: url({__WAP_PATH}crmeb/images/xianxia02.png);"></i>线下付款</p>
+                  </div>
+              </div>  */ ?>
+        </div>
+        <div style="height: 1rem;"></div>
+        <div class="cart-calc02"><div class="select-all"> {:L(" 總計","Total")}：<span>$<span style="font-weight: 700;" id="jprice" v-text="totalPrice"> {:L(" 計算中","Calculating")}</span><span id="integral_price" v-show="deduction > 0" v-cloak=""> - {{deduction}}</span></span></div> <a id="jsubmit" href="javascript:void(0);" @click="submit"> {:L(" 立即支付","Pay immediately")}</a></div>
+    </section>
+</div>
+<script>
+    (function(){
+        var $cartInfo = <?php echo json_encode($cartInfo); ?>;
+        var $priceGroup = <?php echo json_encode($priceGroup); ?>;
+        var $offlinePostage = <?=$offlinePostage?>;
+        var $totalIntegral = <?=$userInfo['integral']?>|| 0;
+        var $integralRatio = <?=$integralRatio?> || 0 ;
+        var $key = '<?=$orderKey?>';
+        var $seckill_id = '<?=$seckill_id?>';
+        var $bargain_id = '<?=$bargain_id?>';
+        var $pin_type = '<?=$pin_type?>';
+
+        requirejs(['vue','store','helper','{__WAP_PATH}crmeb/module/store/use-coupon.js'
+            ,'{__WAP_PATH}crmeb/module/store/use-address.js','layer'],function(Vue,storeApi,$h,useCoupon,useAddress,layer){
+            Vue.use(useCoupon);
+            Vue.use(useAddress);
+
+
+
+            new Vue({
+                el:"#order-confirm",
+                data:{
+                    cartInfo:$cartInfo,
+                    priceGroup:$priceGroup,
+                    coupon:null,
+                    useCoupon:null,
+                    useIntegral:false,
+                    offlinePostage:$offlinePostage,
+                    payType:'yue',
+                    payMark:'',
+                    pin_type:$pin_type,
+                    address:null,
+                    orderId:null,
+                    seckill_id:$seckill_id,
+                    bargain_id:$bargain_id,
+                    lang:true,
+                },
+                computed:{
+                    addressDetail:function(){
+                        if(this.address == null)
+                            return '';
+                        else
+                            return this.address.province +' '+this.address.city+' '+this.address.district +' '+this.address.detail
+                    },
+                    totalPrice:function(){
+                        var totalPrice = this.priceGroup.totalPrice;
+                        if(this.coupon!==null) totalPrice = $h.Sub(totalPrice,this.coupon.coupon_price);
+                        if(totalPrice<0) totalPrice = 0;
+                        return this.payType == 'offline' && this.offlinePostage == 1 ? totalPrice : $h.Add(totalPrice,this.priceGroup.storePostage);
+                    },
+                    postageMsg:function(){
+                        if(this.payType == 'offline' && this.offlinePostage == 1) return '线下付款免邮费';
+                        if(0 == this.priceGroup.storePostage) return {:L('"包郵"','"free shipping"')};
+                        return '$'+this.priceGroup.storePostage;
+                    },
+                    deduction:function(){
+                        if(this.useIntegral && $totalIntegral>0 && $integralRatio>0){
+                            var total = $h.Mul($totalIntegral,$integralRatio),totalPrice = this.totalPrice;
+                            return totalPrice < total ? totalPrice : total;
+                        }else{
+                            return 0;
+                        }
+                    }
+                },
+                methods:{
+                    showAddressList:function(){
+                        var that = this;
+                        this.$useAddress({
+                            onSelect:function(id,address){
+                                that.address = address;
+                            },
+                            checked:that.address != null && that.address.id
+                        })
+                    },
+                    wechatPay:function(config){
+                        var that = this;
+                        mapleWx($jssdk(),function(){
+                           this.chooseWXPay(config,function(){
+                               that.successOrder();
+                           },{
+                               fail:that.extendOrder,
+                               cancel:that.extendOrder
+                           });
+                        });
+                    },
+                    extendOrder:function(){
+                        location.replace($h.U({
+                            c:'my',
+                            a:'order',
+                            p:{uni:this.orderId == null ? $key : this.orderId}
+                        }));
+                    },
+                    successOrder:function(){
+                        location.replace($h.U({
+                            c:'my',
+                            a:'order',
+                            p:{uni:this.orderId == null ? $key : this.orderId}
+                        }));
+                    },
+                    goPay:function(){
+                        console.log(1);
+                        // $h.pushMsgOnce(111,function(){
+                        //     that.extendOrder();
+                        // });
+                        //  mark: true,
+                        
+                        var that = this;
+                        $h.load();
+                        storeApi.submitOrder($key,{
+                            addressId:this.address.id,
+                            couponId:this.coupon == null ? '' : this.coupon.id,
+                            mark:this.payMark,
+                            pin_type:this.pin_type,
+                            payType:this.payType,
+                            seckill_id:$seckill_id,
+                            bargainId:$bargain_id,
+                            useIntegral:this.useIntegral
+                        },function(res){
+                            that.$set(that,'orderId',res.data.data.result.orderId);
+                            $h.loadClear();
+                            if(res.data.data.status == 'WECHAT_PAY'){
+                                self.location.href=res.data.data.result.jsConfig;
+                                // that.wechatPay(res.data.data.result.jsConfig);
+                            }else if(res.data.data.status == 'SUCCESS'){
+                                $h.pushMsgOnce(res.data.msg,function(){
+                                    that.successOrder();
+                                });
+                            }else{
+                                $h.pushMsgOnce(res.data.msg,function(){
+                                    that.extendOrder();
+                                });
+                            }
+                        });
+                    },
+                    submit:function(){
+                        if(this.address == null)
+                        if (this.lang) {
+                             return $h.returnErrorMsg('请选择收货地址!');
+                        } else {
+                            return $h.returnErrorMsg('Please select the delivery address!');
+                        }
+                           
+                        if(this.payType == 'yue')
+                            if (this.lang) {
+                                  layer.confirm('确定使用余额支付?',{icon:3},this.goPay);
+                            } else {
+                                 layer.confirm('Make sure to pay with balance?',{icon:3,title:'info',btn:['Yes','No']},this.goPay);
+                            }
+                           
+                        else if(this.payType == 'offline')
+                            layer.confirm('确定使用线下付款方式支付?',{icon:3},this.goPay);
+                            // $h.pushMsgOnce(111,function(){
+                            //     // that.extendOrder();
+                            // });
+                        else
+                            this.goPay();
+                    },
+                    showCoupon:function(){
+                        setTimeout(this.useCoupon.active,0);
+                    },
+                    selectCoupon:function(coupon){
+                        this.$set(this,'coupon',coupon);
+                    }
+                },
+                mounted:function(){
+                    var that = this;
+                    this.useCoupon = this.$useCoupon(this.priceGroup.totalPrice,{
+                        onSelect:this.selectCoupon
+                    });
+                    storeApi.getUserDefaultAddress(function(res){
+                        if(res.data.msg == 'ok') that.$set(that,'address',res.data.data);
+                    });
+                    if (document.getElementById("title").innerHTML == "Confirm Order") {
+                        document.querySelector(".cm-header").innerText = "Shipping address";
+                        document.querySelector(".empty #yhq").innerText = "No coupons available";
+                        document.querySelector("#quang").innerText = "Please select a coupon";
+                        this.lang = false
+                    }
+                   
+                      // console.log(document.querySelector(".cm-header").innerText);
+                }
+            });
+        });
+    })();
+</script>
+{/block}

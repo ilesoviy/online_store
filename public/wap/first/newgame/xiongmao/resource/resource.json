@@ -1,0 +1,50 @@
+{
+  "resources": [
+    {
+      "name": "number_fnt",
+      "type": "font",
+      "url": "assets/number-export.fnt"
+    },
+    {
+      "name": "bg_png",
+      "type": "image",
+      "url": "assets/bg.png"
+    },
+    {
+      "name": "panda_json",
+      "type": "json",
+      "url": "assets/panda.json"
+    },
+    {
+      "name": "panda_png",
+      "type": "image",
+      "url": "assets/panda.png"
+    },
+    {
+      "name": "textures_sheet",
+      "type": "sheet",
+      "url": "assets/textures.json"
+    },
+    {
+      "name": "level1_png",
+      "type": "image",
+      "url": "assets/level1.png"
+    },
+    {
+      "name": "level2_png",
+      "type": "image",
+      "url": "assets/level2.png"
+    },
+    {
+      "name": "level3_png",
+      "type": "image",
+      "url": "assets/level3.png"
+    }
+  ],
+  "groups": [
+    {
+      "name": "preload",
+      "keys": "number_fnt, bg_png, panda_json, panda_png, textures_sheet, level1_png, level2_png, level3_png"
+    }
+  ]
+}

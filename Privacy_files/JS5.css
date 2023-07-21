@@ -1,0 +1,40 @@
+﻿
+        .LR-ICON {
+            background-size: 32px auto !important;
+            background-repeat: no-repeat !important;
+            background-image: url("mclose.png") !important;
+        }
+     
+        .LR-ICON-CHAT1 {
+            background-position: 0 0 !important;
+        }
+        #LRMINIBar {
+            display: none;
+            position: fixed;
+            z-index: 2147483647;
+            width: auto; height: auto;padding: 0;
+            margin: 0;border: 0;
+            background-color: transparent;
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+        .LR_Mini_ICON { }
+       .LR-BTN {
+            display: block;width: 60px;height: 60px;border: 1px solid rgba(0, 0, 0, .1);
+            border-radius: 31px;box-shadow: 0 0 14px 0 rgba(0, 0, 0, .16);
+            cursor: pointer;text-decoration: none;background-color: #00a6f1;
+        }
+        .LR_Mini_ICON span, .LR_Mini_ICON div, .LR_Mini_ICON img {
+            float: none;width: auto;height: auto; padding: 0;margin: 0;
+            border: 0;background: none;
+        }
+        #LR-BTN-ICON {display: block;width: 32px;height: 32px;margin: 14px; position:absolute; }
+        #LR-CIRCLE {position: absolute;top: 0;left: 0;display: none;width: 60px;height: 60px;border-radius: 30px;text-align: center;font-size: 18px;line-height: 60px;background-color: #00a6f1;color: #fff;}
+        #LR-BUBBLE {position: fixed;display: none;width: 90%;margin: 0 5% 74px 5%;border: 1px solid #f7f7f7;color: #000;text-align: left;box-shadow: 0 5px 16px 0 rgba(0, 0, 0, .16);line-height: 1.428571429;background-color: #fff;}
+        #LR-BUBBLE-CLOSE {position: absolute;top: 1px;right: 3px;width: 26px;height: 26px;background-position: -3px -58px;}
+        #LR-BUBBLE-INSIDE {margin: 10px;}
+        #LR-BUBBLE-AVATAR {width: 26px;height: 26px;border-radius: 13px;margin-right: 6px;vertical-align: top;box-shadow: 0 0 8px 0 rgba(0, 0, 0, .15);}
+        #LR-BUBBLE-NAME {display: inline-block;margin-top: 3px;font-size: 16px; color: #000;}
+        #LR-BUBBLE-MSG {height: 40px;margin-top: 5px;font-size: 14px;overflow: hidden;color: #000;}
+        #LR-BUBBLE-MSG img {width: 16px;height: 16px;}
+
+ 

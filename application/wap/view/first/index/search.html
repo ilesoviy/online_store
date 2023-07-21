@@ -1,0 +1,217 @@
+{extend name="public/container"}
+{block name="head_top"}
+<link rel="stylesheet" href="{__PLUG_PATH}swiper/swiper-3.4.1.min.css">
+<script type="text/javascript" src="{__PLUG_PATH}swiper/swiper-3.4.1.jquery.min.js"></script>
+<script type="text/javascript" src="{__PLUG_PATH}jquery-slide-up.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/jquery.downCount.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/car-model.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/base.js"></script>
+<script type="text/javascript" src="{__WAP_PATH}crmeb/js/lottie.min.js"></script>
+<style type="text/css">
+    body {
+        background-color: #fff !important;
+    }
+    input::-webkit-input-placeholder {
+        color: #999 !important;
+    }
+
+    input::-moz-input-placeholder {
+        color: #999 !important;
+    }
+
+    input::-ms-input-placeholder {
+        color: #999 !important;
+    }
+
+    .search-wrapper {
+        border-bottom: 1px solid #eee;
+    }
+
+    .hot {
+        padding: 15px 10px;
+        background-color: #fff;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .hot h1 {
+        font-size: 15px
+  
+    }
+
+    .hot_info {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        
+    }
+
+    .hot_info .hot_item {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px;
+        border-radius: 26px;
+        margin-right: 7px;
+        background: #F5F5F5;
+        margin-bottom: 10px;
+    }
+    .serach_item {
+        display: flex;
+        margin-bottom: 10px;
+    }
+    .serach_item img {
+        width: 55px;
+    } 
+      .serach_item   .search_text {
+          padding-left: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: space-around;
+        
+      }
+     .hot_info .hots {
+        color: #E1000F;
+        background: #FFD5D8;
+        padding-right: 5px;
+      }
+</style>
+{/block}
+{block name="title"}
+{:L(" 搜索","Search")}
+{/block}
+{block name="content"}
+<div class="page-index" id="app-index">
+    <section ref="bsDom">
+        <div style="background-color: #F4F4F4;">
+            <!-- position: fixed; top: 0; z-index: 99; -->
+            <!--  <div class="qsearch" style="padding: 10px 15px; display: flex; width: 100%; justify-content: space-between;">
+                <div class="qinput" style="padding: 0 20px ; box-sizing: border-box;color: #999;width: 75%;border-radius: 30px; height: 30px; display: flex;align-items: center; background-color: rgb(255,255,255, 0.85);">
+                    <img style="width: 15px; margin-right: 10px;" src="/public/uploads/attach/2021/01/25/AAAAA.png">搜索商品、類目
+                </div>
+                <div class="qlang" style=" box-sizing: border-box;color: #999;justify-content: center; width: 23%;border-radius: 30px; height: 30px; display: flex;align-items: center; background-color: rgb(255,255,255, 0.85);">
+                    <span style="color: #333;"> 繁 </span> / <span> EN </span>
+                </div>
+            </div> -->
+
+            <div class="search-wrapper">
+                <form method="post" @submit.prevent="goSearch">
+                    <div class="search-box flex" style="width: 100%; justify-content: space-between; background-color: #fff;">
+                        <span   @click="window.location.href='/wap/index/index'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                                            <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                                        </span>
+                        <input type="text" v-model="keyword" placeholder='{:L(" 搜索商品、類目","Search products")}'
+                        style="padding: 0 35px ; background-color: #f4f4f4; box-sizing: border-box;color: #333;width: 90%;border-radius: 30px; height: 30px;">
+                    </div>
+                </form>
+            </div>
+            <div class="hot">
+                <h1 id="hot_title">{:L(" 搜索發現","Search found")}</h1>    <!-- :class="['hot_item', item.hot ? 'hots' ? '']" -->   
+                <div class="hot_info">
+                    <a href="javascript:;" @click.stop="goSearch(item.name)" v-for="item in hotlist" class="hot_item">
+                        {{ item.name }} <img style="width: 10px;margin-left: 5px;" src="/public/uploads/attach/2019/01/15/qqhot.png" >
+                    </a>
+                </div>
+            </div>
+            <div class="hot" style="border: 0;">
+                <h1>
+                     {:L(" 熱門搜索","popular searches")}
+                </h1>
+                 <div class="hot_info">
+                     <a :href="'/wap/store/detail/id/'+item.id" class="serach_item" v-for="item in hotproduct">
+                         <img :src="item.image" >
+                         <div class="search_text">
+                             <h1>   {{item.new_store_name}}<img style="width: 12px;margin-left: 5px;" src="/public/uploads/attach/2019/01/15/qqhot.png" ></h1>
+                             <p>{{item.stock}}  {:L(" 人購買"," People buy")}，{{item.browse}}  {:L(" 人瀏覽","People browse")}</p>
+                         </div>
+                     </a>
+                     
+                 </div>
+            </div>
+
+
+
+
+            <script type="text/javascript">
+                function loadCRMEB() {
+                    var anim;
+                    var elem = document.getElementById('lottie');
+                    var animData = {
+                        container: elem,
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        rendererSettings: {
+                            progressiveLoad: false,
+                            imagePreserveAspectRatio: 'xMidYMid meet'
+                        },
+                        path: '/public/wap/first/crmeb/js/animation.json'
+                    };
+                    anim = lottie.loadAnimation(animData);
+                    anim.setSubframe(false);
+                    setTimeout(
+                        function() {
+                            $('.lottie-bg').hide();
+                        }, 2000)
+
+                }
+                if (!window.name) {
+                    loadCRMEB();
+                    window.name = "CRMEB";
+                } else {
+                    $('.lottie-bg').hide();
+                }
+                var base = new Base64();
+                window.$hotproduct = <?php echo json_encode($hotproduct) ?: '[]'; ?>;
+                window.$keyword = <?php echo json_encode($keyword) ?: '[]'; ?>;
+                (function() {
+
+                    requirejs(['vue', 'store', 'helper', 'better-scroll'], function(Vue, storeApi, $h, BScroll) {
+                        new Vue({
+                            el: '#app-index',
+                            data: {
+                                hotproduct: $hotproduct,
+                                hotlist: $keyword,
+                                loading: false,
+                                scroll: null,
+                                keyword: '',
+                                
+                            },
+                            methods: {
+                                goSearch: function(name='') {
+                                    
+                                    
+                                    var newname=this.keyword ? this.keyword : name;
+                                    console.log(newname)
+                                    if (!newname) return;
+                                    // return;
+                                    location.href = $h.U({
+                                        c: 'store',
+                                        a: 'index',
+                                        p: {
+                                            keyword: base.encode(newname)
+                                        }
+                                    });
+                                },
+                            },
+                            mounted: function() {
+                                var that = this;
+                                console.log(this.hotlist);
+                              // if (document.getElementById("hot_title").innerText == "Search found") {
+                              //     this.hotlist = [ 
+                              //       {
+                              //       name: 'Four-piece suit',
+                              //       hots: true
+                              //       },
+                              //       {
+                              //       name: 'Tangerine peel',
+                              //       hots: true
+                              //       },
+                              //   ]
+                              // }
+                            }
+                        })
+                    });
+                }());
+            </script>
+            {/block}

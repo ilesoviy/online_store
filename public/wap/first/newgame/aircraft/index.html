@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script type="text/javascript" src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+
+
+
+    <title>全民飞机大战</title>
+
+
+
+    <style>
+
+        html {
+
+            width: 100%;
+
+            height: 100%;
+
+            margin: 0;
+
+            padding: 0;
+
+            position: relative;
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        .canvasbig {
+
+            position: absolute;
+
+            left: 0;
+
+            top: 0;
+
+            height: 100vh;
+
+            width: 100%;
+
+            overflow: hidden !important;
+
+        }
+
+
+
+        .canvasdiv {
+
+            position: absolute;
+
+            cursor: pointer;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            top: 500px;
+
+            width: 200px;
+
+            height: 53px;
+
+            background-image: url(img/starting.png);
+
+        }
+
+
+
+        .none {
+
+            display: none;
+
+        }
+
+
+
+    </style>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+    <!-- <script src="js/circle.js"></script> -->
+
+
+
+    <div class="canvasbig">
+
+        <div class="canvasdiv"></div>
+
+        <canvas width="375" height="667" id="canvas1"></canvas>
+
+    </div>
+
+
+
+
+    <script src="js/index.js"></script>
+
+    <!-- <div style="text-align:center;">
+
+        <a href="http://www.mycodes.net/" target="_blank"></a>
+
+    </div> -->
+
+</body>
+
+
+
+</html>

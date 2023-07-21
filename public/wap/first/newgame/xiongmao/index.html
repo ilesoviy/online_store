@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>跳跃熊猫君</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+
+    <style>
+        body {
+            text-align: center;
+            background: #000000;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        html {
+            -ms-touch-action: none; /* Direct all pointer events to JavaScript code. */
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            margin: 0 auto;
+            padding: 0;
+            border: 0;
+        }
+
+        #gameDiv {
+            display: block;
+            position: absolute;
+            margin: 0 auto;
+            padding: 0;
+            border: 0;
+        }
+    </style>
+		<link rel="stylesheet" type="text/css" href="game9g.css">
+	<script src="game9g.js"></script>
+</head>
+<body>
+<div style="position:relative;" id="gameDiv"></div>
+<script>var document_class = "Main";</script><!--这部分内容在编译时会被替换，要修改文档类，请到工程目录下的egretProperties.json内编辑。 测试push 事件2-->
+<!--This part will be replaced during compiling, and to modify the document class, please go to the project directory and edit in the file of egretProperties. Jsonr-->
+<script src="launcher/egret_require.js"></script>
+<script src="launcher/egret_loader.js"></script>
+<script src="launcher/game-min.js"></script>
+<script src="meiriq_loading.js"></script>
+<script src="meiriq_game.js"></script>
+<script>
+
+    // 传入游戏英文名,分数类型为score 或者 level
+    // 注意!!这里命名一定是meiriq_game,请不要私自命名
+    var meiriq_game = new Meiriq_game("hoppingpanda", "score");
+    window["meiriq_game"].permitStart=1;  //这里需要自己修改参数测试一下 如果是1允许开始 0则不允许开始游戏
+
+    var support = [].map && document.createElement("canvas").getContext;
+    if (support) {
+        egret_h5.startGame();
+    }
+    else {
+        alert("Egret 不支持您当前的浏览器")
+    }
+</script>
+<script language=javascript>
+        var game9g = new Game9G("tyxmj","mrqyx");
+        game9g.shareData.title = "跳跃熊猫君";
+        game9g.shareData.content = "跳跃熊猫君";
+
+		function goHome(){
+			window.location=game9g.homeurl;
+		}
+		function clickMore(){
+			//window.location = game9g.homeurl;
+		}
+		function dp_share(){
+			//game9g.share();
+		}
+		function dp_Ranking(){
+			window.location=game9g.homeurl;
+		}
+
+		function showAd(){
+		}
+		function hideAd(){
+		}
+		function dp_submitScore(score){
+			if(score>0){
+				game9g.score =parseInt(score);
+				game9g.scoreName = "跳了"+score+"分";
+				game9g.shareData.title = "我跳我跳我跳跳跳,胖胖的熊猫君我居然跳了" + score + "分!";
+				game9g.utils.shareConfirm("跳跃熊猫君你跳了"+score+"分！快告诉你的小伙伴们吧！",dp_share);
+			}
+		}
+	</script>
+	<div style="display: none;">
+		<script type="text/javascript">
+			//game9g.utils.tongji();
+		</script>						
+	</div>
+</body>
+
+</html>

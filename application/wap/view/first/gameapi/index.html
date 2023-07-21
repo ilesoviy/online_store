@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=375,user-scalable=no">
+    <meta name="referrer" content="no-referrer" />
+    <link rel="stylesheet" href="{__WAP_PATH}newgame/gameapi/css/index.css" />
+    <script src="{__WAP_PATH}newgame/gameapi/js/data.json"></script>
+    <script src="{__WAP_PATH}newgame/gameapi/js/zhuaqv.json"></script>
+    <script type="text/javascript" src="{__WAP_PATH}newgame/gameapi/js/lottie.js"></script>
+    <script src="{__WAP_PATH}newgame/gameapi/js/jquery-1.11.3.min.js"></script>
+    <script src="{__WAP_PATH}newgame/gameapi/js/jquery.cookie.js"></script>
+    <title>种植合成游戏</title>
+</head>
+
+<body>
+    <input type="hidden" name="user_id" value="{$user_id}">
+    <input type="hidden" name="ci_water" value="{$last_info['ci_water']}">
+    <input type="hidden" name="time_water" value="{$last_info['time_water']}">
+    <input type="hidden" name="is_day" value="{$last_info['is_day']}">
+    <input type="hidden" name="is_zhong" value="{$last_info['is_zhong']}">
+    <div class="all">
+        <!-- 头部 -->
+        <div class="head">
+            <div class="head_left">
+                <div class="img">
+                    <img src="{$last_info['avatar']}" title="" alt="">
+                </div>
+            </div>
+            <div class="head_rignt">
+                <span style="display:block;max-width: 10rem;overflow: hidden;text-overflow: ellipsis; -o-text-overflow: ellipsis;white-space: nowrap;float: left;">ID:{$last_info['nickname']}</span>
+                <span style="display: block; max-width: 10rem;float: left;">积分:<span id="integral">{$last_info['integral']}</span></span>
+            </div>
+        </div>
+        <!-- 类别 -->
+        <div class="category">
+            <div class="cg_lt">
+                <div id="shop">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/shop.png" alt="" title="" />
+                </div>
+                <div id="Warehouse">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/warehouse.png" alt="" title="" />
+                </div>
+                <div>
+                    <img src="{__WAP_PATH}newgame/gameapi/images/broadcast.png" alt="" title="" />
+                </div>
+            </div>
+            <div class="cg_md">
+                <div id="chenshou">
+                    <span class="tips">需要浇水才可以成长哦~成熟就可以收获了~</span>
+                </div>
+                <div id="planting">
+                    <span class="tips harvest">已经成熟了哦~可以收获了！</span>
+                    <span class="tips empty">还没有种植果实哦~快去种植吧！</span>
+                </div>
+            </div>
+            <div class="cg_rt">
+                <div id="rule">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/rule.png" alt="" title="" />
+                </div>
+                <div id="recordtitle">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/record.png" alt="" title="" />
+                </div>
+                <div id="b2bs">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/shoppingMall.png" alt="" title="" />
+                </div>
+            </div>
+        </div>
+        <!-- 树 -->
+        <div class="Daily_drops">
+            <img src="{__WAP_PATH}newgame/gameapi/images/shuidi.png" alt="" title="">
+        </div>
+        <!-- 果实 -->
+        <div class="fruit">
+            <img src="{__WAP_PATH}newgame/gameapi/images/nangua.png" />
+        </div>
+        <div id="lottie2"></div>
+        <script>
+            var params2 = {
+					container: document.getElementById('lottie2'),
+					renderer: 'svg',
+					loop: true,
+					autoplay: true,
+					animationData: animationData2
+				};
+				var anim2;
+				anim2 = lottie.loadAnimation(params2);
+			</script>
+        <div class="tree">
+            <div class="shuidi" id="qiuy">
+                <img src="{__WAP_PATH}newgame/gameapi/images/shuidi.png">
+            </div>
+            <div class="ce_left">
+                <div class="collardrop" id="clickWater">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/collarDrop.png" alt="" title="" />
+                    <div id="time"></div>
+                </div>
+            </div>
+            <div class="ce_middle">
+                <div id="lottie1"></div>
+                <div class="daily">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/log_daily.png" alt="" title="">
+                </div>
+                <div class="seed" id="seedImg">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/seed.png" alt="" title="" />
+                </div>
+                <div class="seed" id="saplingImg" style="display: none;">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/sapling.png" alt="" title="" />
+                </div>
+                <div class="seed" id="fruitImg" style="display: none;">
+                    <img src="{$fruit_list['pet_img']}" alt="" title="" />
+                </div>
+                <div class="pit">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/pit.png" alt="" title="" />
+                </div>
+                <div class="progress_bar">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/jdt1.png" alt="" title="" />
+                </div>
+                <div class="progress_bar2">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/jdt2.png" alt="" title="" style="margin-left: -100%;" />
+                </div>
+                <!-- <progress value="150" max="200"></progress><br> -->
+                <p class="need"></p>
+            </div>
+            <div class="ce_rignt">
+                <div class="share">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/share.png" alt="" title="" />
+                </div>
+                <div class="kettle" id="watering">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/kettle.png" alt="" title="" />
+                </div>
+                <!-- <div id="lottie1"></div> -->
+                <span class="quantity">{$last_info['z_water']}</span>
+            </div>
+        </div>
+        <div class="cancel"></div>
+        <!-- 商店 -->
+        <div class="store_content" id="shangdian">
+            <div class="seed_store">
+                <div class="seed_store_l">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/seed_store.png" alt="" title="" />
+                </div>
+                <div class="seed_store_r">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/close.png" alt="" title="" />
+                </div>
+            </div>
+            <div class="type">
+                <div class="type_content">
+                    {volist name="pet_list" id="vo" key="k"}
+                    <div class="type_seed">
+                        <div class="sd_img">
+                            <img src="{$vo.pet_simg}" alt="" title="" />
+                        </div>
+                        <div class="sd_cd">
+							<input type="hidden" name="pet_id" id="pet_id" value="{$vo.id}">
+                            <h3><span id="pet_name">{$vo.pet_name}</span>种子</h3>
+                            <P class="integral">兑换积分：<span id="need_integral">{$vo.need_integral}</span></P>
+                            <P>成熟可换积分：{$vo.add_energy}</P>
+                        </div>
+                        <div class="Plant_button zxan">
+                            <div class="plant">
+                                <img src="{__WAP_PATH}newgame/gameapi/images/plant.png" alt="" title="" />
+                            </div>
+                            <div class="zx">
+                                <p>种下</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+        <!-- 种下 -->
+        <div class="Sale_tips" id="zhongxia_tips">
+            <div class="Popup">
+                <p>确定要种下<span id="pet_names">红苹果</span>吗？<br />要扣除<span id="need_integrals">1</span>积分哦！</p>
+                <div class="choice">
+                    <div class="choice_l">
+                        取消
+                    </div>
+                    <div class="choice_r">
+                        确定
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 仓库 -->
+        <div class="store_content" id="cangku">
+            <div class="seed_store">
+                <div class="seed_store_l">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/warehouseTitle.png" alt="" title="" />
+                </div>
+                <div class="seed_store_r">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/close.png" alt="" title="" />
+                </div>
+            </div>
+            <div class="type">
+                <div class="type_content">
+                	{volist name="fruit_info" id="vo" key="k"}
+                    <div class="type_seed type_seeds">
+                        <div class="sd_img">
+                            <img src="{$vo.img}" alt="" title="" />
+                        </div>
+                        <div class="sd_cd">
+                        	<input type="hidden" name="pet_id" id="pet_id" value="{$vo.fid}">
+                        	<input type="hidden" name="add_energy" id="add_energy" value="{$vo.add_energy}">
+                            <h3>{$vo.name}</h3>
+                            <P class="integral">数量：<span id="fruit_n">{$vo.fruit_nums}</span></P>
+                            <P class="Commutative">可换积分：<span>{$vo.add_energy}</span></P>
+                        </div>
+                        <div class="Plant_button csan">
+                            <div class="plant">
+                                <img src="{__WAP_PATH}newgame/gameapi/images/moneyion.png" alt="" title="" />
+                            </div>
+                            <div class="zx">
+                                <p>出售</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+        <!-- 出售提示框 -->
+        <div class="Sale_tips" id="chushou_tips">
+            <div class="Popup">
+                <p>出售数量</p>
+                <div class="number">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/reduce.png" class="rdc" />
+                    <input type="text" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" value="5" class="sl" name="shuliang" />
+                    <img src="{__WAP_PATH}newgame/gameapi/images/plus.png" class="ps" />
+                </div>
+                <div class="choice">
+                    <div class="choice_l" id="choice_quxiao">
+                        取消
+                    </div>
+                    <div class="choice_r" id="choice_queding">
+                        确定
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div></div>
+        <!-- 记录-->
+        <div class="store_content" id="jilu">
+            <div class="seed_store">
+                <div class="seed_store_l">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/recordtitle.png" alt="" title="" />
+                </div>
+                <div class="seed_store_r">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/close.png" alt="" title="" />
+                </div>
+            </div>
+            <div class="type">
+                <!-- 查看已采摘蔬果 -->
+                <div class="type_content" id="ckyzsg">
+                    <p class="see"><a href="#" id="chakan">查看已采摘蔬果></a></p>
+                    <div class="cgrecord">
+                    	{volist name='record_other' id='vo' key='k'}
+                        <div class="watering_record">
+                            <span>{$vo.add_time|date="m-d",###}</span>
+                            <span>{$vo.add_time|date="H:i",###}</span>
+                            <span class="xhsd">{$vo.title}</span>
+                            <span class="numerical">{if condition="$vo['pm']==0"}-{else /}+{/if}{$vo.number}{if condition="$vo['type']=='integral'"}积分{else /}g{/if}</span>
+                        </div>
+                        {/volist}
+                       
+                    </div>
+                </div>
+                <!-- 	已采摘蔬果 -->
+                <div class="type_content" id="Picked">
+                    <p class="see"><a href="#">已采摘蔬果</a></p>
+                    <div class="title">
+                        <div>蔬果名称</div>
+                        <div>采摘时间</div>
+                    </div>
+                    <div class="cgrecord">
+                    	{volist name='record_fruit' id='vo' key='k'}
+                        <div class="watering_record">
+                            <div>{$vo.category}</div>
+                            <div>{$vo.add_time|date="Y-m-d",###}</div>
+                        </div>
+                        {/volist}
+                      <!--   <div class="watering_record">
+                            <div>红苹果</div>
+                            <div>2020-10-27</div>
+                        </div>
+                        <div class="watering_record">
+                            <div>红苹果</div>
+                            <div>2020-10-27</div>
+                        </div>
+                        <div class="watering_record">
+                            <div>红苹果</div>
+                            <div>2020-10-27</div>
+                        </div>
+                        <div class="watering_record">
+                            <div>红苹果</div>
+                            <div>2020-10-27</div>
+                        </div>
+                        <div class="watering_record">
+                            <div>红苹果</div>
+                            <div>2020-10-27</div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 规则 -->
+        <div class="store_content" id="guize">
+            <div class="seed_store">
+                <div class="seed_store_l">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/guize.png" alt="" title="" />
+                </div>
+                <div class="seed_store_r">
+                    <img src="{__WAP_PATH}newgame/gameapi/images/close.png" alt="" title="" />
+                </div>
+            </div>
+            <div class="type">
+                <div class="type_content">
+                    <p>活动参与时间:2020年10月14日-2020年11月11日蔬果到店领取时间:2020年10月14日一2020年11月17日</p>
+                    <p class="bt">【参与资格】</p>
+                    <p>本活动仅限大润发会员参加,成功登录账号并绑定大润发会员卡即可参与游戏,每位自然人用户仅能使用一个大润发账号参与活动,微信号、大润发账号、手机号等任一信息一致或指向同一用户的,均视为同一个用户,若发现同一用户使用不同账号重复参与
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    var params1 = {
+        container: document.getElementById('lottie1'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        animationData: animationData1
+    };
+    var anim1;
+    anim1 = lottie.loadAnimation(params1);
+    </script>
+    <script>
+    var water = $('.quantity').text(); //水
+    var second = $("input[ name='time_water' ] ").val(); //倒计时
+    var seed = {
+        0: 50,
+        1: 90
+    };
+    var sdft = false;
+    var frequency = $("input[ name='ci_water' ] ").val(); //还需要浇水次数
+    var width = -(10 * frequency); //进度条
+    var growth = 10 * (10 - frequency);
+    var integral = $('#integral').text(); //积分
+    var itg = $(".integral span").text(); //获取果实数量
+    var ctt = $(".Commutative span").text(); //获取可换积分
+    var is_zhong = $("input[ name='is_zhong'] ").val(); //种子id
+    var pet_id=0;
+    $(".progress_bar2 img").css('marginLeft', width + '%');
+    //初始化植物
+    $(function() {
+        if (growth >= seed[0] && growth <= seed[1]) {
+            $('#seedImg').hide();
+            $('#saplingImg').show();
+
+        } else if (growth > seed[1]) {
+
+            $('#saplingImg').hide();
+            $('#fruitImg').show();
+            $('#chenshou').hide();
+            $('#planting').show();
+            $('#lottie2').show();
+            $('#seedImg').hide();
+            sdft = true;
+            console.log(sdft)
+
+            // alert('已成熟');
+            $('#lottie1').hide();
+            // $("#watering").unbind("click");  
+            console.log(growth)
+            return;
+
+        }
+    })
+    
+    $(function() {
+        // $('.need').text(frequency);
+        if( is_zhong==0){
+        	$('.seed').hide();
+                        $('#chenshou').hide(); 
+                        $('.harvest').hide();
+                        $('#planting').show();
+                        $('.empty').show();
+            setTimeout("guoshiTime()", 1000);
+    	$('.need').text('暂时没有种植东西哦！');
+    }else{
+    	 $('.need').text('还需浇水' + frequency + '次就成熟了');
+    }
+       
+        $('#integral').text(integral);
+
+        $('.quantity').text(water + 'g');
+        if (second > 0) {
+            $('.collardrop').unbind('click');
+        }
+        TimeDown("time", second)
+    });
+    /*
+     时间倒计时
+     TimeDown.js
+     */
+    function TimeDown(id, value) {
+        if (value > 0) {
+            $('.collardrop').unbind('click');
+        }
+
+        //倒计时的总秒数
+        var totalSeconds = parseInt(value / 1000);
+
+        //取模（余数）
+        var modulo = totalSeconds % (60 * 60 * 24);
+        //小时数
+        var hours = Math.floor(modulo / (60 * 60));
+        modulo = modulo % (60 * 60);
+        //分钟
+        var minutes = Math.floor(modulo / 60);
+        //秒
+        var seconds = modulo % 60;
+
+        hours = hours.toString().length == 1 ? '0' + hours : hours;
+        minutes = minutes.toString().length == 1 ? '0' + minutes : minutes;
+        seconds = seconds.toString().length == 1 ? '0' + seconds : seconds;
+
+        //输出到页面
+        document.getElementById(id).innerHTML = hours + ":" + minutes + ":" + seconds;
+        //延迟一秒执行自己
+        if (hours == "00" && minutes == "00" && parseInt(seconds) - 1 < 0) {
+            // console.log(123123);
+            $('.collardrop').bind('click', function() {
+                $.ajax({
+
+                    url: '/wap/gameapi/ajax_energy',
+
+                    type: 'get',
+
+                    dataType: 'json',
+
+                    data: {
+
+                        energy: 1
+
+                    },
+                    success: function(res) {
+                        if (res.code == 200) {
+                            water = res.data['z_water'];
+                            $('.quantity').text(water + 'g');
+                            $('#qiuy').addClass("sjk2");
+                            second = res.data['time'];
+                            setTimeout("showTime()", 1000);
+                            TimeDown('time', second)
+                        }
+                    }
+
+                });
+
+            });
+
+        } else {
+            setTimeout(function() {
+                TimeDown(id, value - 1000);
+            }, 1000)
+        }
+
+    }
+
+    function showTime() {
+        $('#qiuy').removeClass("sjk2");
+    }
+
+
+    // 点击浇水
+
+    $('#watering').click(function() {
+        if (frequency == 0) {
+            alert('果子已经成熟了！！！');
+            return;
+        }
+        if (sdft == false) {
+            if (water <= 10) {
+                alert('水滴不足,不能浇水了');
+                return;
+            }else if(is_zhong==0){
+            	 alert('暂时没有种任何东西，不能浇水');
+                return;
+            }
+             else {
+
+                $.ajax({
+
+                    url: '/wap/gameapi/waterings',
+
+                    type: 'get',
+
+                    dataType: 'json',
+
+                    data: {
+
+                        cut_water: 10
+
+                    },
+                    success: function(res) {
+                        if (res.code == 200) {
+                            if (res.data['status'] == 0) {
+                                alert('果子已经成熟了！！！');
+                                return;
+                            } else {
+                                $('#lottie1').show();
+                                //浇水动作	
+                                setTimeout(function() {
+                                    $('#lottie1').hide(); //隐藏浇水动作
+                                }, 1800)
+                                $('.progress_bar2 img').addClass("aaa");
+                                width += 10; //点一次进度条加10%
+
+
+                                if (width < 10) {
+                                    $(".progress_bar2 img").css('marginLeft', width + '%');
+                                    // console.log(width)
+                                }
+
+
+                                water = res.data['z_water'];
+                                // frequency -= 1;
+                                if (frequency > 1) {
+                                    frequency = res.data['ci_water'];
+                                    $('.need').text('还需浇水' + frequency + '次就成熟了');
+                                } else {
+                                    $('.need').text('果子已经成熟了！！！');
+                                }
+
+                                if (growth >= seed[0] && growth < seed[1]) {
+                                    $('#seedImg').hide();
+                                    $('#saplingImg').show();
+
+                                } else if (growth >= seed[1]) {
+
+                                    $('#saplingImg').hide();
+                                    $('#fruitImg').show();
+                                    $('#chenshou').hide();
+                                    $('#planting').show();
+                                    $('#lottie2').show();
+                                    sdft = true;
+                                    console.log(sdft)
+
+                                    // alert('已成熟');
+                                    $('#lottie1').hide();
+                                    // $("#watering").unbind("click");  
+                                    console.log(growth)
+                                    return;
+
+                                }
+                                growth += 10;
+                                $('.quantity').text(water + 'g');
+                            }
+
+                        }
+                    }
+
+                });
+
+            }
+
+        }
+    });
+    // 收获果实
+    $('#lottie2').click(function() {
+
+        $.ajax({
+
+            url: '/wap/gameapi/fruits',
+
+            type: 'get',
+
+            dataType: 'json',
+
+            data: {
+
+                zhong_id: is_zhong
+
+            },
+            success: function(res) {
+                console.log('qqqq', res);
+                if (res.code == 200) {
+                    if (res.data.status == 0) {
+                        alert('植物生病了');
+                        return;
+                    } else {
+
+                        $('#lottie2').hide();
+                        $('#fruitImg').hide();
+                        $('.fruit').addClass("guoshi");
+                        $('#planting .harvest').hide();
+                        $('#planting .empty').show();
+                        // $(".aaa").width(0 + '%');
+                        setTimeout("guoshiTime()", 1000);
+                        growth = 0;
+                        width = -100;
+                        frequency = 10;
+                        $(".progress_bar2 img").css('marginLeft', width + '%');
+                        $('.need').text('暂时没有种植东西哦！');
+                        setTimeout(function() {
+                location.reload();
+            }, 1000)
+                        
+                    }
+
+                }
+            }
+
+        });
+        // alert(1);
+    });
+
+    function guoshiTime() {
+        $('.fruit').removeClass("guoshi");
+    }
+    // 商品显示
+    $('#shop').click(function() {
+        $('.cancel').show();
+        $('#shangdian').show();
+    });
+    // 仓库显示
+    $('#Warehouse').click(function() {
+        $('.cancel').show();
+        $('#cangku').show();
+    });
+    //游戏记录显示
+    $('#recordtitle').click(function() {
+    	$.cookie('ji', '1',{ expires: 1 });
+		location.reload();
+        // $('.cancel').show();
+        // $('#jilu').show();
+    });
+    if($.cookie('ji')){
+                if($.cookie('ji')==1){
+                	$('.cancel').show();
+                	$('#jilu').show();
+                	$.cookie('ji', '0',{ expires: 1 });
+                }
+        }
+    //跳商城
+    $('#b2bs').click(function() {
+       window.location.href = "/wap/index/index.html";
+    });
+    // 查看已采摘蔬果隐藏
+    // 已采摘蔬果显示
+    $('#chakan').click(function() {
+        $('#ckyzsg').hide();
+        $('#Picked').show();
+    });
+    //规则显示
+    $('#rule').click(function() {
+        $('.cancel').show();
+        $('#guize').show();
+    });
+    $('.cancel').click(function() {
+        event.stopPropagation();
+        $(".cancel").hide();
+        $('#shangdian').hide(); // 商品隐藏
+        $('#cangku').hide(); // 仓库隐藏
+        $('#jilu').hide(); //游戏记录隐藏
+        $('#Picked').hide(); // 已采摘蔬果隐藏
+        $('#chakan').show();
+        $('#Picked').hide(); // 已采摘蔬果隐藏
+        $('#guize').hide(); //规则隐藏
+    });
+    // 关闭按钮
+    $('.seed_store_r').click(function() {
+        event.stopPropagation();
+        $(".cancel").hide();
+        $('#shangdian').hide(); // 商品隐藏
+        $('#cangku').hide(); // 仓库隐藏
+        $('#jilu').hide(); //游戏记录隐藏
+        $('#Picked').hide(); // 已采摘蔬果隐藏
+        $('#chakan').show();
+        $('#Picked').hide(); // 已采摘蔬果隐藏
+        $('#guize').hide(); //规则隐藏
+    });
+    // 每日领水滴
+    console.log('hu', $("input[ name='is_day' ]").val());
+    if ($("input[ name='is_day' ]").val() == 1) {
+        $('.daily').hide();
+    }
+    $('.daily').click(function() {
+        $('.daily').hide();
+        $('.Daily_drops').addClass("mrsd");
+        $.ajax({
+
+            url: '/wap/gameapi/add_day',
+
+            type: 'get',
+
+            dataType: 'json',
+
+            data: {
+
+                add_water: 20
+
+            },
+            success: function(res) {
+                if (res.code == 200) {
+                    water = res.data['z_water'];
+                    $('.quantity').text(water + 'g');
+
+                }
+            }
+
+        });
+
+        // console.log(water);
+    });
+    // 种下按钮
+    $('.zxan').click(function() {
+    	var y=$(this).parent().index();//定位
+    	var pet_name=$('.type_seed').eq(y).children('.sd_cd').find('#pet_name').text();
+    	var need_integral=$('.type_seed').eq(y).children('.sd_cd').find('#need_integral').text();
+    	pet_id=$('.type_seed').eq(y).children('.sd_cd').find('#pet_id').val();
+    	$('#pet_names').text(pet_name);
+    	$('#need_integrals').text(need_integral);
+    	console.log(pet_id,sdft);
+        // $('.cancel').hide();
+        $('#zhongxia_tips').show();
+        // $('#watering').unbind('click');
+
+
+    });
+    // 种下提示弹窗
+    $('#zhongxia_tips .choice_l').click(function() {
+        $('#zhongxia_tips').hide();
+    });
+    $('#zhongxia_tips .choice_r').click(function() {
+        if (is_zhong != 0) {
+            alert("已经种有东西了");
+        }else {
+            if (integral > 0) {
+            		$.ajax({
+
+                    url: '/wap/gameapi/zhongxia',
+
+                    type: 'get',
+
+                    dataType: 'json',
+
+                    data: {
+
+                        pet_id: pet_id
+
+                    },
+                    success: function(res) {
+                    	console.log('111',res)
+                        if (res.code == 200) {
+                        	if(res.data.status==0){
+                        		alert('购买种子失败');
+                        		return;
+                        	}else if (res.data.status==1) {
+                        		alert('积分不够');
+                        		return;
+                        	}else{
+                        	$('#integral').text(res.data.integral);
+                           $('#seedImg').show();
+                            $('.need').text('还需浇水' + frequency + '次就成熟了');
+				            $('.cancel').hide();
+				            $('#zhongxia_tips').hide();
+				            $('#shangdian').hide();
+				            $('#chenshou').show();
+				            $('#planting').hide();
+				            zhong_id=pet_id;
+				            sdft = false;
+				            location.reload();
+                        	}
+                           
+                        }
+                    }
+
+                });
+                
+                // $("#watering").on("click");
+                console.log(width);
+            } else {
+                alert('积分不够');
+                $('#zhongxia_tips').hide();
+                return;
+            }
+
+            // $('.need').text('暂时没有种植东西哦！');
+           
+        }
+
+
+    });
+    //出售
+    var name=0;
+    var fruit_n=0;
+    $('.csan').click(function() {
+    	var s=$(this).parent().index();//定位
+    	var pet_names=$('.type_seeds').eq(s).children('.sd_cd').find('h3').text();
+    	fruit_n=$('.type_seeds').eq(s).children('.sd_cd').find('#fruit_n').text();
+    	pet_id=$('.type_seeds').eq(s).children('.sd_cd').find('#pet_id').val();
+    	var add_energy=$('.type_seeds').eq(s).children('.sd_cd').find('#add_energy').val();
+    	$('.sl').val(fruit_n);
+        $('#chushou_tips').show();
+        name = fruit_n;
+        // $('#cangku').hide();
+
+        // if (integral > 0) {
+        // 	integral -= 1
+        // 	$('#integral').text(integral);
+        // } else {
+        // 	alert('积分不够');
+        // 	return;
+        // }
+
+    });
+
+    // 出售弹窗
+    // 减出售数量
+    
+    // var name = $('input[name="shuliang"]').val();
+    
+    // 减
+    $('.rdc').click(function() {
+        if (name > 1) {
+            name--;
+        }
+        $(".sl").val(name);
+    });
+    // 加
+    $('.ps').click(function() {
+    	if(name<fruit_n){
+    		name++;
+    	}
+        $(".sl").val(name);
+    });
+    // 出售取消
+    $('#choice_quxiao').click(function() {
+        $('#chushou_tips').hide();
+    });
+    //出售确定
+    $('#choice_queding').click(function() {
+
+        if (itg < name) {
+            alert("果实数量不够");
+        } else {
+        	$.ajax({
+
+                    url: '/wap/gameapi/shouchu',
+
+                    type: 'get',
+
+                    dataType: 'json',
+
+                    data: {
+
+                        num: name,
+                        pet_id:pet_id
+
+                    },
+                    success: function(res) {
+                    	console.log('111',res)
+                        if (res.code == 200) {
+                        	$('.integral span').text(res.data.num);
+				            $('#integral').text(res.data.integral);
+				            $('#chushou_tips').hide();
+				            location.reload();
+                           
+                        }
+                    }
+
+                });
+                
+           
+        }
+        // console.log(itg);
+        // console.log(ctt);
+    });
+
+    // $(".sjk").click(function(){
+    // 	$('.shuidi').addClass('sjk2')
+    // })
+    </script>
+    <script type="text/javascript">
+    $(function() {
+        $('body').click(function() {
+            var user_id = $("input[ name='user_id' ] ").val();
+            if (user_id == 1) {
+                alert('您还未登录，请前往登录');
+                window.location.href = "/wap/login/index/game/" + user_id + ".html";
+                return false;
+            }
+
+        })
+    })
+    </script>
+</body>
+
+</html>

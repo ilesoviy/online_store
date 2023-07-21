@@ -1,0 +1,4 @@
+# Windows thumbnail cache files
+/.idea
+/runtime
+/public/uploads

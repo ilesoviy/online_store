@@ -1,0 +1,71 @@
+{extend name="public/container" /}
+{block name="title"}游戏中心{/block}
+{block name="content"}
+<style type="text/css">
+  .game_banner{width: 100vw; padding: 10px;}
+  .game_banner img{ width: 100%; }
+  .act{margin: 20px 20px;}
+  .act section ul{
+     display: -webkit-flex;
+    display: flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    width: 100%;
+  }
+  .act section ul li{
+    list-style: none;
+    width: 20%;
+    margin: 10px;
+    padding: 10px;
+    border:1px solid #eee;
+  }
+  .act section ul li a img{
+    width: 100%;
+  }
+   .act section ul li a span{
+    margin-top: 10px;
+       display: block;
+       text-align: center;
+       font-size: 16px;
+   }
+</style>
+<body>
+  <div class="game_banner"><img src="{__WAP_PATH}newgame/pbimg/game_banner.png"></div>
+<div class="act">
+    <section>
+      <ul>
+          <li>
+              <a href="/wap/game/idmio.html">
+                  <img src="{__WAP_PATH}newgame/pbimg/ci.png">
+                  <span>成语填词</span>
+              </a>
+          </li>
+          <li>
+              <a href="/wap/game/aircraft.html">
+                  <img src="{__WAP_PATH}newgame/pbimg/fei.png">
+                  <span>飞机大战</span>
+              </a>
+          </li>
+           <li>
+              <a href="/wap/game/xiongmao.html">
+                  <img src="{__WAP_PATH}newgame/pbimg/xiong.jpg">
+                  <span>跳跃熊猫</span>
+              </a>
+          </li>
+           <li>
+              <a href="/wap/game/fjpt.html">
+                  <img src="{__WAP_PATH}newgame/pbimg/pin.jpg">
+                  <span>美景拼图</span>
+              </a>
+          </li>
+          <li style="border:1px solid #fff;"></li>
+      </ul>
+    </section>
+
+</div>
+{include file="public/store_menu"}
+<script src="{__PLUG_PATH}reg-verify.js"></script>
+<script>
+   
+</script>
+{/block}

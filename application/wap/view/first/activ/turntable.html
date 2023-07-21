@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0s">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>转盘抽奖</title>
+
+    <link rel="stylesheet" href="{__WAP_PATH}newact/css/index.css">
+</head>
+<style type="text/css">
+    .lottery-tings{
+        font-size: 13px;
+        color: #444;
+    text-align: center;
+    margin-top: 20px;
+    }
+    
+</style>
+<body>
+    <audio id="sound_bo" src=""></audio>
+    <audio id="chou_bo" src=""></audio>
+
+    <div class="box-lottery">
+        <div class="lottery-wrap" style="transform: rotate(-88deg);">
+            <span class="lottery-span1" data-id="8">
+                <i>京东卡<br>10元</i><img src="{__WAP_PATH}newact/img/lottery_01.png" alt="京东卡10">
+            </span>
+            <span class="lottery-span2" data-id="7">
+                <i>京东卡<br>20元</i><img src="{__WAP_PATH}newact/img/lottery_02.png" alt="京东卡20">
+            </span>
+            <span class="lottery-span3" data-id="6">
+                <i>京东卡<br>50元</i><img src="{__WAP_PATH}newact/img/lottery_03.png" alt="京东卡50">
+            </span>
+            <span class="lottery-span4" data-id="5">
+                <i>京东卡<br>100元</i><img src="{__WAP_PATH}newact/img/lottery_04.png" alt="京东卡100">
+            </span>
+            <span class="lottery-span5" data-id="1">
+                <i>谢谢参与</i><img src="{__WAP_PATH}newact/img/lottery_05.png" alt="谢谢参与">
+            </span>
+            <span class="lottery-span6" data-id="4">
+                <i>京东卡<br>200元</i><img src="{__WAP_PATH}newact/img/lottery_06.png" alt="京东卡200">
+            </span>
+            <span class="lottery-span7" data-id="3">
+                <i>京东卡<br>500元</i><img src="{__WAP_PATH}newact/img/lottery_07.png" alt="京东卡500">
+            </span>
+            <span class="lottery-span8" data-id="2">
+                <i>iQOO Pro<br>手机</i><img src="{__WAP_PATH}newact/img/lottery_08.png" alt="iQOO Pro">
+            </span>
+         
+           
+        </div>
+         <div class="lottery-tings">活动规则：100积分/每次</div>
+        <a class="lottery-btn" href="javascript:void(0);"><i></i>立即抽奖</a>
+    </div>
+    <div class="bott"><a href="{:url('Gameapi/index')}">返回游戏主页</a></div>
+    <input type="hidden" name="user_integral" value="{$user_info.integral}">
+
+    <script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script src="{__WAP_PATH}newact/js/lib/anime.min.js"></script>
+    <script src="{__WAP_PATH}newact/js/app/lottery.js"></script>
+    <script src="{__WAP_PATH}newgame/gameapi/js/jquery.cookie.js"></script>
+
+    <script>
+       
+
+      
+        
+            $('.lottery-btn').on('click', function(){
+                 if($("input[ name='user_integral' ] ").val()>0){
+                    var Lottery = Turntable.create();
+            console.log(Lottery.opts['isplay']);
+                if(Lottery.opts['isplay']==false){
+                    // var num = Math.floor(Math.random() * 8);
+                    var num=0;
+                    var random = Math.random();
+                    if(random < 0.00)
+                    num = 0;
+                    else if(random < 0.00)
+                    num = 1;
+                    else if(random < 0.00)
+                    num = 2;
+                    else if(random < 0.01)
+                    num = 3;
+                    else if(random < 1)
+                    num = 4;
+                    else if(random < 0)
+                    num = 5;
+                    else if(random < 0)
+                    num = 6;
+                    else if(random < 0)
+                    num = 7;
+                    console.log('num=',num)
+                    Lottery.start(num, function(index){
+                       
+                         $.ajax({
+
+                url: '/wap/activ/ajax_integral',
+
+                type: 'get',
+
+                dataType: 'json',
+
+                data: {
+
+                    integral: 100
+
+                },
+                success: function (res) {
+                    console.log('qqqq',res);
+                    if (res.code == 200) {
+                         alert($('span').eq(index).find('i').text());
+                        console.log('index', index, 'lottery-span', 'lottery-span'+(index+1));
+
+                        }
+                }
+
+            });
+                        
+                    });
+            }
+             }else{
+                alert('当前积分不够')
+        }
+        });
+       
+    </script>
+    <script>
+        $(function(){
+        $('.bott').click(function(){
+            playSound('{__WAP_PATH}newgame/gameapi/mc/click_yinxiao.mp3');
+        })
+        $('.lottery-btn').click(function(){
+             if($("input[ name='user_integral' ] ").val()>0){
+            playchou('{__WAP_PATH}newgame/gameapi/mc/dazpan.mp3');
+        }
+        })
+        function playchou(path) {
+    var soundEle = document.getElementById("sound_bo");
+    soundEle.src=path;
+    soundEle.load();
+        soundEle.currentTime=15;
+        soundEle.play();   //播放
+    
+}
+         //音效
+        function playSound(path) {
+    var soundEle = document.getElementById("sound_bo");
+    soundEle.src=path;
+    soundEle.load();
+   var is_sound=1;
+   if($.cookie('sound')){
+        is_sound=$.cookie('sound');
+   }
+   if(is_sound==1){
+        if (soundEle.paused){ /*如果已经暂停*/
+        soundEle.play();   //播放
+    }else {
+        soundEle.pause();  //暂停
+    }
+   }
+    
+}
+        })
+    </script>
+</body>
+
+</html>

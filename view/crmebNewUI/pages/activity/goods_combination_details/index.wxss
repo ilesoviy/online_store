@@ -1,0 +1,32 @@
+@import '/css/style.wxss';
+.product-con .wrapper{padding-bottom:26rpx;}
+.product-con .wrapper .share .money .y-money {color:#82848f;margin-left:13rpx;text-decoration:line-through;font-weight:normal;}
+.product-con .notice{width:100%;height:62rpx;background-color:#ffedeb;margin-top:20rpx;padding:0 30rpx;box-sizing:border-box;}
+.product-con .notice .num{font-size:24rpx;}
+.product-con .notice .num .iconfont{font-size:30rpx;vertical-align:-3rpx;margin-right:20rpx;}
+.product-con .notice .num .line{color:#282828;margin-left:15rpx;}
+.product-con .notice .swiper{height:100%;width:360rpx;line-height:62rpx;overflow:hidden;margin-left:14rpx;}
+.product-con .notice .swiper swiper{height:100%;width:100%;overflow:hidden;font-size:24rpx;color:#282828;}
+.product-con .assemble{background-color:#fff;}
+.product-con .assemble .item{padding-right:30rpx;margin-left:30rpx;border-bottom:1rpx solid #f0f0f0;height:132rpx;}
+.product-con .assemble .item .pictxt{width:295rpx;}
+.product-con .assemble .item .pictxt .text{width:194rpx;}
+.product-con .assemble .item .pictxt .pictrue{width:80rpx;height:80rpx;}
+.product-con .assemble .item .pictxt .pictrue image{width:100%;height:100%;border-radius:50%;}
+.product-con .assemble .item .right .lack{font-size:24rpx;color:#333333;}
+.product-con .assemble .item .right .time{font-size:22rpx;color:#82848f;margin-top:5rpx;}
+.product-con .assemble .item .right .spellBnt{font-size:24rpx;color:#fff;width:140rpx;height:50rpx;border-radius:50rpx;background-image: linear-gradient(to right,#ff2358 0%,#ff0000 100%);text-align:center;line-height:50rpx;margin-left:30rpx;}
+.product-con .assemble .item .right .spellBnt .iconfont{font-size:25rpx;margin-left:5rpx;}
+.product-con .assemble .more{font-size:24rpx;color:#282828;text-align:center;height:90rpx;line-height:90rpx;}
+.product-con .assemble .more .iconfont{margin-left:13rpx;font-size:25rpx;}
+.product-con .playWay{background-color:#fff;padding:0 30rpx;margin-top:20rpx;font-size:28rpx;color:#282828;}
+.product-con .playWay .title{height:86rpx;border-bottom:1rpx solid #eee;}
+.product-con .playWay .title .iconfont{margin-left:13rpx;font-size:28rpx;color:#717171;}
+.product-con .playWay .way{min-height:110rpx;font-size:26rpx;color:#282828;}
+.product-con .playWay .way .iconfont{color:#cdcdcd;font-size:40rpx;margin:0 35rpx;}
+.product-con .playWay .way .item .num{font-size:35rpx;vertical-align:3rpx;margin-right:6rpx;}
+.product-con .playWay .way .item .tip{font-size:22rpx;color:#a5a5a5;margin-top:7rpx;}
+.product-con .footer{position:fixed;bottom:0;width:100%;height:100rpx;background-color:#fff;font-size:18rpx;color:#666;z-index:99;}
+.product-con .footer .customerSer{width:14%;font-size:20rpx;color:#666;}
+.product-con .footer .bnt{width:86%;text-align:center;line-height:100rpx;height:100%;color:#fff;font-size:30rpx;}
+@import "/wxParse/wxParse.wxss";

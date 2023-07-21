@@ -1,0 +1,917 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 62.5%;
+	font-family: '微软雅黑';
+}
+
+/* @font-face {
+    font-family: 'YanShi';
+    src: url(../font/YanShiYouRanXiaoKai-2.ttf);
+} */
+/* @media screen and (max-width: 992px) {
+    .all{
+		margin: 0 auto;
+        width: 37.5rem;
+        height: 66.7rem;
+    }
+} */
+.all {
+	
+	
+	width: 37.5rem;
+	height: 100vh;
+	overflow: auto;
+	position: relative;
+	background: url(../images/background.png) no-repeat;
+	background-size: cover;
+	/* background-position: center; */
+	padding-top: 0.8rem;
+}
+
+/* 头部 */
+.head {
+	width: 95%;
+	height: 6.3rem;
+	margin: 0 auto;
+	background: url(../images/head_portrait.png) no-repeat;
+	background-size: 70% 100%;
+	display: flex;
+}
+
+.head_left {
+	width: 18%;
+	height: 100%;
+
+}
+
+.head_left .img {
+	width: 75%;
+	height: 76%;
+	margin: 11% 18%;
+	border-radius: 50%;
+
+}
+
+.head_left .img>img {
+	width: 100%;
+	height: 100%;
+}
+
+.head_rignt {
+	width: 52%;
+	height: 100%;
+
+	line-height: 6.3rem;
+}
+
+.head_rignt span:first-child {
+	margin-left: 0.5rem;
+	font-weight: bold;
+	font-size: 1.4rem;
+}
+
+.head_rignt span:last-child {
+	color: gray;
+	margin-left: 0.2rem;
+}
+
+/* 类别 */
+.category {
+	width: 100%;
+	height: 25rem;
+	padding: 2%;
+
+	display: flex;
+	justify-content: space-between;
+}
+
+.category .cg_lt {
+	width: 14%;
+	height: 100%;
+
+}
+
+.category .cg_lt div {
+	width: 100%;
+	height: 5.5rem;
+	margin-top: 2rem;
+}
+
+.category .cg_lt div>img {
+	width: 100%;
+	height: 100%;
+}
+
+.category .cg_md {
+	width: 72%;
+	height: 100%;
+
+
+}
+
+.category .cg_md div {
+
+	margin-top: 50%;
+	width: 100%;
+	height: 3.5rem;
+	background: url(../images/tips.png) no-repeat;
+	background-size: 100% 100%;
+
+	line-height: 2.6rem;
+	text-align: center;
+}
+
+.category .cg_md .tips {
+	color: #03b182;
+}
+
+.category .cg_md .empty {
+	display: none;
+}
+
+.category #planting {
+	display: none;
+	margin-top: 50%;
+	width: 100%;
+	height: 3.5rem;
+	background: url(../images/mature.png) no-repeat;
+	background-size: 100% 100%;
+	line-height: 2.6rem;
+	text-align: center;
+
+}
+
+/* .tips:hover {
+    -webkit-animation-name: shake-horizontal;
+    -ms-animation-name: shake-horizontal;
+    animation-name: shake-horizontal;
+    -webkit-animation-duration: 100ms;
+    -ms-animation-duration: 100ms;
+    animation-duration: 100ms;
+    -webkit-animation-iteration-count: infinite;
+    -ms-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+    -ms-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+    -webkit-animation-delay: 0s;
+    -ms-animation-delay: 0s;
+    animation-delay: 0s;
+    -webkit-animation-play-state: running;
+    -ms-animation-play-state: running;
+    animation-play-state: running
+} */
+.category .cg_md #planting {
+	color: #03b182;
+}
+
+.category .cg_md div>img {
+	width: 100%;
+	height: 100%;
+}
+
+.category .cg_rt {
+	width: 14%;
+	height: 100%;
+
+}
+
+
+.category .cg_rt div {
+	width: 100%;
+	height: 5.5rem;
+	margin-top: 2rem;
+}
+
+.category .cg_rt div>img {
+	width: 100%;
+	height: 100%;
+}
+
+/* 树 */
+.tree {
+	margin-top: -2%;
+	width: 100%;
+	height: 33rem;
+	padding: 2%;
+	padding-top: 0;
+
+	display: flex;
+}
+
+.tree .ce_left {
+	width: 15%;
+	height: 100%;
+
+	position: relative;
+}
+
+.tree .ce_left .collardrop {
+	position: absolute;
+	width: 100%;
+	height: 6.5rem;
+	bottom: 0;
+}
+
+.ce_left .collardrop img {
+	width: 100%;
+	height: 100%;
+}
+
+.tree .ce_middle {
+	width: 70%;
+	height: 100%;
+
+	position: relative;
+}
+
+.Daily_drops {
+	position: absolute;
+	bottom: 30rem;
+
+	left: 18rem;
+	z-index: 100;
+	width: 2.1rem;
+	opacity: 0;
+	height: 3.6rem;
+
+}
+
+.Daily_drops>img {
+	width: 100%;
+	height: 100%;
+}
+
+.mrsd {
+	animation: first 1s linear;
+}
+
+@keyframes first {
+	0% {
+		opacity: 1;
+		left: 18rem;
+	}
+
+	100% {
+		opacity: 1;
+		bottom: 8rem;
+		left: 30rem;
+	}
+}
+
+/* 果实 */
+.fruit {
+	position: absolute;
+	left: 16rem;
+	bottom: 13rem;
+	width: 4rem;
+	height: 4rem;
+
+	z-index: 150;
+
+	opacity: 0;
+}
+
+.fruit>img {
+	height: 100%;
+	width: 100%;
+}
+
+.guoshi {
+	animation: guoshi 0.8s linear;
+}
+
+@keyframes guoshi {
+	0% {
+		opacity: 1;
+		left: 16rem;
+		bottom: 13rem;
+	}
+
+	100% {
+		opacity: 1;
+		bottom: 44rem;
+		left: 2rem;
+	}
+}
+
+.tree .ce_middle .daily {
+	position: absolute;
+	top: 3%;
+	width: 60%;
+	height: 3.5rem;
+
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 5;
+}
+
+.tree .ce_middle .daily img {
+	width: 100%;
+	height: 100%;
+}
+
+.tree .ce_middle .seed {
+	position: absolute;
+	top: 0.7rem;
+	width: 80%;
+	height: 70%;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 2;
+}
+
+.tree .ce_middle #saplingImg {
+	position: absolute;
+	top: 7.9rem;
+	width: 41%;
+	height: 44%;
+	left: 45%;
+	transform: translateX(-50%);
+	z-index: 2;
+}
+
+#seedImg {
+	top: 19rem;
+	width: 23%;
+	height: 8%;
+	left: 45%;
+	transform: translateX(-50%);
+	z-index: 2;
+}
+
+.tree .ce_middle .seed img {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+}
+
+.tree .ce_middle .pit {
+	position: absolute;
+	bottom: 9rem;
+	left: 1rem;
+	width: 90%;
+	height: 4rem;
+}
+
+.tree .ce_middle .pit img {
+	height: 100%;
+	width: 100%;
+}
+
+.tree .ce_middle .progress_bar {
+	width: 60%;
+	height: 1.5rem;
+	position: absolute;
+	bottom: 7.5rem;
+	z-index: 0;
+	left: 18%;
+
+	/* transform: translateX(-50%); */
+}
+
+.tree .ce_middle .progress_bar img {
+	width: 100%;
+	height: 100%;
+
+}
+
+.tree .ce_middle .progress_bar2 {
+	left: 18%;
+	width: 60%;
+	height: 1.5rem;
+	position: absolute;
+	bottom: 7.5rem;
+	z-index: 5;
+	overflow-y: hidden;
+	border-radius: 2rem;
+}
+
+.tree .ce_middle .progress_bar2 img {
+	width: 100%;
+	height: 100%;
+	/* margin-left: -100%; */
+}
+
+.tree .ce_middle .need {
+	width: 100%;
+	position: absolute;
+	bottom: 5.5rem;
+	text-align: center;
+	color: #13a400;
+
+}
+
+.tree .ce_rignt {
+	position: relative;
+	width: 15%;
+	height: 100%;
+
+}
+
+.tree .ce_rignt .share {
+
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	height: 6.5rem;
+
+
+}
+
+.tree .ce_rignt .share img {
+	width: 100%;
+	height: 100%;
+}
+
+.tree .ce_rignt .kettle {
+	position: absolute;
+	bottom: 0;
+	left: -7%;
+	width: 115%;
+	height: 7.5rem;
+
+}
+
+.tree .ce_rignt .kettle img {
+	width: 100%;
+	height: 100%;
+}
+
+/* .tree .ce_rignt #lottie1{
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 7rem;
+	
+}
+.tree .ce_rignt #lottie1 img {
+	 width: 100%;
+	height: 100%;
+}*/
+.tree .ce_rignt .quantity {
+	position: absolute;
+	bottom: 0.5%;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.cancel {
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	display: none;
+	z-index: 9;
+	background: #000000;
+	opacity: 0.6;
+	/* background: #FF0000; */
+}
+
+/* 商店 */
+
+.store_content {
+	position: absolute;
+	top: 10%;
+	width: 80%;
+	height: 50rem;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 100;
+
+}
+
+.store_content .seed_store {
+	margin: 0 auto;
+	width: 100%;
+	height: 7rem;
+	display: flex;
+}
+
+.store_content .seed_store .seed_store_l {
+	margin-left: 20%;
+	width: 60%;
+	height: 100%;
+
+}
+
+.store_content .seed_store .seed_store_r {
+	margin-top: 8%;
+	margin-left: 5%;
+	width: 5%;
+	height: 25%;
+}
+
+.store_content .seed_store img {
+	width: 100%;
+	height: 100%;
+}
+
+.store_content .type {
+	margin-top: -7%;
+	padding: 7% 3%;
+	width: 100%;
+	height: 41rem;
+	background: url(../images/kuang.png) no-repeat;
+	background-size: 100% 100%;
+	overflow-y: auto;
+}
+
+.store_content .type::-webkit-scrollbar {
+	display: none;
+}
+
+.type_content {
+
+	width: 80%;
+	height: 100%;
+	margin: 0 auto;
+	overflow-y: auto;
+}
+
+.type_content::-webkit-scrollbar {
+	display: none;
+}
+
+#shangdian {
+	display: none;
+}
+
+.type_seed {
+	margin-top: 2%;
+	width: 100%;
+	background: url(../images/xiaokuang.png);
+	background-size: 100% 100%;
+	height: 7rem;
+	display: flex;
+	position: relative;
+}
+
+.type_seed .sd_img {
+	width: 30%;
+	height: 100%;
+	padding: 6%;
+}
+
+.type_seed .sd_img>img {
+	width: 100%;
+	height: 100%;
+}
+
+.type_seed .sd_cd {
+	padding-top: 3%;
+	width: 70%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.type_seed .sd_cd p {
+	font-size: 1.2rem;
+	transform: scale(0.9);
+	margin-left: -5%;
+}
+
+.type_seed .sd_cd .integral {
+	margin-top: 4%;
+}
+
+.type_seed .Plant_button {
+	background: #03B182;
+	position: absolute;
+	right: 4%;
+	bottom: 14%;
+	width: 23%;
+	height: 2.2rem;
+	border-radius: 1.8rem;
+	display: flex;
+}
+
+.type_seed .Plant_button .plant {
+	padding-left: 15%;
+	padding-top: 6%;
+	padding-bottom: 6%;
+	width: 40%;
+	height: 100%;
+}
+
+.type_seed .Plant_button .plant img {
+	width: 100%;
+	height: 100%;
+}
+
+.type_seed .Plant_button .zx p {
+	margin-top: 13%;
+	color: #FFF;
+	font-size: 1.2rem;
+	transform: scale(0.8);
+}
+
+/* 仓库 */
+#cangku {
+	display: none;
+}
+
+#cangku .type_seed .Plant_button {
+	background: red;
+}
+
+#cangku .Plant_button .zx p {
+	margin-top: 10%;
+	transform: scale(0.9);
+}
+
+/* 记录 */
+#jilu {
+	display: none;
+	position: absolute;
+	top: 15%
+}
+
+#jilu .type {
+	height: 30rem;
+}
+
+#jilu .type .see {
+	padding-top: 1rem;
+	text-align: center;
+	color: black;
+	height: 4rem;
+
+}
+
+#jilu .type .see a {
+	color: black;
+	text-decoration: none;
+	border-bottom: 0.1rem solid black;
+	padding-bottom: 0.1rem;
+}
+
+#jilu .type .cgrecord {
+	width: 100%;
+	height: 21rem;
+	overflow-y: auto;
+}
+
+#jilu .type .cgrecord::-webkit-scrollbar {
+	display: none;
+}
+
+#jilu .type .watering_record {
+	width: 100%;
+	height: 4rem;
+	background: url(../images/bjrecord.png);
+	background-size: 100% 100%;
+	margin-top: 0.1rem;
+	line-height: 4rem;
+	padding-left: 0.8rem;
+	padding-right: 0.8rem;
+	font-size: 1.2rem;
+}
+
+#jilu .type .watering_record .xhsd {
+	margin: 0 0.6rem;
+}
+
+#jilu .type .watering_record .numerical {
+	color: #03B182;
+}
+
+/* 种下提示框 */
+#zhongxia_tips {
+	display: none;
+}
+
+#zhongxia_tips .Popup p {
+	margin-top: 2rem;
+}
+
+/* 出售提示框 */
+.Sale_tips {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 110;
+	background-color: rgba(0, 0, 0, 0.4);
+
+}
+
+#chushou_tips {
+	display: none;
+}
+
+.Sale_tips .Popup {
+	margin-top: 22rem;
+	margin-left: 8rem;
+	width: 57%;
+	height: 13rem;
+	padding-top: 0.5rem;
+	background: url(../images/tishikuang.png);
+	background-size: 100% 100%;
+}
+
+.Sale_tips .Popup>p {
+	margin-top: 1rem;
+	text-align: center;
+	font-size: 1.4rem;
+	font-weight: bold;
+}
+
+.Sale_tips .Popup .number {
+	display: inline-block;
+	/* margin: 1rem auto 0; */
+	/* margin-left: 5rem; */
+	text-align: center;
+	width: 100%;
+	height: 4rem;
+	margin-top: 0.5rem;
+	line-height: 4rem;
+}
+
+.Sale_tips .Popup .rdc {
+	width: 1.2rem;
+	padding-bottom: 0.4rem;
+
+}
+
+.Sale_tips .Popup .sl {
+	width: 5.5rem;
+	height: 2.5rem;
+	margin-left: 1rem;
+	margin-right: 1rem;
+	border: 0.05rem solid red;
+	border-radius: 0.5rem;
+	text-align: center;
+}
+
+.Sale_tips .Popup .ps {
+	width: 1.2rem;
+}
+
+.Sale_tips .Popup .choice {
+	display: flex;
+	width: 100%;
+	height: 2.6rem;
+	margin-top: 1.5rem;
+	color: #FFFFFF;
+}
+
+.Sale_tips .Popup .choice_l {
+	width: 35%;
+	height: 100%;
+	margin-left: 12%;
+
+	background: url(../images/cancel.png);
+	background-size: 100% 100%;
+	text-align: center;
+	line-height: 2.6rem;
+}
+
+.Sale_tips .Popup .choice_r {
+	width: 35%;
+	height: 100%;
+	margin-left: 6.5%;
+
+	background: url(../images/determine.png);
+	background-size: 100% 100%;
+	text-align: center;
+	line-height: 2.6rem;
+}
+
+/* .Sale_tips .Popup .choice_l{
+	width: 40%;
+	height: ;
+} */
+/* 已采摘蔬果 */
+#jilu #Picked {
+	display: none;
+}
+
+#jilu #Picked .title {
+	display: flex;
+	padding-left: 0.8rem;
+	padding-right: 0.8rem;
+}
+
+#jilu #Picked .title>div {
+	width: 50%;
+	text-align: center;
+}
+
+#jilu #Picked .watering_record {
+	width: 100%;
+	display: flex;
+
+}
+
+#jilu #Picked .watering_record>div {
+	width: 50%;
+	text-align: center;
+}
+
+#jilu #Picked .see a {
+	border: none;
+}
+
+#jilu #Picked .cgrecord {
+	height: 20rem;
+}
+
+/* 规则 */
+#guize {
+	display: none;
+	position: absolute;
+	top: 15%
+}
+
+#guize .type {
+	height: 30rem;
+}
+
+#guize .type .type_content {
+	line-height: 2rem;
+	font-size: 1.4rem;
+	font-weight: bold;
+}
+
+#guize .type .bt {
+	margin-top: 1.5rem;
+}
+
+#lottie1 {
+	width: 44rem;
+	height: 15rem;
+	display: none;
+}
+
+/* 手 */
+#lottie2 {
+	display: none;
+	position: absolute;
+	top: 23rem;
+	width: 37rem;
+	height: 10rem;
+}
+
+.shuidi {
+	position: absolute;
+	bottom: 5rem;
+	/* 	transform: all 2s; */
+	left: 2.3rem;
+	z-index: 100;
+	width: 2.1rem;
+	opacity: 0;
+	height: 3.6rem;
+}
+
+.shuidi img {
+	width: 100%;
+	height: 100%;
+}
+
+.sjk2 {
+	animation: myfirst 1s linear;
+}
+
+@keyframes myfirst {
+	0% {
+		opacity: 1;
+		left: 2rem;
+	}
+
+	100% {
+		opacity: 1;
+		left: 30rem;
+	}
+}
+
+/* progress {
+  border: none;
+  width: 30rem;
+  height: 1rem;
+  background: red; 
+  border-radius: 0.5rem;
+}
+progress {
+  color: red;
+   border-radius: 0.5rem;
+} */
+/* progress::-webkit-progress-value {
+  background: lightblue;
+}
+progress::-moz-progress-bar {
+  background: lightcolor;
+}
+progress::-webkit-progress-value {
+  background: red;
+}
+progress::-webkit-progress-bar {
+  background: blue;
+} */

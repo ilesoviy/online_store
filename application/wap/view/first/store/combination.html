@@ -1,0 +1,238 @@
+{extend name="public/container"}
+{block name="title"}{:L(" 拼團活動","Group activities")}{/block}
+{extend name="public/container"}
+{block name="content"}
+<div class="buyspell-list product-sort " id="product-list">
+    <div class="search-wrapper flex" style=" padding: 0.12rem 0.2rem; width: 100%;">
+        <span   @click="window.location.href='/wap/index/index'"  style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+            <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 20px;">
+        </span>
+        
+        <p style="flex: 1; text-align: center;line-height: 20px;"  >{:L(" 拼團活動","Group activities")}</p>
+       <!-- <form style="flex: 1;" action="" method="post" @submit.prevent="search">
+            <input style="border-radius: 20px;"  type="text" placeholder="商品搜索: 请输入商品关键词" ref='search'>
+        </form> -->
+    </div>
+    <div class="price-select flex">
+        <div class="item" @click='order("default")' :class='{on:where.on=="default"}'>{:L(" 默認","Default")}</div>
+        <div class="item"
+             @click='order("price")'
+             :class='{"selected-up":where.on=="price" && where.price==1,"selected-down":where.on=="price" && where.price==2,"on":where.on=="price"}'
+        >{:L(" 價格","Price")}<i class="icon"></i></div>
+        <div class="item"
+             @click='order("sales")'
+             :class='{"selected-up":where.on=="sales" && where.sales==1,"selected-down":where.on=="sales" && where.sales==2,"on":where.on=="sales"}'
+        >{:L(" 銷量","Sales")}<i class="icon"></i></div>
+        <div class="item" @click='order("people")' :class="{on:where.on=='people'}">{:L(" 人氣","Popularity")}</div>
+    </div>
+    <div class="bslist-box" v-cloak="">
+        <div class="bs-item flex" v-for='item in list.data'>
+            <div class="picture">
+                <img :src="item.image" :alt="item.title">
+            </div>
+            <div class="bs-item-info flex" style="position: relative;">
+             <!--   <div class="info-title">{{item.title}}</div> -->
+                 <div class="info-title" style="width: 100%;">{:L(" 樸西冬季棉絨保暖拖鞋","Puxi winter velvet warm slippers")}</div>
+                 <p
+                     style="height: 4px; background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%); border-radius: 4px; margin-top: 5px;">
+                 </p>
+                <!-- <div class="count-wrapper">
+                    <span class="price">￥{{item.price}}</span>
+                    <span class="old-price">￥{{item.product_price}}</span>
+                    <span class="count">已拼{{item.sales}}单</span>
+                </div> -->
+                <div class="count-wrapper">
+                    <p class="count" style="float: inherit;color: #E1000F; font-size: 14px;">{:L(" 已有","Already")} {{item.sales}} {:L(" 人參團","Ginseng Group")}</p>
+                    <p class="price" style="margin: 10px 0;">{:L(" 拼團價格","Group price")}<span
+                            style="font-size: 22px; margin: 0 5px;">${{item.price}}</span></p>
+                    <p class="old-price" style="color: #ccc;">{:L(" 單買價格","Single purchase price")} ${{item.product_price}}</p>
+                        
+                </div>
+                <span
+                    style="position: absolute; right: -1%; bottom: -7px; padding: 5px 20px; border-radius: 24px; background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%); color: #fff;"
+                    @click="window.location.href='/wap/store/detail/id/'+item.id">
+                    <!--  "'/wap/store/detail/id/'+item.id" -->
+                    {:L(" 去拼單","Go to order")}
+                </span>
+               <!-- <a class="people-num" :href="'combination_detail/id/'+item.id">
+                    <span class="numbers">{{item.people}}人团</span>
+                    <span class="peo-txt">去开团</span>
+                    <i class="index-icon people-icon"></i>
+                </a> -->
+            </div>
+        </div>
+       
+        <p class="loading-line" v-show="load == false && list.loading==true"><i></i>{:L(" 正在加載中","Loading")}<i></i></p>
+        <p class="loading-line" v-show='load == true' @click="getList"><i></i>{:L(" 點擊加載","Click to load")}<i></i></p>
+        <p class="loading-line" v-show='load == false && list.loadEnd==true'><i></i>{:L(" 沒有更多了","No more")}<i></i></p>
+    </div>
+     {include file="public/store_menu"}
+
+</div>
+
+<script type="text/javascript">
+    var product_list =<?php echo json_encode($list);?>;
+    requirejs(['vue', 'store', 'helper'], function (Vue, storeApi, $h) {
+        new Vue({
+            el: "#product-list",
+            data: {
+                load: true,
+                list: {
+                    loading: false,
+                    loadEnd: false,
+                    data: product_list
+                },
+                where: {
+                    page: 1,
+                    search: '',
+                    people: 0,
+                    sales: 0,
+                    price: 0,
+                    default: 0,
+                    on: 'default',
+                    key: false
+                },
+                keyorder: ''
+            },
+            methods: {
+                search: function (e) {
+                    e.preventDefault();
+                    this.list.loadEnd = false;
+                    var search = this.$refs.search.value;
+                    if (this.$refs.search.value == '') {
+                        this.order('default');
+                        return;
+                    } else if (this.$refs.search.value == this.keyorder) {
+                        this.list.loadEnd = true;
+                        return;
+                    } else {
+                        this.keyorder = search;
+                    }
+                    if (search != '') {
+                        this.where.search = search;
+                    }
+                    this.where.on = 'search';
+                    this.where.sales = 0;
+                    this.where.price = 0;
+                    this.where.page = 0;
+                    this.where.default = 0;
+                    this.where.people = 0;
+                    this.where.key = true;
+                    this.getList();
+                },
+                order: function (info) {
+                    this.list.loadEnd = false;
+                    if (info == 'people') {
+                        if (this.where.people == 1) {
+                            if (this.list.data.length < 4) {
+                                this.list.loadEnd = true;
+                            }
+                            return;
+                        }
+                        this.where.on = info;
+                        this.where.page = 0;
+                        if (this.where.people == 0) {
+                            this.where.people = 1;
+                        } else {
+                            this.where.people = 0;
+                        }
+
+                        this.where.sales = 0;
+                        this.where.price = 0;
+                        this.where.default = 0;
+                    } else if (info == 'sales') {
+                        this.where.on = info;
+                        this.where.page = 0;
+                        if (this.where.sales == 0 || this.where.sales == 2) {
+                            this.where.sales = 1;
+                        } else {
+                            this.where.sales = 2;
+                        }
+
+                        this.where.people = 0;
+                        this.where.price = 0;
+                        this.where.default = 0;
+                    } else if (info == 'price') {
+                        this.where.on = info;
+                        this.where.page = 0;
+                        if (this.where.price == 0 || this.where.price == 2) {
+                            this.where.price = 1;
+                        } else {
+                            this.where.price = 2;
+                        }
+
+                        this.where.people = 0;
+                        this.where.sales = 0;
+                        this.where.default = 0;
+                    } else if (info == 'default') {
+                        if (this.where.default == 1) {
+                            if (this.list.data.length < 4) {
+                                this.list.loadEnd = true;
+                            }
+                            return false;
+                        }
+                        this.$refs.search.value = '';
+                        this.where.search = '';
+                        this.keyorder = '';
+                        this.where.on = info;
+                        this.where.page = 0;
+                        this.where.default = 1;
+                        this.where.search = '';
+                        this.where.people = 0;
+                        this.where.sales = 0;
+                    }
+
+                    this.where.key = true;
+                    this.getList();
+                },
+                getList: function () {
+                    var this_ = this;
+                    this_.list.loading = true;
+                    this_.load = false;
+                    storeApi.basePost('{:url(\'wap/store/get_list\')}',
+                        {
+                            'where': this_.where
+                        },
+                        function (msg) {
+                            this_.list.loading = false;
+                            var _length = msg.data.data.list.length;
+                            if (_length == 0) {
+                                if (this_.keyorder != '' && this_.where.key == true) {
+                                    this_.list.data = [];
+                                } else {
+                                    this_.list.loadEnd = true;
+                                }
+                            } else {
+                                if (this_.where.key == true && this_.where.on != '' && this_.where.page == 0) {
+                                    this_.list.data = msg.data.data.list;
+                                } else {
+                                    for (var i = 0; i < _length; i++) {
+                                        this_.list.data.push(msg.data.data.list[i]);
+                                    }
+                                }
+                                this_.load = true;
+                            }
+                            if (_length < 4) {
+                                this_.load = false;
+                                this_.list.loadEnd = true;
+                            }
+                            this_.where.page = msg.data.data.page;
+                        },
+                        function (error) {
+                            this_.list.loading = false;
+                            $h.pushMsg('{:L(" 网络异常!","network anomaly!")}');
+                        });
+                }
+            },
+            mounted: function () {
+                if (this.list.data.length < 4) {
+                    this.load = false;
+                    this.list.loadEnd = true;
+                }
+            }
+        })
+    })
+    // console.log($("#back"));
+   
+</script>
+{/block}

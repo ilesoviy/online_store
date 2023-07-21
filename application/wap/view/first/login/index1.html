@@ -1,0 +1,27 @@
+{extend name="public/container"}
+{block name="head_top"}
+{block name="title"}立即登陆{/block}
+{block name="content"}
+<style type="text/css">
+	.authenticate {margin-top: 1rem;margin-bottom: 120px;}
+	.authenticate .title{margin-bottom: .3rem;}
+	.authenticate .title span{ display: block; }
+	.authenticate .title #logo{width: 80px; margin: 0 auto;}
+	.authenticate .title #logo img{width: 100%;}
+	.authenticate .title #bt{text-align: center; margin: 0 auto; width: 90%;height: 36px; line-height: 36px;font-size: 20px;}
+</style>
+<div class="hz">
+<div class="authenticate">
+    <section>
+    	<div class="title"><span id="logo"><img src="{$logo}"></span><span id="bt">欢迎登陆</span></div>
+        <form action="{:Url('check')}" method="post">
+            <div class="user-infos"><input type="text" required name="account" placeholder="请输入登录账号"/></div>
+            <div class="user-infos"><input type="password" required name="pwd" placeholder="请输入登录密码"/></div>
+            <input type="hidden" name="ref" value="{$ref}" />
+            <div class="publish-btn"><button type="submit">立即登陆</button></div>
+            <div class="register"><a href="{:Url('register')}">暂无账号，点击立即注册</a></div>
+        </form>
+    </section>
+</div>
+</div>
+{/block}

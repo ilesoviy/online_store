@@ -1,0 +1,148 @@
+{extend name="public/container"}
+{block name="title"}領取優惠劵{/block}
+{block name="content"}
+<style type="text/css">
+    .discount-list .list-box li .price p a {
+        width: 1.5rem;
+    }
+</style>
+<div class="discount-list" >
+    <div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                    <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                        <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                    </span>
+                    <p style="text-align: center;width: 100%;line-height: 0.4rem;">
+                          {:L(" 優惠券","Coupon")}
+                    </p>
+                    <script type="text/javascript">
+                        document.getElementById("qqq").addEventListener("click", function() {
+                            window.history.back(-1);
+                        })
+                    </script>
+            </div>
+            <div style="height: 40px;">
+                
+            </div>
+    <section>
+        <header class="flex coupon-menu" style="z-index: 999;top: 40px;">
+            <a class="item on" data-type="" href="javascript:void(0);"> {:L(" 全部","All")}</a>
+            <a class="item" data-type="new" href="javascript:void(0);"> {:L(" 未領取","Unaccalimed")}</a>
+            <a class="item" data-type="overdug" href="javascript:void(0);"> {:L(" 已領取","Received")}</a>
+        </header>
+        <div class="list-box" style="margin-bottom: .3rem;">
+           {empty name="lists"}
+            <div class="empty">
+                <img src="{__WAP_PATH}crmeb/images/empty_coupon.png">
+                <p>{:L("暫無有效優惠券","No valid coupon")}</p>
+            </div>
+            {else/}
+            <ul>
+                {volist name="lists" id="vo"}
+                {eq name="vo.is_get" value="1"}
+                <li class="coupon-item overdug">
+                    <div class="txt-info">
+                        <div class="con-cell">
+                            <p>{:L("满","Available over")}${$vo.use_min_price|floatval}{:L("可用","")}</p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <span>$</span>{$vo.coupon_price|floatval}
+                        <p><a href="javascript:void(0);">{:L(" 已領取","Unaccalimed")}</a></p>
+                    </div>
+                </li>
+                {else/}
+                <li class="coupon-item new">
+                    <div class="txt-info">
+                        <div class="con-cell">
+                            <p>{:L("满","Available over")}${$vo.use_min_price|floatval}{:L("可用","")}</p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <span>$</span>{$vo.coupon_price|floatval}
+                        <p><a class="j-issue-coupon" data-id="{$vo.id}" href="javascript:void(0);">{:L("领取","Received")}</a></p>
+                    </div>
+                </li>
+                {/eq}
+                {/volist}
+            </ul>
+            {/empty}
+            <!-- <ul>
+              
+                <li class="coupon-item overdug">
+                    <div class="txt-info" style="top: 0.35rem;">
+                        <div class="con-cell">
+                              <h1>{:L(" 滿減優惠","Full discount")}</h1>
+                            <p>{:L(" 滿499元可用","Available over 499 yuan")}</p>
+                             <p>{:L(" 生效日期：2021-6-17至2021-6-27","Effective date: 2021-6-17 to 2021-6-27")}</p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <span >
+                           $300
+                       </span>
+                        <p><a href="javascript:void(0);">{:L(" 已領取","Unaccalimed")}</a></p>
+                        <p >
+                             {:L(" 已領","Received")}25%
+                        </p>
+                    </div>
+                </li>
+ 
+                <li class="coupon-item new">
+                    <div class="txt-info" style="top: 0.35rem;">
+                        <div class="con-cell">
+                          <h1>{:L(" 滿減優惠","Full discount")}</h1>
+                          <p>{:L(" 滿499元可用","Available over 499 yuan")}</p>
+                           <p>{:L(" 生效日期：2021-6-17至2021-6-27","Effective date: 2021-6-17 to 2021-6-27")}</p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <span >
+                           $30
+                       </span>
+                        <p><a class="j-issue-coupon"  href="javascript:void(0);"> {:L("立即領取","Get it right now")}</a></p>
+                        <p >
+                              {:L(" 已領","Received")}25%
+                        </p>
+                    </div>
+                </li>
+            </ul> -->
+        </div>
+    </section>
+</div>
+<script>
+    (function(){
+     
+        $('.coupon-menu .item').on('click',function(){
+            var that = $(this),type = that.data('type');
+            $('.list-box .coupon-item').hide();
+            type != '' ? $('.list-box .coupon-item.'+type).show() : $('.list-box .coupon-item').show();
+            that.addClass('on').siblings().removeClass('on');
+        });
+        requirejs(['store','helper'],function(storeApi,$h){
+            var gettingCoupon = false;
+            $('.j-issue-coupon').on('click',function(){
+                
+                
+                if(gettingCoupon) return ;
+                gettingCoupon = true;
+                var that = $(this),id = that.data('id');
+                storeApi.goLogin() && storeApi.userGetCoupon(id,function(){
+                    $h.pushMsgOnce('领取成功!');
+                    that.text('已领取');
+                    that.parents('li').removeClass('new').addClass('overdug');
+                    setTimeout(function(){
+                        gettingCoupon = false;
+                    },300);
+                },function(){
+                    setTimeout(function(){
+                        gettingCoupon = false;
+                    },300);
+                    return true;
+                });
+                // $h.pushMsgOnce(' {:L(" 领取成功! ","Received successfully!")}');
+            });
+        });
+
+    })();
+</script>
+{/block}

@@ -1,0 +1,544 @@
+{extend name="public/container"}
+{block name="title"}{:L(" 訂單信息","Order information")}{/block}
+{block name="content"}
+
+
+
+<style type="text/css">
+    .group {
+            background-color: #fff;
+            margin-bottom: 5px ;
+            display: flex;
+            justify-content: space-around;
+        }
+        .group .group_item {
+            position: relative;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .group .group_item .img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px dashed #ccc;
+        }
+         .group .group_item img {
+            width: 100%;
+              border-radius: 50%;
+         }
+         .group .group_item:first-child .img {
+                border: 1px dashed #FA6D0E;
+               
+         }
+         .group .group_item .identity {
+             position: absolute;
+           
+             top: 54%;
+             left: 29.5%;
+             padding: 5px 10px;
+             border-radius: 24px;
+             color: #fff;
+               font-size: 12px;
+             background: linear-gradient(90deg, #CC7A7A 0%, #FE5900 0%, #E1000F 100%);
+             
+         }
+          .group .group_item p {
+              margin-top: 15px;
+              text-align: center;
+               width: 110px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+              
+          }
+          .group .group_item:first-child p {
+                 margin-top: 20px;
+                
+          }
+          #qqoredr li {
+              display: flex;
+              justify-content: space-between;
+          }
+           .mask {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 199;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.4);
+    }
+     .mask .whats {
+        position: relative;
+        background-color: #fff;
+        padding: 15px 10px;
+        border-radius: 10px;
+        margin: 80% 10px;
+    }
+     .mask .whats .down {
+        position: absolute;
+        top: 3%;
+        right: 3%;
+        width: 25px;
+        height: 25px;
+        border: 1px solid #999;
+        border-radius: 50%;
+        color: #999;
+        line-height: 25px;
+        text-align: center;
+    }
+     .mask .whats .whats_title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+     .mask .whats .whats_content {
+        display: flex;
+        flex-wrap: wrap;
+        
+    }
+     .mask .whats .whats_content .whats_item {
+        display: flex;
+        width: 32%;
+        margin-right: 2%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+     .mask .whats .whats_content .whats_item:nth-child( 3n ) {
+        margin-right:0;
+     }
+    .mask .whats .whats_content .whats_item img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+     .mask .whats .whats_content .whats_item span {
+        font-weight: 700;
+    }
+</style>
+<div id="user-order" class="user-order-con">
+     <div class=" flex" style=" padding: 0.12rem 0.1rem; z-index: 999; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+               <span  id="qback" style="display: flex; width: 8%; align-items: center; margin-right: 2%; z-index: 3;">
+                    <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                </span>
+                <p id="qtitle" style="text-align: center;width: 100%;line-height: 0.4rem; margin-left: -10%;">{:L(" 訂單信息","Order information")}</p>
+        </div>
+        <div style="height: 40px;">
+            
+        </div>
+    <section>
+
+
+        <!-- 客服选择弹窗 -->
+    <div class="mask">
+        <div class="whats">
+            <!-- <div class="whats_title">
+                Whats:
+            </div> -->
+            <div class="down">
+                X
+            </div>
+            <p style="margin-bottom:15px;font-weight:700;">
+                {:L(" 請選擇客服","Please select  customer service")}:
+            </p>
+            <div class="whats_content">
+                 {volist name="appservice" id="vo"}
+                <a href="{$vo.url}" class="whats_item">
+                    <img src="{$vo.image}" alt="">
+                    <span>{$vo.name}</span>   
+                </a>
+              {/volist}
+            </div>
+
+        </div>
+        
+    </div>
+        
+
+
+
+
+
+
+        <div class="coc-header send clearfix">
+            <div class="logistics-state {$order._status._class} fl"></div>
+            <div class="logistics-info fr">
+                <div class="logistics-info-txt">
+                    <p v-if="flag">{$order._status._title}</p>
+                     <p v-if="!flag">Unpaid</p>
+                    {if condition="$order['pink_id']"}
+                        {if condition="isPinkStatus($order['pink_id'])"}
+                       <!-- <span>{$order._status._msg}</span> -->
+                        
+                        {else/}
+                     <!--   <span>{:L(" 拼團活動已經結束","The group activity has ended")}</span> -->
+                        {/if}
+                    {else/}
+                    <span  v-if="flag">{$order._status._msg}</span>
+                    <span v-if="!flag">pay immediately</span>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        <div class="adderss-info">
+            <i class="iconfont icon-dizhi1"></i>
+            <div class="content">
+                <p>{$order.real_name} {$order.user_phone}</p>
+                <p class="address-content">{$order.user_address}</p>
+            </div>
+        </div>
+       <!-- {egt name="order._status._type" value="2"}
+        <div class="item-block delivery-infos">
+            <div class="con-tit">配送信息</div>
+            <div class="delivery-con">
+                <ul>
+                    <li>配送方式：{$order._status._deliveryType}</li>
+                    {eq name="order.delivery_type" value="express"}
+                    <li>快遞公司：{$order.delivery_name}</li>
+                    <li>快遞單號：{$order.delivery_id}</li>
+                    {/eq}
+                    {eq name="order.delivery_type" value="send"}
+                    <li>配送人員：{$order.delivery_name}</li>
+                    <li>聯系電話：<a class="tel" href="tel:{$order.delivery_id}">{$order.delivery_id}</a> <i class="icon-tel"></i></li>
+                    {/eq}
+                </ul>
+            </div>
+        </div>
+        {/egt} -->
+      {eq name="order.pin_type" value="1"}
+      {eq name="order.paid" value="1"}
+      <p style="background-color: #fff; padding: 10px 5px; font-weight: 700;line-height: 1.5;">{:L("【未拼成】款項將退還餘額","【Uncomposed】The balance will be refunded")}</p>        
+        <div  class="group" @click="window.location.href='/wap/my/invite/order_id/{$order.order_id}.html'">
+                    <div class="group_item" v-for="(item, index) in listinfo" :key="index">
+                         <div class="img">
+                             <img v-if="item.avatar" :src="item.avatar" >
+                             <span v-else style="color: #ccc; font-size: 24px; font-weight: 700;"> + </span>
+                         </div>
+                         <span class="identity" v-if="item.uid">{:L(" 團長","Head")}</span>
+                         <p>{{item.nickname ? item.nickname : '{:L(" 待邀請","To be invited")}'}}</p>
+                    </div>
+        </div>
+        {/eq}
+        {/eq}
+       <!--  <p style="background-color: #fff; padding: 10px 30px; line-height: 1.5;">{:L(" 請在","Please at")}<span style="color: red; margin: 0 5px;">15{:L(" 分鐘","min")}</span>{:L(" 內支付,否則將取消訂單","pay within, otherwise the order will be cancelled")}</p> -->
+        <div class="item-block product-info">
+            <div class="con-tit">{:L(" 產品信息","Product information")}</div>
+            <div class="delivery-con">
+                <ul>
+                    {volist name="order.cartInfo" id="cart"}
+                    <li>
+                        <a class="flex" href="javascript:void(0);">
+                            <div class="picture"><img @click.stop="toProductUrl('{$cart.productInfo.id}')" src="{$cart.productInfo.image}" /></div>
+                            <div class="info-centent flex">
+                                <p class="name">{:L($cart.productInfo.store_name,$cart.productInfo.en_store_name)}</p>
+                                 <!-- <p class="name"  v-if="!flag">immediately</p> -->
+                                <p class="description"><?=isset($cart['productInfo']['attrInfo']) ? $cart['productInfo']['attrInfo']['suk'] : ''?></p>
+                                <p class="count"><span>￥{$cart.truePrice}</span> X{$cart.cart_num}</p>
+                            </div>
+                        </a>
+                       <!-- {eq name="order._status._type" value="3"}
+                        <?php if(!\app\wap\model\store\StoreProductReply::isReply($cart['unique'],'product')): ?>
+                            <div class="assess status-on">
+                                <a href="javascript:void(0);" @click="goReply('{$cart.unique}')">评价</a>
+                            </div>
+                        <?php endif; ?>
+                        {/eq} -->
+                    </li>
+                    {/volist}
+                </ul>
+            </div>
+            <div class="all-price">
+                <div class="infos">
+                    {gt name="order.total_postage" value="0"}
+                    <p>{:L(" 運費","Freight")} <span class="fr">${$order.total_postage}</span></p>
+                    {/gt}
+                    <p>{:L(" 商品總價","Total price of goods")} <span class="fr">${$order.total_price}</span></p>
+                    {gt name="order.coupon_price" value="0"}
+                    <p class="deb">{:L(" 優惠","Discount")} <span class="fr">-${$order.coupon_price}</span></p>
+                    {/gt}
+                   <!-- {gt name="order.deduction_price" value="0"}
+                    <p class="deb">傭金抵扣{:L(" 搜索發現","search")} <span class="fr">-${$order.deduction_price}</span></p>
+                    {/gt} -->
+                </div>
+                <div class="all-count">{:L(" 實付款","Real payment")} <span class="fr">${$order.pay_price}</span></div>
+            </div>
+        </div>
+        <div class="item-block delivery-infos">
+            <div class="con-tit">{:L(" 订单信息","Order information")}</div>
+            <div class="delivery-con">
+                <ul id="qqoredr">
+                    <li><span>{:L(" 訂單編號：","Order number: ")}</span>    <span>{$order.order_id}</span></li>
+                    <li><span>{:L(" 下單時間：","Order time: ")}</span>      <span>{$order.add_time|date="Y-m-d H:i",###}</span></li>
+                    <li><span>{:L(" 支付方式：","Payment method: ")}</span>  <span>{$order._status._payType}</span></li>
+                     <!-- <li v-if="!flag"><span>{:L(" 支付方式：","Payment method: ")}</span>  <span> PayPal</span></li> -->
+                    <li v-if="flag"  ><span>{:L(" 支付狀態：","Payment status: ")} </span> <span>{$order.paid == 1 ? '已支付' : '未支付'}</span></li>
+                    <li v-if="!flag"><span>{:L(" 支付狀態：","Payment status: ")} </span> <span>{$order.paid == 1 ? 'Paid' : 'Unpaid'}</span></li>
+                    {eq name="order.paid" value="1"}
+                    <li><span>{:L(" 支付時間："," Payment time: ")}</span>    <span>{$order.pay_time|date="Y-m-d H:i",###}</span></li>
+                    {/eq}
+                </ul>
+            </div>
+        </div>
+        <?php if(($order['_status']['_type'] != -1 && $order['_status']['_type'] != 3 && $order['pay_type'] != 'offline') || ($order['pay_type'] == 'offline' && ($order['status'] == 1 || $order['status'] > 2))): ?>
+            <div style="height:1rem"></div>
+            <div class="order-con-btn">
+              
+                <?php if($order['_status']['_type'] != 2): ?>
+                    <span class="more-menu" @click.self="showMenu = !showMenu">
+                    {:L(" 更多","More")}
+                    <ul :class="{active:showMenu == true}">
+                        <?php if( $order['_status']['_type'] == 11  || $order['_status']['_type'] == 4 || $order['_status']['_type'] == -2){ ?>
+                            <li><a href="javascript:void(0);" @click="removeOrder">{:L(" 刪除訂單","Delete order")}</a></li>
+                        <?php }else if($order['_status']['_type'] != 10 &&$order['_status']['_type'] != 2 && $order['_status']['_type'] != 3 && $order['_status']['_type'] != -1){ ?>
+                            <!-- <li><a href="javascript:void(0);" @click="applyRefundOrder">{:L(" 申請退款","Request a refund")}</a></li> -->
+                        <?php }else if($order['_status']['_type'] == 0){ ?>
+                            <li><a href="javascript:void(0);" @click="removeOrder">{:L(" 取消訂單","Delete order")}</a></li>
+                        <?php } ?>
+                    </ul>
+                    </span>
+                       <!-- <a class="lxkf" href="<?php echo app\admin\model\system\SystemConfig::getValue('site_service_phone');?>" @click="confirm">{:L(" 聯系客服","Service")}</a> -->
+                    <a class="lxkf" @click="whats" > {:L(" 聯系客服"," Service")}</a>
+                <?php endif; ?>
+             <!--   {if condition="$order['pink_id']"}
+                <a href="javascript:void(0);" @click="LinkPink({$order.pink_id})"><span class="delete-order">查看拼團</span></a>
+                {/if}   -->
+                <?php if($order['_status']['_type'] == 0){ ?>
+                
+                    <a class="payment" href="javascript:void(0);" @click="confirm">{:L(" 立即付款","Payment")}</a>
+                <?php }else if($order['_status']['_type'] == 2){ ?>
+                     {eq name="order.delivery_type" value="express"}
+                  <!--  <a href="{:url('express',['uni'=>$order['order_id']])}"><span class="delete-order">查詢快遞</span></a> -->
+                    {/eq}
+                    <a class="payment" href="javascript:void(0);" @click="userTake">{:L(" 確認收貨","Confirm")}</a>
+                <?php } ?>
+            </div>
+        <?php endif; ?>
+        <!-- {eq name="order._status._type" value="3"}
+            <div style="height:1rem"></div>
+            <div class="order-con-btn">
+                <a class="payment" href="javascript:void(0);" @click="goDetails">{:L(" 再來一單","Another order")}</a>
+            </div>
+        {/eq} -->
+    </section>
+    <div style="height: 20px;">
+        
+    </div>
+</div>
+<script>
+    window.$userList = <?php echo json_encode($CollageInfo) ?: '[]'; ?>;
+</script>
+
+<script type="text/javascript">
+    requirejs(['vue','store','helper','layer'],function(Vue,storeApi,$h,layer){
+
+        new Vue({
+            el:"#user-order",
+            data:{
+                orderId:'<?=$order['order_id']?>',
+                payType:'<?=$order['pay_type']?>',
+                showMenu:false,
+                flag: true,
+                listinfo: $userList
+            },
+            methods:{
+                toProductUrl:function(id){
+                    location.href = $h.U({c:'store',a:'detail',p:{id:id}});
+                },
+                goDetails:function () {
+                    that = this;
+                    storeApi.orderDetails(that.orderId,function(res){
+                        if(res.data.code == 200){
+                            var cartId = res.data.data;
+                            location.href = $h.U({
+                                c: 'store',
+                                a: 'confirm_order',
+                                p: {cartId: cartId}
+                            });
+                        }else{
+                            $h.pushMsg(res.data.msg);
+                        }
+                    },function(res){
+                        $h.pushMsg(res.msg);
+                    });
+                },
+                applyRefundOrder:function(){
+                    var that = this;
+                    if (this.flag) {
+                        layer.confirm('確定申請退款?',{icon:3},function(index){
+                            layer.close(index);
+                            require(['wap/first/crmeb/module/refund-reason'],function($r){
+                                Vue.use($r);
+                                that.$orderRefundReason(function(msg){
+                                    $h.load();
+                                    storeApi.orderApplyRefund(that.orderId,msg,function(res){
+                                        $h.loadClear();
+                                        $h.pushMsg('申請退款成功!',function(){
+                                            location.reload(true);
+                                        });
+                                    },function(){ $h.loadClear(); return true; });
+                                });
+                            });
+                        });
+                    } else {
+                        layer.confirm('Confirm to apply for a refund?',{icon:3,title:'info',btn:['Yes','No']},function(index){
+                            layer.close(index);
+                            require(['wap/first/crmeb/module/refund-reason-en'],function($r){
+                                Vue.use($r);
+                                that.$orderRefundReason(function(msg){
+                                    $h.load();
+                                    storeApi.orderApplyRefund(that.orderId,msg,function(res){
+                                        $h.loadClear();
+                                        $h.pushMsg('Successfully applied for a refund!',function(){
+                                            location.reload(true);
+                                        });
+                                    },function(){ $h.loadClear(); return true; });
+                                });
+                            });
+                        });
+                    }
+                   
+                },
+                removeOrder:function(){
+                    var that = this;
+                   
+                    if (this.flag) {
+                        layer.confirm('確定刪除該訂單?',{icon:3},function(index){
+                            layer.close(index);
+                            $h.loadFFF();
+                            storeApi.removeUserOrder(that.orderId,function(){
+                                $h.loadClear();
+                                $h.pushMsg('刪除成功',function(){
+                                    location.replace($h.U({
+                                        c:'my',
+                                        a:'order_list'
+                                    }));
+                                });
+                            });
+                        })
+                    } else {
+                        layer.confirm('Confirm to delete the order?',{icon:3,title:'info',btn:['Yes','No']},function(index){
+                            layer.close(index);
+                            $h.loadFFF();
+                            storeApi.removeUserOrder(that.orderId,function(){
+                                $h.loadClear();
+                                $h.pushMsg('Successfully deleted',function(){
+                                    location.replace($h.U({
+                                        c:'my',
+                                        a:'order_list'
+                                    }));
+                                });
+                            });
+                        })
+                       
+                    }
+                },
+                confirm:function(){
+                    console.log(this.payType);
+                    if(this.payType == 'yue')
+                        layer.confirm('確定使用余額支付?',{icon:3},this.goPay);
+                    else if(this.payType == 'offline')
+                        layer.confirm('确定使用线下付款方式支付?',{icon:3},this.goPay);
+                    else
+                        this.goPay();
+                },
+                LinkPink:function (pink_id) {
+                    location.href = $h.U({
+                        c:'my',
+                        a:'order_pink',
+                        p:{id:pink_id}
+                    });
+                },
+                goPay:function(){
+                    $h.loadFFF();
+                    storeApi.payOrder(this.orderId,function(res){
+                        $h.loadClear();
+                        var data = res.data;
+                        if(data.data.status == 'WECHAT_PAY'){
+                            self.location.href=res.data.data.result.jsConfig;
+                            // mapleWx($jssdk(),function(){
+                            //     this.chooseWXPay(data.data.result.jsConfig,function(){
+                            //         $h.pushMsg('支付成功',function(){
+                            //             location.reload(true);
+                            //         })
+                            //     },{
+                            //         fail:function(){ $h.pushMsg('已取消支付');},
+                            //         cancel:function(){ $h.pushMsg('已取消支付');}
+                            //     });
+                            // });
+                        }else{
+                            $h.pushMsg(data.msg,function(){
+                                location.reload(true);
+                            });
+                        }
+                    },function(e){ $h.loadClear(); return true; })
+                },
+                userTake:function(){
+                    var that = this;
+                    if (this.flag) {
+                        layer.confirm('確定立即收貨?',{icon:3},function(index){
+                            layer.close(index);
+                            $h.loadFFF();
+                            storeApi.userTakeOrder(that.orderId,function(){
+                                $h.loadClear();
+                                $h.pushMsg('收貨成功',function(){
+                                    location.reload(true);
+                                });
+                            },function(e){ $h.loadClear(); return true; });
+                        })
+                    } else {
+                        layer.confirm('Confirm to receive the goods immediately?',{icon:3,title:'info',btn:['Yes','No']},function(index){
+                            layer.close(index);
+                            $h.loadFFF();
+                            storeApi.userTakeOrder(that.orderId,function(){
+                                $h.loadClear();
+                                $h.pushMsg('Successfully received',function(){
+                                    location.reload(true);
+                                });
+                            },function(e){ $h.loadClear(); return true; });
+                        })
+                    }
+                   
+                },
+                goReply:function(unique){
+                    location.href = $h.U({
+                        c:'my',
+                        a:'order_reply',
+                        p:{unique:unique}
+                    });
+                },
+                whats() {
+                        $(".mask").css("display","block");
+                }
+            },
+            mounted:function () {
+                vm = this;
+                document.getElementById("qback").addEventListener("click", function() {
+                    window.history.back(-1)
+                })
+                // console.log(document.getElementById("qtitle").innerHTML,   "Order information");
+                 if(document.getElementById("qtitle").innerHTML == "Order information"){
+                     
+                     this.flag = false
+                 }
+              
+                 console.log(this.flag);
+                    $(".mask .down").on("click", function() {
+                        $(".mask").css("display","none");
+                    })
+                    $(".whats .whats_item").on("click", function() {
+                        $(".mask").css("display","none");
+                    })
+               
+            }
+        })
+    });
+</script>
+{/block}

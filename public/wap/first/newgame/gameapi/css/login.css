@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+.all {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    background: url(/public/wap/first/newgame/gameapi/images/back2.png) no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+}
+.title {
+    position: absolute;
+    top: 6rem;
+    width: 33.9rem;
+    height: 16.7rem;
+}
+
+.all a {
+    position: absolute;
+    bottom: 14.7rem;
+}
+.all a img{
+    width: 21.3rem;
+    height: 4.9rem;
+}
+.progress {
+    width: 27.0rem;
+    height: 1.3rem;
+    border-radius: .7rem;
+    border: .2rem solid #000;
+    position: absolute;
+    bottom: 8.7rem;
+    background-color: #000;
+}
+.progress span {
+    background: linear-gradient(to right,#fee189,#f8c128);
+    height: 100%;
+    width: 0%;
+    display: block;
+    border-radius: .7rem;
+}
+.progress img {
+    position: absolute;
+    width: 2.8rem;
+    height: 1.7rem;
+    left: 0%;
+    transform: translateX(-50%);
+    top: -.5rem;
+}
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 26.5rem;
+    position: absolute;
+    bottom: 6.5rem;
+}
+.flex span:first-child {
+    font-size: 1.2rem;
+}
+.flex span:last-child {
+    font-size: 1.8rem;
+}

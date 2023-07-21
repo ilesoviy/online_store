@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+	 <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=375,user-scalable=no">
+
+    <meta name="referrer" content="no-referrer" />
+
+	<title></title>
+
+	<script src="/assets/js/../libs/jquery/dist/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+	<div class="xxx"></div>
+
+<script type="text/javascript">
+
+	function is_weixn(){  
+
+    var ua = navigator.userAgent.toLowerCase();  
+
+    if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+
+    	alert('请点击右上角菜单，选择“在浏览器打开”。');
+
+    	$('.xxx').text('请点击右上角菜单，选择“在浏览器打开”。');
+
+        return false;  
+
+    } else { 
+
+    	window.location.href = "20210730-1.apk";
+
+        return false;  
+
+    }  
+
+} 
+
+is_weixn();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+{extend name="public/container"}
+{block name="head_top"}
+{block name="title"}
+{:L("登錄","Login")}{/block}
+{block name="content"}
+<style type="text/css">
+	.authenticate {
+		margin-top: 1rem;
+		margin-bottom: 120px;
+	}
+
+	.authenticate .title {
+		margin-bottom: .3rem;
+	}
+
+	.authenticate .title span {
+		display: block;
+	}
+
+	.authenticate .title #logo {
+		width: 80px;
+		margin: 0 auto;
+	}
+
+	.authenticate .title #logo img {
+		width: 100%;
+	}
+
+	.authenticate .title #bt {
+		text-align: center;
+		margin: 0 auto;
+		width: 90%;
+		height: 36px;
+		line-height: 36px;
+		font-size: 20px;
+	}
+
+	.login-box {
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		background-color: #fff;
+		padding: 0 0.2rem;
+	}
+
+	.remark1 {
+		color: orange;
+		font-size: 0.5rem;
+        font-weight: 700;
+		margin: 1rem 0 0.3rem 0;
+        color: #E1000F;
+	}
+
+	.remark2 {
+		color: orange;
+		font-size: 0.3rem;
+		margin-bottom: 2rem;
+         color: #E1000F;
+	}
+
+	.login-txt {
+		height: 1rem;
+		border-bottom: 1px solid #eee;
+		padding: 0 0.2rem;
+		display: flex;
+		align-items: center;
+		position: relative;
+	}
+
+	.login-txt img {
+		width: .42rem;
+		height: .4rem;
+		margin-right: 0.2rem;
+	}
+
+
+	.login-btn {
+		background-color: orange;
+		color: #fff;
+		width: 100%;
+		border-radius: 0.5rem;
+		padding: 0.2rem 0;
+		font-size: 0.3rem;
+		margin-top: 0.5rem;
+        background-color: #E1000F;
+	}
+	.other {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 0.2rem;
+	}
+	.showPwd{
+		width: .32rem!important;
+		height: .32rem!important;
+		position: absolute;
+		bottom: 0.35rem;
+		right: 0;
+        
+	}
+    .qq, .qqq {
+        width: 100%;
+    }
+</style>
+<!-- <div class="hz">
+	<div class="authenticate">
+		<section>
+			<div class="title"><span id="logo"><img src="{$logo}"></span><span id="bt">欢迎登陆</span></div>
+			<form action="{:Url('check')}" method="post">
+				<div class="user-infos"><input type="text" required name="account" placeholder="请输入登录账号" /></div>
+				<div class="user-infos"><input type="password" required name="pwd" placeholder="请输入登录密码" /></div>
+				<input type="hidden" name="ref" value="{$ref}" />
+				<div class="publish-btn"><button type="submit">立即登陆</button></div>
+				<div class="register"><a href="{:Url('register')}">暂无账号，点击立即注册</a></div>
+			</form>
+		</section>
+	</div>
+</div> -->
+<div class=" flex" style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: fixed; top: 0; left: 0; background-color: #fff;">
+                            <span id="qqq" style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                                <img  src="/public/uploads/attach/2019/01/15/back.png" style="width: 15px;">
+                            </span>
+                            <p style="text-align: center;width: 100%;line-height: 0.4rem;">
+                             
+                            </p>
+                            <script type="text/javascript">
+                               
+                            </script>
+                    </div>
+<div class="login-box">
+	<div class="remark1">{:L(" 登錄後  更精彩","More exciting after login")}</div>
+	<div class="remark2">{:L(" 快加入我們吧~~","Come join us~~")}</div>
+
+	<form action="{:Url('check')}" method="post">
+		<div class="login-txt">
+			<img src="{__WAP_PATH}crmeb/images/qyoux.png" />
+			<input class="qq" type="text" required name="account" placeholder='{:L(" 請輸入登錄賬號","Please enter your login account")}' />
+		</div>
+		<div class="login-txt">
+			<img src="{__WAP_PATH}crmeb/images/qshuo.png" />
+			<input class="qqq" type="password" id="pws" required name="pwd" placeholder='{:L(" 請輸入登錄密码","Please enter your password")}' />
+			<img id="show"  class="showPwd" src="{__WAP_PATH}crmeb/images/hied.png" />
+		</div>
+		<input type="hidden" name="ref" value="{$ref}" />
+		<div><button id="btn"  type="submit" disabled="true" style="background-color: #ccc;" class="login-btn">{:L(" 登錄","Login")}</button></div>
+		<div class="other"><a href="{:Url('register')}">{:L(" 註冊","Register")}</a><a href="{:Url('psw')}">{:L(" 忘記密碼？   ","forget password?")}</a></div>
+	</form>
+</div>
+<script type="text/javascript">
+    document.getElementById("qqq").addEventListener("click", function() {
+        window.location.href="/wap/index/index";
+    })
+  
+       var nums = 1
+       document.getElementById("show").addEventListener("click",function() {
+            // console.log(nums);
+           if (nums === 1) {
+              document.getElementById("pws").type = "text"
+              this.src = "/public/wap/first/crmeb/images/show.png"
+               nums++;
+           } else {
+               document.getElementById("pws").type = "password"
+               this.src = "/public/wap/first/crmeb/images/hied.png"
+               nums--;
+           }
+            // console.log(nums);
+       })
+       var qq = document.querySelector(".qq");   //密码
+       var qqq = document.querySelector(".qqq");    //确认密码
+      
+           qq.addEventListener("input", function() {
+               if (this.value != '' && qqq.value != '') {
+                    document.getElementById("btn").disabled = false
+                     document.getElementById("btn").style.backgroundColor = "#E1000F"
+               } else {
+                   document.getElementById("btn").disabled = true
+                   document.getElementById("btn").style.backgroundColor = "#ccc"
+               }
+           })
+           qqq.addEventListener("input", function() {
+               if (this.value != '' && qq.value != '') {
+                    document.getElementById("btn").disabled = false
+                    document.getElementById("btn").style.backgroundColor = "#E1000F"
+               } else {
+                   document.getElementById("btn").disabled = true
+                   document.getElementById("btn").style.backgroundColor = "#ccc"
+               }
+           })
+
+       
+  
+</script>
+{/block}

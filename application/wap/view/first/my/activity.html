@@ -1,0 +1,43 @@
+{extend name="public/container" /}
+{block name="title"}活动列表{/block}
+{block name="content"}
+<style type="text/css">
+  .act{margin: 20px 20px;}
+  .act section ul li{
+    list-style: none;
+    width: 37%;
+    float: left;
+    margin: 10px;
+    padding: 10px;
+    border:1px solid #eee;
+  }
+  .act section ul li a img{
+    width: 100%;
+  }
+   .act section ul li a span{
+    margin-top: 10px;
+       display: block;
+       text-align: center;
+       font-size: 16px;
+   }
+</style>
+<body>
+<div class="act">
+    <section>
+      <ul>
+          <li>
+              <a href="/wap/activ/turntable.html">
+                  <img src="{__WAP_PATH}crmeb/images/act/act.png">
+                  <span>幸运大转盘</span>
+              </a>
+          </li>
+      </ul>
+    </section>
+
+</div>
+{include file="public/store_menu"}
+<script src="{__PLUG_PATH}reg-verify.js"></script>
+<script>
+   
+</script>
+{/block}

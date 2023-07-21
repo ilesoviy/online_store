@@ -1,0 +1,701 @@
+var animationData2 = {
+	"v": "5.5.6",
+	"fr": 25,
+	"ip": 0,
+	"op": 43,
+	"w": 60,
+	"h": 60,
+	"nm": "合成 1",
+	"ddd": 0,
+	"assets": [{
+		"id": "image_0",
+		"w": 27,
+		"h": 25,
+		"u": "/public/wap/first/newgame/gameapi/images/",
+		"p": "img_1.png",
+		"e": 0
+	}],
+	"layers": [{
+		"ddd": 0,
+		"ind": 1,
+		"ty": 2,
+		"nm": "图层 1.png",
+		"cl": "png",
+		"refId": "image_0",
+		"sr": 1,
+		"ks": {
+			"o": {
+				"a": 1,
+				"k": [{
+					"i": {
+						"x": [0.833],
+						"y": [0.833]
+					},
+					"o": {
+						"x": [0.167],
+						"y": [0.167]
+					},
+					"t": 0,
+					"s": [0]
+				}, {
+					"i": {
+						"x": [0.833],
+						"y": [0.833]
+					},
+					"o": {
+						"x": [0.167],
+						"y": [0.167]
+					},
+					"t": 6,
+					"s": [100]
+				}, {
+					"i": {
+						"x": [0.833],
+						"y": [0.833]
+					},
+					"o": {
+						"x": [0.167],
+						"y": [0.167]
+					},
+					"t": 32,
+					"s": [100]
+				}, {
+					"t": 38,
+					"s": [0]
+				}],
+				"ix": 11
+			},
+			"r": {
+				"a": 0,
+				"k": 0,
+				"ix": 10
+			},
+			"p": {
+				"a": 0,
+				"k": [30, 30, 0],
+				"ix": 2
+			},
+			"a": {
+				"a": 0,
+				"k": [13.5, 12.5, 0],
+				"ix": 1
+			},
+			"s": {
+				"a": 0,
+				"k": [100, 100, 100],
+				"ix": 6
+			}
+		},
+		"ao": 0,
+		"ef": [{
+			"ty": 34,
+			"nm": "操控",
+			"np": 6,
+			"mn": "ADBE FreePin3",
+			"ix": 1,
+			"en": 1,
+			"ef": [{
+				"ty": 7,
+				"nm": "人偶引擎",
+				"mn": "ADBE FreePin3 Puppet Engine",
+				"ix": 1,
+				"v": {
+					"a": 0,
+					"k": 2,
+					"ix": 1
+				}
+			}, {
+				"ty": 0,
+				"nm": "网格旋转调整",
+				"mn": "ADBE FreePin3 Auto Rotate Pins",
+				"ix": 2,
+				"v": {
+					"a": 0,
+					"k": 20,
+					"ix": 2
+				}
+			}, {
+				"ty": 7,
+				"nm": "在透明背景上",
+				"mn": "ADBE FreePin3 On Transparent",
+				"ix": 3,
+				"v": {
+					"a": 0,
+					"k": 0,
+					"ix": 3
+				}
+			}, {
+				"ty": 25,
+				"nm": "arap",
+				"np": 3,
+				"mn": "ADBE FreePin3 ARAP Group",
+				"ix": 4,
+				"en": 1,
+				"ef": [{
+					"ty": 6,
+					"nm": "自动追踪形状",
+					"mn": "ADBE FreePin3 Outlines",
+					"ix": 1,
+					"v": 0
+				}, {
+					"ty": 1,
+					"nm": "网格",
+					"np": 2,
+					"mn": "ADBE FreePin3 Mesh Group",
+					"ix": 2,
+					"en": 1,
+					"ef": [{
+						"nm": "网格 1",
+						"np": 8,
+						"mn": "ADBE FreePin3 Mesh Atom",
+						"ix": 1,
+						"en": 1,
+						"ef": [{
+							"ty": 6,
+							"nm": "网格",
+							"mn": "ADBE FreePin3 Mesh",
+							"ix": 1,
+							"v": 0
+						}, {
+							"ty": 0,
+							"nm": "三角形",
+							"mn": "ADBE FreePin3 Mesh Tri Count",
+							"ix": 2,
+							"v": {
+								"a": 0,
+								"k": 50,
+								"ix": 2
+							}
+						}, {
+							"ty": 0,
+							"nm": "密度",
+							"mn": "ADBE FreePin3 Mesh Tri Density",
+							"ix": 3,
+							"v": {
+								"a": 0,
+								"k": 10,
+								"ix": 3
+							}
+						}, {
+							"ty": 0,
+							"nm": "扩展",
+							"mn": "ADBE FreePin3 Mesh Expansion",
+							"ix": 4,
+							"v": {
+								"a": 0,
+								"k": 3,
+								"ix": 4
+							}
+						}, {
+							"nm": "变形",
+							"np": 6,
+							"mn": "ADBE FreePin3 PosPins",
+							"ix": 5,
+							"en": 1,
+							"ef": [{
+								"nm": "操控点 5",
+								"np": 7,
+								"mn": "ADBE FreePin3 PosPin Atom",
+								"ix": 1,
+								"en": 1,
+								"ef": [{
+									"ty": 3,
+									"nm": "顶点位移",
+									"mn": "ADBE FreePin3 PosPin Vtx Offset",
+									"ix": 1,
+									"v": {
+										"a": 0,
+										"k": [0, 0],
+										"ix": 1
+									}
+								}, {
+									"ty": 0,
+									"nm": "顶点索引",
+									"mn": "ADBE FreePin3 PosPin Vtx Index",
+									"ix": 2,
+									"v": {
+										"a": 0,
+										"k": 13,
+										"ix": 2
+									}
+								}, {
+									"ty": 7,
+									"nm": "固定类型",
+									"mn": "ADBE FreePin3 PosPin Type",
+									"ix": 3,
+									"v": {
+										"a": 0,
+										"k": 1,
+										"ix": 3
+									}
+								}, {
+									"ty": 3,
+									"nm": "位置",
+									"mn": "ADBE FreePin3 PosPin Position",
+									"ix": 4,
+									"v": {
+										"a": 1,
+										"k": [{
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [11.25, 11.5],
+											"to": [0.333, 0.042],
+											"ti": [0, 0]
+										}, {
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [13.25, 11.75],
+											"to": [0, 0],
+											"ti": [0.333, 0.042]
+										}, {
+											"t": null,
+											"s": [11.25, 11.5]
+										}],
+										"ix": 4
+									}
+								}, {
+									"ty": 0,
+									"nm": "缩放",
+									"mn": "ADBE FreePin3 PosPin Scale",
+									"ix": 5,
+									"v": {
+										"a": 0,
+										"k": 100,
+										"ix": 5
+									}
+								}, {
+									"ty": 0,
+									"nm": "旋转",
+									"mn": "ADBE FreePin3 PosPin Rotation",
+									"ix": 6,
+									"v": {
+										"a": 0,
+										"k": 0,
+										"ix": 6
+									}
+								}]
+							}, {
+								"nm": "操控点 4",
+								"np": 7,
+								"mn": "ADBE FreePin3 PosPin Atom",
+								"ix": 2,
+								"en": 1,
+								"ef": [{
+									"ty": 3,
+									"nm": "顶点位移",
+									"mn": "ADBE FreePin3 PosPin Vtx Offset",
+									"ix": 1,
+									"v": {
+										"a": 0,
+										"k": [0, 0],
+										"ix": 1
+									}
+								}, {
+									"ty": 0,
+									"nm": "顶点索引",
+									"mn": "ADBE FreePin3 PosPin Vtx Index",
+									"ix": 2,
+									"v": {
+										"a": 0,
+										"k": 14,
+										"ix": 2
+									}
+								}, {
+									"ty": 7,
+									"nm": "固定类型",
+									"mn": "ADBE FreePin3 PosPin Type",
+									"ix": 3,
+									"v": {
+										"a": 0,
+										"k": 1,
+										"ix": 3
+									}
+								}, {
+									"ty": 3,
+									"nm": "位置",
+									"mn": "ADBE FreePin3 PosPin Position",
+									"ix": 4,
+									"v": {
+										"a": 1,
+										"k": [{
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [23.75, 18.5],
+											"to": [-0.292, 0.375],
+											"ti": [0, 0]
+										}, {
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [22, 20.75],
+											"to": [0, 0],
+											"ti": [-0.292, 0.375]
+										}, {
+											"t": null,
+											"s": [23.75, 18.5]
+										}],
+										"ix": 4
+									}
+								}, {
+									"ty": 0,
+									"nm": "缩放",
+									"mn": "ADBE FreePin3 PosPin Scale",
+									"ix": 5,
+									"v": {
+										"a": 0,
+										"k": 100,
+										"ix": 5
+									}
+								}, {
+									"ty": 0,
+									"nm": "旋转",
+									"mn": "ADBE FreePin3 PosPin Rotation",
+									"ix": 6,
+									"v": {
+										"a": 0,
+										"k": 0,
+										"ix": 6
+									}
+								}]
+							}, {
+								"nm": "操控点 3",
+								"np": 7,
+								"mn": "ADBE FreePin3 PosPin Atom",
+								"ix": 3,
+								"en": 1,
+								"ef": [{
+									"ty": 3,
+									"nm": "顶点位移",
+									"mn": "ADBE FreePin3 PosPin Vtx Offset",
+									"ix": 1,
+									"v": {
+										"a": 0,
+										"k": [0, 0],
+										"ix": 1
+									}
+								}, {
+									"ty": 0,
+									"nm": "顶点索引",
+									"mn": "ADBE FreePin3 PosPin Vtx Index",
+									"ix": 2,
+									"v": {
+										"a": 0,
+										"k": 15,
+										"ix": 2
+									}
+								}, {
+									"ty": 7,
+									"nm": "固定类型",
+									"mn": "ADBE FreePin3 PosPin Type",
+									"ix": 3,
+									"v": {
+										"a": 0,
+										"k": 1,
+										"ix": 3
+									}
+								}, {
+									"ty": 3,
+									"nm": "位置",
+									"mn": "ADBE FreePin3 PosPin Position",
+									"ix": 4,
+									"v": {
+										"a": 1,
+										"k": [{
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [2.25, 17.25],
+											"to": [0.875, 0.208],
+											"ti": [0, 0]
+										}, {
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [7.5, 18.5],
+											"to": [0, 0],
+											"ti": [0.875, 0.208]
+										}, {
+											"t": null,
+											"s": [2.25, 17.25]
+										}],
+										"ix": 4
+									}
+								}, {
+									"ty": 0,
+									"nm": "缩放",
+									"mn": "ADBE FreePin3 PosPin Scale",
+									"ix": 5,
+									"v": {
+										"a": 0,
+										"k": 100,
+										"ix": 5
+									}
+								}, {
+									"ty": 0,
+									"nm": "旋转",
+									"mn": "ADBE FreePin3 PosPin Rotation",
+									"ix": 6,
+									"v": {
+										"a": 0,
+										"k": 0,
+										"ix": 6
+									}
+								}]
+							}, {
+								"nm": "操控点 2",
+								"np": 7,
+								"mn": "ADBE FreePin3 PosPin Atom",
+								"ix": 4,
+								"en": 1,
+								"ef": [{
+									"ty": 3,
+									"nm": "顶点位移",
+									"mn": "ADBE FreePin3 PosPin Vtx Offset",
+									"ix": 1,
+									"v": {
+										"a": 0,
+										"k": [0, 0],
+										"ix": 1
+									}
+								}, {
+									"ty": 0,
+									"nm": "顶点索引",
+									"mn": "ADBE FreePin3 PosPin Vtx Index",
+									"ix": 2,
+									"v": {
+										"a": 0,
+										"k": 16,
+										"ix": 2
+									}
+								}, {
+									"ty": 7,
+									"nm": "固定类型",
+									"mn": "ADBE FreePin3 PosPin Type",
+									"ix": 3,
+									"v": {
+										"a": 0,
+										"k": 1,
+										"ix": 3
+									}
+								}, {
+									"ty": 3,
+									"nm": "位置",
+									"mn": "ADBE FreePin3 PosPin Position",
+									"ix": 4,
+									"v": {
+										"a": 1,
+										"k": [{
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [11.5, 21.5],
+											"to": [0.792, 0],
+											"ti": [0, 0]
+										}, {
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [16.25, 21.5],
+											"to": [0, 0],
+											"ti": [0.792, 0]
+										}, {
+											"t": null,
+											"s": [11.5, 21.5]
+										}],
+										"ix": 4
+									}
+								}, {
+									"ty": 0,
+									"nm": "缩放",
+									"mn": "ADBE FreePin3 PosPin Scale",
+									"ix": 5,
+									"v": {
+										"a": 0,
+										"k": 100,
+										"ix": 5
+									}
+								}, {
+									"ty": 0,
+									"nm": "旋转",
+									"mn": "ADBE FreePin3 PosPin Rotation",
+									"ix": 6,
+									"v": {
+										"a": 0,
+										"k": 0,
+										"ix": 6
+									}
+								}]
+							}, {
+								"nm": "操控点 1",
+								"np": 7,
+								"mn": "ADBE FreePin3 PosPin Atom",
+								"ix": 5,
+								"en": 1,
+								"ef": [{
+									"ty": 3,
+									"nm": "顶点位移",
+									"mn": "ADBE FreePin3 PosPin Vtx Offset",
+									"ix": 1,
+									"v": {
+										"a": 0,
+										"k": [0, 0],
+										"ix": 1
+									}
+								}, {
+									"ty": 0,
+									"nm": "顶点索引",
+									"mn": "ADBE FreePin3 PosPin Vtx Index",
+									"ix": 2,
+									"v": {
+										"a": 0,
+										"k": 17,
+										"ix": 2
+									}
+								}, {
+									"ty": 7,
+									"nm": "固定类型",
+									"mn": "ADBE FreePin3 PosPin Type",
+									"ix": 3,
+									"v": {
+										"a": 0,
+										"k": 1,
+										"ix": 3
+									}
+								}, {
+									"ty": 3,
+									"nm": "位置",
+									"mn": "ADBE FreePin3 PosPin Position",
+									"ix": 4,
+									"v": {
+										"a": 1,
+										"k": [{
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [18.25, 6.25],
+											"to": [0, 0.125],
+											"ti": [0, 0]
+										}, {
+											"i": {
+												"x": 0,
+												"y": 0
+											},
+											"o": {
+												"x": 0,
+												"y": 0
+											},
+											"t": 0,
+											"s": [18.25, 7],
+											"to": [0, 0],
+											"ti": [0, 0.125]
+										}, {
+											"t": null,
+											"s": [18.25, 6.25]
+										}],
+										"ix": 4
+									}
+								}, {
+									"ty": 0,
+									"nm": "缩放",
+									"mn": "ADBE FreePin3 PosPin Scale",
+									"ix": 5,
+									"v": {
+										"a": 0,
+										"k": 100,
+										"ix": 5
+									}
+								}, {
+									"ty": 0,
+									"nm": "旋转",
+									"mn": "ADBE FreePin3 PosPin Rotation",
+									"ix": 6,
+									"v": {
+										"a": 0,
+										"k": 0,
+										"ix": 6
+									}
+								}]
+							}]
+						}, {
+							"nm": "重叠",
+							"np": 1,
+							"mn": "ADBE FreePin3 HghtPins",
+							"ix": 6,
+							"en": 1,
+							"ef": []
+						}, {
+							"nm": "硬度",
+							"np": 1,
+							"mn": "ADBE FreePin3 StarchPins",
+							"ix": 7,
+							"en": 1,
+							"ef": []
+						}]
+					}]
+				}]
+			}]
+		}],
+		"ip": 0,
+		"op": 125,
+		"st": 0,
+		"bm": 0
+	}],
+	"markers": []
+}

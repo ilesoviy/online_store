@@ -1,0 +1,315 @@
+{extend name="public/container"}
+{block name="title"} {:L(" 我的余額","My Balance")}{/block}
+{extend name="public/container"}
+{block name="head"}
+<style>
+    .loading-line {
+        background-color: #fff;
+    }
+    #bgs {
+        position: absolute;
+        top: 0;
+    }
+    #bgs img {
+        width: 100%;
+    }
+    .qbtn {
+        position: absolute;
+        top: -10%;
+        padding: 5px 12px;
+        border-radius: 30px;
+        border: 1px solid #fff;
+        right: 0;
+    }
+    .ti {
+         top: 43%;
+         right: 0;
+         padding: 5px 12px;
+         color: #fff;
+    }
+    .adderss {
+        display: flex;
+        margin-top: 20px;
+        text-align: left;
+        line-height: 25px;
+        height: 25px;
+
+    }
+    .adderss> input {
+        border: 1px solid #ccc;
+        flex: 1;
+        font-size: 14px;
+        padding-left: 10px;
+        line-height: 25px;
+        height: 25px;
+        margin-left: 5px;
+    }
+</style>
+{/block}
+{block name="content"}
+<body style="background:#f5f5f5;">
+    <div id="bgs">
+        <img src="/public/wap/first/crmeb/images/qbbg.png" >
+    </div>
+    <div id="user-balance" class="user-balance">
+        <div class=" flex"
+            style=" z-index: 99; padding: 0.12rem 0.1rem; width: 100%; position: absolute; top: 0; left: 0; ">
+            <span @click="window.location.href=document.referrer;"
+                style="display: flex; width: 8%; align-items: center; margin-right: 2%;">
+                <img src="/public/uploads/attach/2019/01/15/qback.png" style="width: 15px;">
+            </span>
+            <p style="text-align: center;width: 100%;line-height: 0.4rem; color: #FFFFFF;">
+                  {:L(" 我的余額","My Balance")}
+
+            </p>
+            
+        </div>
+       <div style="height: 60px;">
+           
+       </div>
+        <section>
+            <header ref="head" @touchmove.prevent="" style="background: none;">
+                <div class="count-wrapper" style="background: linear-gradient(90deg, #ec5410 0%, #ec5410 0%, #e62233 100%);">
+                    <p >   {:L(" 可用余額","Available Balance")}</p>
+              <!--      <span style="margin-top: .2rem; font-size: .7rem;" class="count-txt">{$userInfo.now_money}</span> -->
+                   <div style="position: relative;">
+                         <span style="margin-top: .2rem; font-size: .7rem;" class="count-txt">{$userInfo.now_money}</span>
+                         <span class="qbtn" @click="window.location.href='recharge.html'">
+                                {:L(" 充值","top-up")}   
+                         </span>
+                         <span class="qbtn ti" @click="window.location.href='extract.html'" style="padding: 5px 12px;">
+                                {:L(" 提現","withdrawal")}
+                         </span>
+                   </div>
+                    <div class="text-bar flex" style="justify-content: space-between;padding:  0 .3rem; height: .6rem;
+    line-height: .6rem; font-size: 0.25rem;">
+                        <span >
+                           {:L("總資產：  ","Total : ")} ${$userInfo.now_money+$no_now_money}
+                        </span>
+                        <span>
+                            {:L("不可用余額：","Unusable balance : ")} ${$no_now_money}
+                        </span>
+                    </div>
+                </div>
+                <!-- <div class="link-list">
+                    <ul>
+                        <li class="border-1px">
+                            <a href="javascript:void(0);" @click="showRechargeCard = true">
+                                <i class="icon icon-money"></i>立即充值
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('index/index')}">
+                                <i class="icon icon-mall"></i>进入商城
+                            </a>
+                        </li>
+                    </ul>
+                </div> -->
+            </header>
+            <div class="list-info">
+                <div class="link-list" ref="nav" @touchmove.prevent="">
+                    <ul>
+                        <li class="border-1px"><i class="icon"></i>   {:L(" 余額明細","Returns detailed")}</li>
+                    </ul>
+                </div>
+                <div class="info-list" ref="bsDom">
+                    <div style="-webkit-overflow-scrolling : touch; position: relative;">
+                        <ul>
+                            <li class="border-1px flex" v-for="item in group.list" v-cloak="">
+                                <div class="txt-content">
+                                   <p v-text="item.new_mark"></p>
+                                   <!-- <p style="font-weight: 700;">   {:L(" 提现","top-up")}</p> -->
+                                    <span v-text="item.add_time"></span>
+                                </div>
+                                <div class="count" :class="{increase:item.pm == 1}">
+                                    {{item.pm == 1 ? '+' : '-'}}{{item.number}}</div>
+                            </li>
+                        </ul>
+                        <p class="loading-line" v-show="loading == true"><i></i><span>   {:L(" 正在加載中","Loading")}</span><i></i></p>
+                        <p class="loading-line" v-show="loading == false && group.loaded == false" v-cloak="">
+                            <i></i><span>   {:L(" 加載更多","load more")}</span><i></i></p>
+                        <p class="loading-line" v-show="loading == false && group.loaded == true" v-cloak="">
+                            <i></i><span>   {:L(" 沒有更多了","No more")}</span><i></i></p>
+                    </div>
+                </div>
+            </div>  
+            <div class="model-bg" @touchmove.prevent @click="hiedss"     
+                :class="{on:showRechargeCard == true}"></div>
+                <div class="model-bg" @touchmove.prevent @click="hiedss"
+                    :class="{on:AAA == true}"></div>
+            <div class="card-model" :class="{up:showRechargeCard == true}">
+                <div id="selects-wrapper" class="selects-info" style="max-height: 4.96rem;">
+                    <div class="payplay-wrapper">
+                        <div class="info-wrapper">
+                            <div class="tit">   {:L(" 輸入充值金額","Enter the top-up amount")}</div>
+                            <div class="money">
+                                <span>$</span>
+                                <input v-model="rechargePrice" type="number" placeholder="0.00" />
+                            </div>
+                            <div class="tips">   {:L(" 充值提示：單次充值金額不能低於","Recharge reminder: The single recharge amount cannot be less than")}<span>{{minRecharge}}</span></div>
+                            <button class="pay-btn" @click="toRecharge">   {:L(" 點擊進行微信支付","Click to make WeChat payment")}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="model-close" @click="showRechargeCard = false"></div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            <div class="card-model" :class="{up:AAA == true}">
+                <div  class="selects-info" style="max-height: 4.96rem;">
+                    <div class="payplay-wrapper">
+                        <div class="info-wrapper">
+                            <div class="tit"> {:L(" 輸入提現金額","Enter the withdrawal amount")}</div>
+                            <div class="money">
+                                <span>$</span>
+                                <input v-model="rechargePrice" type="number" placeholder="0.00" />
+                            </div>
+                           <!--  <div class="adderss">
+                                <span>{:L(" 錢包地址","Wallet address")}:</span>
+                                <input type="text" name="" placeholder= '{:L(" 請輸入錢包地址","Please enter wallet address")}'>
+                            </div> -->
+                            <div class="tips">{:L(" 充值提示：單次提現金額不能低於","Recharge reminder: The withdrawal recharge amount cannot be less than")}<span>{{minRecharge}}</span></div>
+                            <button class="pay-btn" @click="tixian">   {:L(" 點擊提現","Click to withdraw")}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="model-close" @click="AAA = false"></div>
+            </div>
+        </section>
+    </div>
+    <script>
+        (function() {
+            var minRecharge = '<?=$userMinRecharge?>';
+            requirejs(['vue', 'helper', 'better-scroll', 'store'], function(Vue, $h, BScroll, storeApi) {
+                var wxApi = mapleWx($jssdk());
+                new Vue({
+                    el: '#user-balance',
+                    data: {
+                        showRechargeCard: false,
+                         AAA: false,
+                        minRecharge: minRecharge,
+                        rechargePrice: '',
+                        group: {
+                            first: 0,
+                            limit: 20,
+                            list: [],
+                            loaded: false
+                        },
+                        loading: false,
+                        scroll: null,
+                    },
+                    watch: {
+                        showRechargeCard: function() {
+                            this.rechargePrice = '';
+                        }
+                    },
+                    methods: {
+                        hiedss() {
+                            this.showRechargeCard = false
+                            this.AAA = false
+                        },
+                        getList: function() {
+                            if (this.loading) return;
+                            var that = this,
+                                type = 'group',
+                                group = that.group;
+                            if (group.loaded) return;
+                            this.loading = true;
+                            storeApi.getUserBalanceList({
+                                first: group.first,
+                                limit: group.limit
+                            }, function(res) {
+                                var list = res.data.data,
+                                    groupLength = group.list.length;
+                                that.scroll.stop();
+                                group.loaded = list.length < group.limit;
+                                group.first += list.length;
+                                group.list = group.list.concat(list);
+                                that.$set(that, type, group);
+                                that.loading = false;
+                                that.$nextTick(function() {
+                                    if (list.length || !groupLength) that.scroll
+                                        .refresh();
+                                    if (!groupLength) setTimeout(function() {
+                                        that.scroll.scrollTo(0, 0, 300);
+                                    }, 0);
+                                    that.scroll.finishPullUp();
+                                });
+                            }, function() {
+                                that.loading = false
+                            });
+                        },
+                        toRecharge: function() {
+                            if (rechargePrice == '') return;
+                            var rechargePrice = parseFloat(this.rechargePrice);
+                            if (rechargePrice != this.rechargePrice || rechargePrice <= 0)
+                                return $h.pushMsgOnce('{:L(" 請輸入正確的充值金額","Please enter the correct recharge amount")}');
+                            if (rechargePrice < minRecharge)
+                                return $h.pushMsgOnce('{:L(" 充值金額不能低於","The recharge amount cannot be less than")}' + parseFloat(minRecharge));
+                            this.showRechargeCard = false;
+                            this.rechargePrice = '';
+                            storeApi.userWechatRecharge(rechargePrice, function(res) {
+                                self.location.href = res.data.msg;
+                                // wxApi.chooseWXPay(res.data.data,function(){
+                                //     that.showRechargeCard = false;
+                                //     $h.pushMsgOnce('成功充值'+rechargePrice);
+                                // });
+                            });
+                        },
+                        tixian: function() {
+                            if (rechargePrice == '') return;
+                            var rechargePrice = parseFloat(this.rechargePrice);
+                            if (rechargePrice != this.rechargePrice || rechargePrice <= 0)
+                                return $h.pushMsgOnce('{:L(" 請輸入正確的提現金額","Please enter the correct withdrawal amount")}');
+                            if (rechargePrice < minRecharge)
+                                return $h.pushMsgOnce('{:L(" 提現金額不能低於","The withdrawal amount cannot be less than")}' + parseFloat(minRecharge));
+                            this.showRechargeCard = false;
+                            this.rechargePrice = '';
+                            storeApi.userWechatRecharge(rechargePrice, function(res) {
+                                self.location.href = res.data.msg;
+                                // wxApi.chooseWXPay(res.data.data,function(){
+                                //     that.showRechargeCard = false;
+                                //     $h.pushMsgOnce('成功充值'+rechargePrice);
+                                // });
+                            });
+                        },
+                        bScrollInit: function() {
+                            var that = this;
+                            this.$refs.bsDom.style.height = (
+                                document.documentElement.clientHeight -
+                                this.$refs.head.offsetHeight -
+                                this.$refs.nav.offsetHeight - 6.5
+                            ) + 'px';
+                            this.$refs.bsDom.style.overflow = 'hidden';
+                            this.scroll = new BScroll(this.$refs.bsDom, {
+                                observeDOM: false,
+                                useTransition: false,
+                                click: true,
+                                probeType: 1,
+                                cancelable: false,
+                                deceleration: 0.005,
+                                snapThreshold: 0.01
+                            });
+                            this.scroll.on('pullingUp', function() {
+                                that.loading == false && that.getList();
+                            })
+                        }
+                    },
+                    mounted: function() {
+                        this.bScrollInit();
+                        this.getList();
+                        // top: -20px;
+                        // right: -238px;
+                         
+                    }
+                })
+            });
+        })();
+    </script>
+    {/block}

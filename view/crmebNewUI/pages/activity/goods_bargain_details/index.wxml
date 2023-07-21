@@ -1,0 +1,128 @@
+<view class='bargain'>
+<view class='iconfont icon-xiangzuo' wx:if='{{retunTop}}' bindtap='goBack'></view>
+    <view class="header {{status == 1 || status == 2 ? 'on' : ''}}">
+    <view class='people'>{{bargainCount.lookCount}}人查看 丨 {{bargainCount.shareCount}}人分享 丨 {{bargainCount.userCount}}人参与</view>
+        <view class='time font-color' wx:if="{{status == 0 || status == 3 || status == 4 || status == 5}}">
+          倒计时 <text>{{countDownDay}}</text> 天 
+          <text>{{countDownHour}}</text> 时 
+          <text>{{countDownMinute}}</text> 分 
+          <text>{{countDownSecond}}</text> 秒
+        </view> 
+        <view wx:elif="{{status == 1 || status == 2}}" class='pictxt acea-row row-center-wrapper'>
+            <view class='pictrue'><image src='{{bargainUserInfo.avatar}}'></image></view>
+            <view class='text'>{{bargainUserInfo.nickname}}<text>邀请您帮忙砍价</text></view>
+        </view>
+    </view>
+   <view class='wrapper'>
+      <view class='pictxt acea-row row-between-wrapper'>
+         <view class='pictrue'><image src='{{bargainInfo.image}}'></image></view>
+         <view class='text acea-row row-column-around'>
+            <view class='line2'>{{bargainInfo.title}}</view>
+            <view class='money font-color'>当前: ￥<text class='num'>{{bargainInfo.price}}</text></view>
+            <view class='successNum'>已有{{bargainSumCount || 0}}人砍价成功</view>
+         </view>
+      </view>
+      <view class="cu-progress acea-row row-middle round margin-top">
+        <view class='acea-row row-middle bg-red' style="width:{{bargainUserHelpInfo.pricePercent}}%;"></view>
+      </view>
+      <view class='money acea-row row-between-wrapper'>
+         <view>已砍{{bargainUserHelpInfo.alreadyPrice}}元</view>
+         <view>还剩{{bargainUserHelpInfo.price}}元</view>
+      </view>
+      <!-- 帮助砍价、帮砍成功：-->
+      <view wx:if="{{status === 0}}">
+        <view class='bargainBnt' bindtap='getBargainUserBargainPricePoster'>邀请好友帮砍价</view>
+      </view>
+      <view wx:elif="{{status == 1}}">
+        <view class='bargainBnt' bindtap='setBargainHelp'>帮好友砍一刀</view>
+      </view>
+      <view wx:elif="{{status == 2}}">
+        <view class='bargainSuccess'><text class='iconfont icon-xiaolian'></text>已成功帮助好友砍价</view>
+        <view class='bargainBnt on' bindtap='currentBargainUser'>我也要参与</view>
+      </view>
+      <view wx:elif="{{status == 3}}">
+        <view class='bargainBnt' bindtap='goPay'>立即支付</view>
+        <view class='bargainBnt on' bindtap='goBargainList'>抢更多商品</view>
+      </view>
+      <view wx:elif="{{status == 4}}">
+        <view class='bargainSuccess'>砍价失败</view>
+        <view class='bargainBnt on' bindtap='goBargainList'>抢更多商品</view>
+      </view>
+      <view wx:elif="{{status == 5}}">
+        <view class='bargainSuccess'>砍价成功</view>
+        <view class='bargainBnt on' bindtap='goBargainList'>抢更多商品</view>
+      </view>
+      <view class='tip'>已有<text class='font-color'>{{bargainUserHelpInfo.count}}</text> 位好友成功砍价</view>
+      <view class='lock'></view>
+   </view>
+   <view class='bargainGang'>
+      <view class='title font-color acea-row row-center-wrapper'>
+         <view class='pictrue'><image src='/images/left.png'></image></view>
+         <view class='titleCon'>砍价帮</view>
+         <view class='pictrue on'><image src='/images/left.png'></image></view>
+      </view>
+      <view class='list'>
+        <block wx:for="{{bargainUserHelpList}}" wx:key> 
+          <view class='item acea-row row-between-wrapper'>
+             <view class='pictxt acea-row row-between-wrapper'>
+                <view class='pictrue'><image src='{{item.avatar}}'></image></view>
+                <view class='text'>
+                   <view class='name line1'>{{item.nickname}}</view>
+                   <view class='line1'>{{item.add_time}}</view>
+                </view>
+             </view>
+             <view class='money font-color'><text class="iconfont icon-kanjia"></text>砍掉{{item.price}}元</view>
+          </view>
+        </block>  
+      </view>
+      <view class='load font-color' wx:if="{{!limitStatus}}" bindtap='getBargainUser'>点击加载更多</view>
+      <view class='lock'></view>
+   </view>
+   <view class='goodsDetails'>
+      <view class='title font-color acea-row row-center-wrapper'>
+         <view class='pictrue'><image src='/images/left.png'></image></view>
+         <view class='titleCon'>商品详情</view>
+         <view class='pictrue on'><image src='/images/left.png'></image></view>
+      </view>
+      <view class='conter'>
+          <template is="wxParse" data="{{wxParseData:description.nodes}}"/>
+      </view>
+      <view class='lock'></view>
+   </view>
+   <view class='goodsDetails'>
+      <view class='title font-color acea-row row-center-wrapper'>
+         <view class='pictrue'><image src='/images/left.png'></image></view>
+         <view class='titleCon'>砍价规则</view>
+         <view class='pictrue on'><image src='/images/left.png'></image></view>
+      </view>
+      <view class='conter'>
+          <template is="wxParse" data="{{wxParseData:rule.nodes}}"/>
+      </view>
+   </view>
+   <view class='bargainTip {{active==true?"on":""}}'>
+       <view class='pictrue'><image src='/images/bargainBg.jpg'></image></view>
+       <view wx:if="{{status === 0}}">
+        <view class='cutOff'>您已砍掉<text class='font-color'>{{bargainUserBargainPrice}}</text>元，听说分享次数越多砍价成功的机会越大哦！</view>
+        <button open-type='share' class='tipBnt'>邀请好友帮砍价</button>
+       </view>
+       <view wx:elif="{{status == 2}}">
+        <view class='help font-color'>成功帮砍{{bargainUserBargainPrice}}元</view>
+        <view class='cutOff on'>您也可以砍价低价拿哦，快去挑选心仪的商品吧~</view>
+        <view bindtap='currentBargainUser' class='tipBnt'>我也要参与</view>
+       </view>
+       <view wx:elif="{{status == 3}}">
+        <view class='help font-color'>您已砍掉{{bargainUserBargainPrice}}元</view>
+        <view class='cutOff on'>已成功砍到最低价</view>
+       </view>
+       <view wx:elif="{{status == 4}}">
+        <view class='help font-color'>很遗憾，砍价失败</view>
+       </view>
+       <view wx:elif="{{status == 5}}">
+        <view class='help font-color'>恭喜你，砍价成功</view>
+       </view>
+   </view>
+   <view class='mask' catchtouchmove="true" hidden='{{active==false}}' bindtap='close'></view>
+</view>
+<authorize bind:onLoadFun="onLoadFun"></authorize>
+<import src="/wxParse/wxParse.wxml"/>
+<home></home>

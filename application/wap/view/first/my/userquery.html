@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <title>用户充值</title>
+    {include file="public/style" /}
+</head>
+<style type="text/css">
+    section{margin: 20px;}
+    div{font-size: 16px; line-height: 40px; height: 40px}
+    .title{font-size: 22px; line-height: 40px; text-align: center; background: #e3383e; color: #fff;margin-bottom: 20px;}
+    div .left{
+        text-align: left;font-size: 15px;color: #666; padding-left: 5px;display: block;width: 22%;
+    }
+    div .right{text-align: right;font-size: 16px;color: #333333; padding-right: 5px; display: block;width: 75%;}
+    .line{border-bottom: 1px solid #999;}
+    .line span{float: left;}
+    .check{text-align: center; margin-top: 50px; height: 36px; line-height: 36px;}
+    .check span{background-image: linear-gradient(to right,#ff7000,#fc4b1a);display: block;width: 50%; color: #fff; margin: 0 auto; border-radius: 2px;}
+</style>
+<body>
+    <div class="user-cash">
+        <section>
+            <div class="title">用户充值信息</div>
+            <div class="line"><span class="left">订单号:</span><span class="right" id="orderid">{$order.order_id}</span></div>
+            <div class="line"><span class="left">充值金额:</span><span class="right">￥{$order.price}</span></div>
+            <div class="line"><span class="left">充值方式:</span><span class="right">微信支付</span></div>
+            <div class="check"><span>查看充值结果</span></div>
+        </section>
+    </div>
+    {include file="public/right_nav" /}
+    <script type="text/javascript">
+    $(document).ready(function() {
+              var con=0;
+              var order_id=$("#orderid").text();
+              function cons(){
+                $.get("{:url('My/userquerys')}",{con:con,order_id:order_id},function(data){
+                console.log(data);
+                if(con!=data){
+                    window.clearInterval(t2)
+                }
+                
+                 })
+              }
+             var t2 = window.setInterval(function() {
+                            cons();
+
+                        },1000)
+             
+    });
+$(function () {
+    $('.check').click(function(){
+        var order=$("#orderid").text();
+    var url = "{:url('My/userqueryss',array('order_id'=>'oerder'))}";
+  url = url.replace('oerder',order);
+
+window.location.replace(url);
+    })
+    
+})
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<navbar parameter='{{parameter}}'></navbar>
+<view class='bargain-record'>
+   <view class='item' wx:for='{{bargainList}}' wx:key>
+       <view class='picTxt acea-row row-between-wrapper'>
+          <view class='pictrue'><image src='{{item.image}}'></image></view>
+          <view class='text acea-row row-column-around'>
+             <view class='line1'>{{item.title}}</view>
+             <view class='time'>倒计时 <text class='font-color'>{{item.day}}</text> 天 <text class='font-color'>{{item.hour}}</text> 时 <text class='font-color'>{{item.minute}}</text> 分 <text class='font-color'>{{item.second}}</text> 秒</view>
+             <view class='money font-color'>已砍至<text class='symbol'>￥</text><text class='num'>{{item.residue_price}}</text></view>
+          </view>
+       </view>
+       <view class='bottom acea-row row-between-wrapper'>
+          <view class='purple' wx:if='{{item.is_del == 0 && item.status == 1}}'>活动进行中</view>
+          <view class='success' wx:elif='{{item.is_del == 0 && item.status == 3}}'>砍价成功</view>
+          <view class='end' wx:elif='{{item.is_del == 0 && item.status == 2}}'>活动已结束</view>
+          <view class='end' wx:else='{{item.is_del == 1}}'>活动已取消</view>
+          <view class='acea-row row-middle row-right'>
+             <view class='bnt cancel'  data-item="{{item}}" wx:if='{{item.is_del == 0 && item.status == 1}}' bindtap='cancelBargain'>取消活动</view>
+             <view class='bnt bg-color' data-item="{{item}}" wx:if='{{item.is_del == 0 && item.status == 1 && item.residue_price > item.bargain_price_min}}' bindtap='toBargain'>继续砍价</view>
+             <view class='bnt bg-color'  data-item="{{item}}" wx:elif='{{item.is_del == 0 && item.status == 1 && item.residue_price == item.bargain_price_min}}' bindtap='toBargain'>立即付款</view>
+             <view class='bnt bg-color' data-item="{{item}}" wx:else='{{item.status == 3}}' bindtap='toBargainList'>重开一个</view>
+          </view>
+       </view>
+   </view>
+</view>
+

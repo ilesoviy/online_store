@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=375,user-scalable=no">
+		<meta name="referrer" content="no-referrer" />
+		<link rel="stylesheet" href="./css/index.css" />
+		<script src="./js/data.json"></script>
+		<script src="./js/zhuaqv.json"></script>
+		<script type="text/javascript" src="js/lottie.js"></script>
+		<script src="./js/jquery-1.11.3.min.js"></script>
+		<title>种植主页面</title>
+	</head>
+	<body>
+		<div class="all">
+			<!-- 头部 -->
+			<div class="head">
+				<div class="head_left">
+					<div class="img">
+						<img src="./images/male.png" title="" alt="">
+					</div>
+				</div>
+				<div class="head_rignt">
+					<span>ID:心雨在线科技</span>
+					<span>积分:<span id="integral">1314</span></span>
+				</div>
+			</div>
+			<!-- 类别 -->
+			<div class="category">
+				<div class="cg_lt">
+					<div id="shop">
+						<img src="./images/shop.png" alt="" title="" />
+					</div>
+					<div id="Warehouse">
+						<img src="./images/warehouse.png" alt="" title="" />
+					</div>
+					<div>
+						<img src="./images/broadcast.png" alt="" title="" />
+					</div>
+				</div>
+				<div class="cg_md">
+					<div id="chenshou">
+						<span class="tips">需要浇水才可以成长哦~成熟就可以收获了~</span>
+					</div>
+					<div id="planting">
+						<span class="tips harvest">已经成熟了哦~可以收获了！</span>
+						<span class="tips empty">还没有种植果实哦~快去种植吧！</span>
+					</div>
+				</div>
+				<div class="cg_rt">
+					<div id="rule">
+						<img src="./images/rule.png" alt="" title="" />
+					</div>
+					<div id="recordtitle">
+						<img src="./images/record.png" alt="" title="" />
+					</div>
+					<div>
+						<img src="./images/shoppingMall.png" alt="" title="" />
+					</div>
+				</div>
+			</div>
+			<!-- 树 -->
+			<div class="Daily_drops">
+				<img src="./images/shuidi.png" alt="" title="">
+			</div>
+			<!-- 果实 -->
+			<div class="fruit">
+				<img src="./images/nangua.png" />
+			</div>
+			<div id="lottie2"></div>
+			<script>
+				var params2 = {
+					container: document.getElementById('lottie2'),
+					renderer: 'svg',
+					loop: true,
+					autoplay: true,
+					animationData: animationData2
+				};
+				var anim2;
+				anim2 = lottie.loadAnimation(params2);
+			</script>
+			<div class="tree">
+				<div class="shuidi" id="qiuy">
+					<img src="images/shuidi.png">
+				</div>
+				<div class="ce_left">
+					<div class="collardrop" id="clickWater">
+						<img src="images/collarDrop.png" alt="" title="" />
+						<div id="time"></div>
+					</div>
+				</div>
+				<div class="ce_middle">
+					<div id="lottie1"></div>
+					<div class="daily">
+						<img src="./images/log_daily.png" alt="" title="">
+					</div>
+					<div class="seed" id="seedImg">
+						<img src="images/seed.png" alt="" title="" />
+					</div>
+					<div class="seed" id="saplingImg" style="display: none;">
+						<img src="images/sapling.png" alt="" title="" />
+					</div>
+					<div class="seed" id="fruitImg" style="display: none;">
+						<img src="images/pumpkin.png" alt="" title="" />
+					</div>
+
+					<div class="pit">
+						<img src="./images/pit.png" alt="" title="" />
+					</div>
+					<div class="progress_bar">
+						<img src="./images/jdt1.png" alt="" title="" />
+					</div>
+
+					<div class="progress_bar2">
+						<img src="./images/jdt2.png" alt="" title="" style="margin-left: -100%;" />
+					</div>
+					<!-- <progress value="150" max="200"></progress><br> -->
+					<p class="need"></p>
+				</div>
+				<div class="ce_rignt">
+					<div class="share">
+						<img src="./images/share.png" alt="" title="" />
+					</div>
+					<div class="kettle" id="watering">
+						<img src="./images/kettle.png" alt="" title="" />
+					</div>
+					<!-- <div id="lottie1"></div> -->
+					<span class="quantity">0g</span>
+				</div>
+			</div>
+			<div class="cancel"></div>
+			<!-- 商店 -->
+			<div class="store_content" id="shangdian">
+				<div class="seed_store">
+					<div class="seed_store_l">
+						<img src="./images/seed_store.png" alt="" title="" />
+					</div>
+					<div class="seed_store_r">
+						<img src="./images/close.png" alt="" title="" />
+					</div>
+
+				</div>
+				<div class="type">
+					<div class="type_content">
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>苹果种子</h3>
+								<P class="integral">兑换积分：1</P>
+								<P>成熟可换积分：3</P>
+							</div>
+							<div class="Plant_button zxan">
+								<div class="plant">
+									<img src="./images/plant.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>种下</p>
+								</div>
+							</div>
+						</div>
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>苹果种子</h3>
+								<P class="integral">兑换积分：1</P>
+								<P>成熟可换积分：3</P>
+							</div>
+							<div class="Plant_button zxan">
+								<div class="plant">
+									<img src="./images/plant.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>种下</p>
+								</div>
+							</div>
+						</div>
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>苹果种子</h3>
+								<P class="integral">兑换积分：1</P>
+								<P>成熟可换积分：3</P>
+							</div>
+							<div class="Plant_button zxan">
+								<div class="plant">
+									<img src="./images/plant.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>种下</p>
+								</div>
+							</div>
+						</div>
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>苹果种子</h3>
+								<P class="integral">兑换积分：1</P>
+								<P>成熟可换积分：3</P>
+							</div>
+							<div class="Plant_button zxan">
+								<div class="plant">
+									<img src="./images/plant.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>种下</p>
+								</div>
+							</div>
+						</div>
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>苹果种子</h3>
+								<P class="integral">兑换积分：1</P>
+								<P>成熟可换积分：3</P>
+							</div>
+							<div class="Plant_button zxan">
+								<div class="plant">
+									<img src="./images/plant.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>种下</p>
+								</div>
+							</div>
+						</div>
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>苹果种子</h3>
+								<P class="integral">兑换积分：1</P>
+								<P>成熟可换积分：3</P>
+							</div>
+							<div class="Plant_button zxan">
+								<div class="plant">
+									<img src="./images/plant.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>种下</p>
+								</div>
+							</div>
+						</div>
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>苹果种子</h3>
+								<P class="integral">兑换积分：1</P>
+								<P>成熟可换积分：3</P>
+							</div>
+							<div class="Plant_button zxan">
+								<div class="plant">
+									<img src="./images/plant.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>种下</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 种下 -->
+			<div class="Sale_tips" id="zhongxia_tips">
+				<div class="Popup">
+					<p>确定要种下<span>红苹果</span>吗？<br />要扣除<span>1</span>积分哦！</p>
+
+					<div class="choice">
+						<div class="choice_l">
+							取消
+						</div>
+						<div class="choice_r">
+							确定
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 仓库 -->
+			<div class="store_content" id="cangku">
+				<div class="seed_store">
+					<div class="seed_store_l">
+						<img src="./images/warehouseTitle.png" alt="" title="" />
+					</div>
+					<div class="seed_store_r">
+						<img src="./images/close.png" alt="" title="" />
+					</div>
+				</div>
+				<div class="type">
+					<div class="type_content">
+						<div class="type_seed">
+							<div class="sd_img">
+								<img src="./images/apple.png" alt="" title="" />
+							</div>
+							<div class="sd_cd">
+								<h3>红苹果</h3>
+								<P class="integral">数量：<span>2</span></P>
+								<P class="Commutative">可换积分：<span>3</span></P>
+							</div>
+							<div class="Plant_button csan">
+								<div class="plant">
+									<img src="./images/moneyion.png" alt="" title="" />
+								</div>
+								<div class="zx">
+									<p>出售</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!-- 出售提示框 -->
+			<div class="Sale_tips" id="chushou_tips">
+				<div class="Popup">
+					<p>出售数量</p>
+					<div class="number">
+						<img src="images/reduce.png" class="rdc" />
+						<input type="text" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+						 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}"
+						 value="5" class="sl" name="shuliang" />
+						<img src="images/plus.png" class="ps" />
+					</div>
+					<div class="choice">
+						<div class="choice_l" id="choice_quxiao">
+							取消
+						</div>
+						<div class="choice_r" id="choice_queding">
+							确定
+						</div>
+					</div>
+				</div>
+			</div>
+			<div></div>
+			<!-- 记录-->
+			<div class="store_content" id="jilu">
+				<div class="seed_store">
+					<div class="seed_store_l">
+						<img src="./images/recordtitle.png" alt="" title="" />
+					</div>
+					<div class="seed_store_r">
+						<img src="./images/close.png" alt="" title="" />
+					</div>
+				</div>
+
+				<div class="type">
+					<!-- 查看已采摘蔬果 -->
+					<div class="type_content" id="ckyzsg">
+						<p class="see"><a href="#" id="chakan">查看已采摘蔬果></a></p>
+						<div class="cgrecord">
+							<div class="watering_record">
+								<span>09-15</span>
+								<span>13:14:00</span>
+								<span class="xhsd">浇水消耗水滴</span>
+								<span class="numerical">-30g</span>
+							</div>
+							<div class="watering_record">
+								<span>09-15</span>
+								<span>13:14:00</span>
+								<span class="xhsd">浇水消耗水滴</span>
+								<span class="numerical">-30g</span>
+							</div>
+							<div class="watering_record">
+								<span>09-15</span>
+								<span>13:14:00</span>
+								<span class="xhsd">浇水消耗水滴</span>
+								<span class="numerical">-30g</span>
+							</div>
+							<div class="watering_record">
+								<span>09-15</span>
+								<span>13:14:00</span>
+								<span class="xhsd">浇水消耗水滴</span>
+								<span class="numerical">-30g</span>
+							</div>
+							<div class="watering_record">
+								<span>09-15</span>
+								<span>13:14:00</span>
+								<span class="xhsd">浇水消耗水滴</span>
+								<span class="numerical">-30g</span>
+							</div>
+							<div class="watering_record">
+								<span>09-15</span>
+								<span>13:14:00</span>
+								<span class="xhsd">浇水消耗水滴</span>
+								<span class="numerical">-30g</span>
+							</div>
+						</div>
+					</div>
+					<!-- 	已采摘蔬果 -->
+					<div class="type_content" id="Picked">
+						<p class="see"><a href="#">已采摘蔬果</a></p>
+						<div class="title">
+							<div>蔬果名称</div>
+							<div>采摘时间</div>
+						</div>
+						<div class="cgrecord">
+							<div class="watering_record">
+								<div>红苹果</div>
+								<div>2020-10-27</div>
+							</div>
+							<div class="watering_record">
+								<div>红苹果</div>
+								<div>2020-10-27</div>
+							</div>
+							<div class="watering_record">
+								<div>红苹果</div>
+								<div>2020-10-27</div>
+							</div>
+							<div class="watering_record">
+								<div>红苹果</div>
+								<div>2020-10-27</div>
+							</div>
+							<div class="watering_record">
+								<div>红苹果</div>
+								<div>2020-10-27</div>
+							</div>
+							<div class="watering_record">
+								<div>红苹果</div>
+								<div>2020-10-27</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 规则 -->
+			<div class="store_content" id="guize">
+				<div class="seed_store">
+					<div class="seed_store_l">
+						<img src="./images/guize.png" alt="" title="" />
+					</div>
+					<div class="seed_store_r">
+						<img src="./images/close.png" alt="" title="" />
+					</div>
+				</div>
+				<div class="type">
+					<div class="type_content">
+						<p>活动参与时间:2020年10月14日-2020年11月11日蔬果到店领取时间:2020年10月14日一2020年11月17日</p>
+						<p class="bt">【参与资格】</p>
+						<p>本活动仅限大润发会员参加,成功登录账号并绑定大润发会员卡即可参与游戏,每位自然人用户仅能使用一个大润发账号参与活动,微信号、大润发账号、手机号等任一信息一致或指向同一用户的,均视为同一个用户,若发现同一用户使用不同账号重复参与
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var params1 = {
+				container: document.getElementById('lottie1'),
+				renderer: 'svg',
+				loop: true,
+				autoplay: true,
+				animationData: animationData1
+			};
+			var anim1;
+			anim1 = lottie.loadAnimation(params1);
+		</script>
+		<script>
+			var water = 1000; //水
+			var second = 3000; //倒计时
+			var seed = {
+				0: 50,
+				1: 90
+			};
+			var sdft = false;
+			var width = -100; //进度条
+			var growth = 0;
+			var frequency = 10; //还需要浇水次数
+			var integral = 5; //积分
+			var itg = $(".integral span").text(); //获取果实数量
+			var ctt = $(".Commutative span").text(); //获取可换积分
+			$(function() {
+				// $('.need').text(frequency);
+				$('.need').text('还需浇水'+frequency+'次就成熟了');
+				$('#integral').text(integral);
+
+				$('.quantity').text(water + 'g');
+				if (second > 0) {
+					$('.collardrop').unbind('click');
+				}
+				TimeDown("time", second)
+			});
+			/*
+			 时间倒计时
+			 TimeDown.js
+			 */
+			function TimeDown(id, value) {
+				if (value > 0) {
+					$('.collardrop').unbind('click');
+				}
+
+				//倒计时的总秒数
+				var totalSeconds = parseInt(value / 1000);
+
+				//取模（余数）
+				var modulo = totalSeconds % (60 * 60 * 24);
+				//小时数
+				var hours = Math.floor(modulo / (60 * 60));
+				modulo = modulo % (60 * 60);
+				//分钟
+				var minutes = Math.floor(modulo / 60);
+				//秒
+				var seconds = modulo % 60;
+
+				hours = hours.toString().length == 1 ? '0' + hours : hours;
+				minutes = minutes.toString().length == 1 ? '0' + minutes : minutes;
+				seconds = seconds.toString().length == 1 ? '0' + seconds : seconds;
+
+				//输出到页面
+				document.getElementById(id).innerHTML = hours + ":" + minutes + ":" + seconds;
+				//延迟一秒执行自己
+				if (hours == "00" && minutes == "00" && parseInt(seconds) - 1 < 0) {
+					// console.log(123123);
+					$('.collardrop').bind('click', function() {
+						water += 30;
+						$('.quantity').text(water + 'g');
+						$('#qiuy').addClass("sjk2");
+						setTimeout("showTime()", 1000);
+						TimeDown('time', second)
+					});
+
+				} else {
+					setTimeout(function() {
+						TimeDown(id, value - 1000);
+					}, 1000)
+				}
+
+			}
+
+			function showTime() {
+				$('#qiuy').removeClass("sjk2");
+			}
+
+
+			// 点击浇水
+			
+			$('#watering').click(function() {
+      if (sdft == false){
+				$('#lottie1').show();
+				//浇水动作	
+				setTimeout(function() {
+					$('#lottie1').hide(); //隐藏浇水动作
+				}, 1800)
+				$('.progress_bar2 img').addClass("aaa");
+				width += 10; //点一次进度条加10%
+
+				
+				if (width < 10) {
+					$(".progress_bar2 img").css('marginLeft', width + '%');
+					// console.log(width)
+				}
+
+				if (water <= 0) {
+					alert('不能浇水了');
+					return;
+				}
+				water -= 10;
+				// frequency -= 1;
+				if (frequency > 1) {
+					frequency -= 1;
+					$('.need').text('还需浇水'+frequency+'次就成熟了');
+				} else {
+					$('.need').text('果子已经成熟了！！！');
+				}
+
+				if (growth >= seed[0] && growth < seed[1]) {
+					$('#seedImg').hide();
+					$('#saplingImg').show();
+
+				} else if (growth >= seed[1]) {
+
+					$('#saplingImg').hide();
+					$('#fruitImg').show();
+					$('#chenshou').hide();
+					$('#planting').show();
+					$('#lottie2').show();
+					sdft = true;
+					console.log(sdft)
+					
+					 // alert('已成熟');
+					$('#lottie1').hide();
+					 // $("#watering").unbind("click");  
+					 console.log(growth )
+					return;
+
+				}
+				growth += 10;
+				$('.quantity').text(water + 'g');}
+			});
+			// 收获果实
+			$('#lottie2').click(function() {
+				$('#lottie2').hide();
+				$('#fruitImg').hide();
+				$('.fruit').addClass("guoshi");
+				$('#planting .harvest').hide();
+				$('#planting .empty').show();
+				// $(".aaa").width(0 + '%');
+				setTimeout("guoshiTime()", 1000);
+				growth = 0;
+				width = -100;
+				 frequency = 10;
+				$(".progress_bar2 img").css('marginLeft', width + '%');
+				$('.need').text('暂时没有种植东西哦！');
+				console.log(sdft)
+				// alert(1);
+			});
+			function guoshiTime() {
+				$('.fruit').removeClass("guoshi");
+			}
+			// 商品显示
+			$('#shop').click(function() {
+				$('.cancel').show();
+				$('#shangdian').show();
+			});
+			// 仓库显示
+			$('#Warehouse').click(function() {
+				$('.cancel').show();
+				$('#cangku').show();
+			});
+			//游戏记录显示
+			$('#recordtitle').click(function() {
+				$('.cancel').show();
+				$('#jilu').show();
+			});
+			// 查看已采摘蔬果隐藏
+			// 已采摘蔬果显示
+			$('#chakan').click(function() {
+				$('#ckyzsg').hide();
+				$('#Picked').show();
+			});
+			//规则显示
+			$('#rule').click(function() {
+				$('.cancel').show();
+				$('#guize').show();
+			});
+			$('.cancel').click(function() {
+				event.stopPropagation();
+				$(".cancel").hide();
+				$('#shangdian').hide(); // 商品隐藏
+				$('#cangku').hide(); // 仓库隐藏
+				$('#jilu').hide(); //游戏记录隐藏
+				$('#Picked').hide(); // 已采摘蔬果隐藏
+				$('#chakan').show();
+				$('#Picked').hide(); // 已采摘蔬果隐藏
+				$('#guize').hide(); //规则隐藏
+			});
+			// 关闭按钮
+			$('.seed_store_r').click(function() {
+				event.stopPropagation();
+				$(".cancel").hide();
+				$('#shangdian').hide(); // 商品隐藏
+				$('#cangku').hide(); // 仓库隐藏
+				$('#jilu').hide(); //游戏记录隐藏
+				$('#Picked').hide(); // 已采摘蔬果隐藏
+				$('#chakan').show();
+				$('#Picked').hide(); // 已采摘蔬果隐藏
+				$('#guize').hide(); //规则隐藏
+			});
+			// 每日领水滴
+			$('.daily').click(function() {
+				$('.daily').hide();
+				$('.Daily_drops').addClass("mrsd");
+				water += 20;
+				$('.quantity').text(water + 'g');
+				// console.log(water);
+			});
+			// 种下按钮
+			$('.zxan').click(function() {
+				// $('.cancel').hide();
+				$('#zhongxia_tips').show();
+				// $('#watering').unbind('click');
+
+
+			});
+			// 种下提示弹窗
+			$('#zhongxia_tips .choice_l').click(function() {
+				$('#zhongxia_tips').hide();
+			});
+			$('#zhongxia_tips .choice_r').click(function() {
+				if (sdft == false) {
+					alert("已经种有东西了");
+				} else {
+					if (integral > 0) {
+						integral -= 1
+						$('#integral').text(integral);
+						$('#seedImg').show();
+						// $("#watering").on("click");
+						console.log(width);
+					} else {
+						alert('积分不够');
+						$('#zhongxia_tips').hide();
+						return;
+					}
+					
+					// $('.need').text('暂时没有种植东西哦！');
+					$('.need').text('还需浇水'+frequency+'次就成熟了');
+					$('.cancel').hide();
+					$('#zhongxia_tips').hide();
+					$('#shangdian').hide();
+					$('#chenshou').show();
+					$('#planting').hide();
+					sdft = false;
+				}
+
+
+			});
+			//出售
+			$('.csan').click(function() {
+				$('#chushou_tips').show();
+				// $('#cangku').hide();
+
+				// if (integral > 0) {
+				// 	integral -= 1
+				// 	$('#integral').text(integral);
+				// } else {
+				// 	alert('积分不够');
+				// 	return;
+				// }
+
+			});
+
+			// 出售弹窗
+			// 减出售数量
+			var name = $('input[name="shuliang"]').val();
+			// 减
+			$('.rdc').click(function() {
+				if (name > 1) {
+					name--;
+				}
+				$(".sl").val(name);
+			});
+			// 加
+			$('.ps').click(function() {
+				name++;
+				$(".sl").val(name);
+			});
+			// 出售取消
+			$('#choice_quxiao').click(function() {
+				$('#chushou_tips').hide();
+			});
+			//出售确定
+			$('#choice_queding').click(function() {
+
+				if (itg < name) {
+					alert("果实数量不够");
+				} else {
+					let totalprice = itg * ctt; //卖出可获得积分
+					itg -= name; //总积分
+					$('.integral span').text(itg);
+					// console.log(totalprice);
+					integral += totalprice;
+					$('#integral').text(integral);
+					$('#chushou_tips').hide();
+				}
+				// console.log(itg);
+				// console.log(ctt);
+			});
+
+			// $(".sjk").click(function(){
+			// 	$('.shuidi').addClass('sjk2')
+			// })
+		</script>
+
+	</body>
+</html>
